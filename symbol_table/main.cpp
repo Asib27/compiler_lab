@@ -58,6 +58,14 @@ public:
     bool operator!=(const SymbolInfo &s){
         return !( *this == s);
     }
+
+    bool operator==(const string &s){
+        return _name == s;
+    }
+
+    bool operator!=(const string s){
+        return !( *this == s);
+    }
 };
 
 /**
@@ -69,8 +77,8 @@ class ScopeTable
 	SymbolInfo** _table;
 	int _no_of_bucket;
 
-	unsigned int _getHash(SymbolInfo s){
-        return SDBMHash(s.getName()) % _no_of_bucket;
+	unsigned int _getHash(string s){
+        return SDBMHash(s) % _no_of_bucket;
     }
 public:
 	ScopeTable(int n) : _no_of_bucket(n){
@@ -79,26 +87,26 @@ public:
 	} 
 
     bool insert(SymbolInfo s){
-        if(lookup(s) != nullptr) return false;
+        if(lookup(s.getName()) != nullptr) return false;
 
-        auto hash = _getHash(s);
+        auto hash = _getHash(s.getName());
         auto sptr = new SymbolInfo(s, _table[hash]);
         _table[hash] = sptr;
 
         return true;
     }
 
-    SymbolInfo* lookup(SymbolInfo s){
+    SymbolInfo* lookup(string s){
         auto hash = _getHash(s);
 
         for(SymbolInfo* cur = _table[hash]; cur != nullptr;cur = cur->getNext()){
-            if(s == *cur) return cur;
+            if(*cur == s) return cur;
         }
 
         return nullptr;
     }
 
-    bool remove(SymbolInfo s){
+    bool remove(string s){
         if(lookup(s) == nullptr) return false;
 
         auto hash = _getHash(s);
@@ -178,7 +186,7 @@ int main(){
 
     s.insert(s3);
     cout << s << endl;
-    s.remove(s2);
+    s.remove(s2.getName());
     // while(true){
     //     char a;
     //     cin >> a;
@@ -189,8 +197,8 @@ int main(){
     //     s.insert(SymbolInfo(str1, str2));
     //     cout << str1 << " " << str2 << endl;
     // }
-    s.insert(s3);
-    s.insert(s2);
+    //s.insert(s3);
+    //s.insert(s2);
     cout << s << endl;
     
 }
