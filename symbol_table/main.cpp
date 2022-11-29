@@ -3,7 +3,7 @@
 
 using namespace std;
 
-unsigned int SDBMHash(string str) {
+unsigned long long SDBMHash(string str) {
 	unsigned int hash = 0;
 	unsigned int i = 0;
 	unsigned int len = str.length();
@@ -77,11 +77,15 @@ class ScopeTable
 	SymbolInfo** _table;
 	int _no_of_bucket;
 
-	unsigned int _getHash(string s){
+    ScopeTable* _next;
+
+	unsigned long long _getHash(string s){
         return SDBMHash(s) % _no_of_bucket;
     }
 public:
-	ScopeTable(int n) : _no_of_bucket(n){
+	ScopeTable(int n, ScopeTable *next=nullptr)
+     : _no_of_bucket(n), _next(next)
+    {
 		_table = new SymbolInfo*[n];
 		for(int i = 0; i < n; i++) _table[i] = nullptr;
 	} 
@@ -133,6 +137,12 @@ public:
         return true;
     }
 
+    void setNext(ScopeTable *next){
+        _next = next;
+    }
+    ScopeTable* getNext(){
+        return _next;
+    }
 
 	~ScopeTable(){
 		for(int i = 0; i < _no_of_bucket; i++){
@@ -160,6 +170,65 @@ public:
     }
 };
 
+
+class SymbolTable{
+   ScopeTable* _curScope; 
+   int _bucket_size;
+
+public:
+    SymbolTable(int bucket_size)
+        : _bucket_size(bucket_size), _curScope(nullptr)
+        {}
+
+    void enterScope(){
+        auto s =  new ScopeTable(_bucket_size, _curScope);
+        _curScope = s;
+    }
+
+    void exitScope(){
+        auto t = _curScope->getNext();
+        delete _curScope;
+        _curScope = t;
+    }
+
+    bool insert(SymbolInfo s){
+        return _curScope->insert(s);
+    }
+
+    bool remove(string s){
+        return _curScope->remove(s);
+    }
+
+    SymbolInfo* lookup(string s){
+        for(auto head = _curScope; head != nullptr; head = head->getNext()){
+            auto t = head->lookup(s);
+            if(t != nullptr) return t;
+        }
+
+        return nullptr;
+    }
+
+    ostream& printCurrentScope(ostream &os){
+        cout << *_curScope << endl;
+        return os;
+    }
+
+    friend ostream& operator<<(ostream &os, const SymbolTable &s){
+        for(auto head = s._curScope; head != nullptr; head = head->getNext()){
+            cout << *head << endl;
+        }
+        return os;
+    }
+
+    ~SymbolTable(){
+        for(auto head = _curScope; head != nullptr; ){
+            auto t = head->getNext();
+            delete head;
+            head = t;
+        }
+    }
+};
+
 string RandomString(int len)
 {
     const int ch_MAX = 26;
@@ -178,27 +247,21 @@ int main(){
     SymbolInfo s1("abc", "type"), s2("abc", "jhsad"),
                 s3("ahks", "type");
     
-    ScopeTable s(10);
+    SymbolTable s(10);
+    s.enterScope();
 
     s.insert(s1);
-    cout << s << endl;
-    s.insert(s2);
-
     s.insert(s3);
-    cout << s << endl;
-    s.remove(s2.getName());
-    // while(true){
-    //     char a;
-    //     cin >> a;
-    //     if(a == 'q') break;
 
-    //     auto str1 = RandomString(2);
-    //     auto str2 = RandomString(2);
-    //     s.insert(SymbolInfo(str1, str2));
-    //     cout << str1 << " " << str2 << endl;
-    // }
-    //s.insert(s3);
-    //s.insert(s2);
+    cout <<  s << endl;
+    cout << *s.lookup("abc") << endl;
+
+    s.enterScope();
+    s.insert(s2);
     cout << s << endl;
+    s.exitScope();
+    
+    cout << s << endl;
+    // s.printCurrentScope(cout);
     
 }
