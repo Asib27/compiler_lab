@@ -22,9 +22,15 @@ class SymbolInfo
 	string _type;
 	SymbolInfo* _next;
 public:
-	SymbolInfo() : _next(nullptr) {};
+	SymbolInfo() : _next(nullptr) {}
 	SymbolInfo(string name, string type, SymbolInfo* next=nullptr)
 		: _name(name), _type(type), _next(next)
+	{
+
+	}
+
+    SymbolInfo(SymbolInfo &s, SymbolInfo* next=nullptr)
+		: _name(s._name), _type(s._type), _next(next)
 	{
 
 	}
@@ -43,36 +49,148 @@ public:
 
         return os;
     }
+
+    bool operator==(const SymbolInfo &s){
+        return _name == s._name &&
+                _type == s._type;
+    }
+
+    bool operator!=(const SymbolInfo &s){
+        return !( *this == s);
+    }
 };
 
 /**
 * If any instance of ScopeTable is destroyed it will automatically free,
 * all symbolInfo it contaims
 */
-// class ScopeTable
-// {
-// 	SymbolInfo* _table;
-// 	int _no_of_bucket;
+class ScopeTable
+{
+	SymbolInfo** _table;
+	int _no_of_bucket;
 
-	
-// public:
-// 	ScopeTable(int n) : _no_of_bucket(n){
-// 		table = new SymbolInfo[n];
-// 		for(int i = 0; i < n; i++) table[i] = nullptr;
-// 	}
+	unsigned int _getHash(SymbolInfo s){
+        return SDBMHash(s.getName()) % _no_of_bucket;
+    }
+public:
+	ScopeTable(int n) : _no_of_bucket(n){
+		_table = new SymbolInfo*[n];
+		for(int i = 0; i < n; i++) _table[i] = nullptr;
+	} 
 
-// 	~ScopeTable(){
-// 		for(int i = 0; i < _no_of_bucket; i++){
-// 			if(table[i]) delete table[i];
-// 		}
-// 		delete[] table;
-// 	}
-// }
+    bool insert(SymbolInfo s){
+        if(lookup(s) != nullptr) return false;
+
+        auto hash = _getHash(s);
+        auto sptr = new SymbolInfo(s, _table[hash]);
+        _table[hash] = sptr;
+
+        return true;
+    }
+
+    SymbolInfo* lookup(SymbolInfo s){
+        auto hash = _getHash(s);
+
+        for(SymbolInfo* cur = _table[hash]; cur != nullptr;cur = cur->getNext()){
+            if(s == *cur) return cur;
+        }
+
+        return nullptr;
+    }
+
+    bool remove(SymbolInfo s){
+        if(lookup(s) == nullptr) return false;
+
+        auto hash = _getHash(s);
+        auto head = _table[hash];
+        
+        if(*head == s){
+            _table[hash] = head->getNext();
+            delete head;
+            return true;
+        }
+        else{
+            auto prev = head; 
+            for(head = head->getNext(); head != nullptr; prev = head, head = head->getNext()){
+                if(*head == s){
+                    prev->setNext(head->getNext());
+                    delete head;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+
+	~ScopeTable(){
+		for(int i = 0; i < _no_of_bucket; i++){
+			for(auto head=_table[i]; head != nullptr; ){
+                auto t = head->getNext();
+                delete head;
+                head = t;
+            }
+		}
+		delete[] _table;
+	}
+
+    friend ostream& operator<<(ostream &os, const ScopeTable &s){
+        for(int i = 0; i < s._no_of_bucket; i++){
+            cout << i << " --> ";
+            auto head = s._table[i];
+            for(head = s._table[i];head != nullptr; head = head->getNext()){
+                cout <<*head << " -> ";
+            }
+            
+            cout << endl;
+        }
+
+        return os;
+    }
+};
+
+string RandomString(int len)
+{
+    const int ch_MAX = 26;
+    char alpha[ch_MAX] = { 'a', 'b', 'c', 'd', 'e', 'f', 'g',
+                          'h', 'i', 'j', 'k', 'l', 'm', 'n',
+                          'o', 'p', 'q', 'r', 's', 't', 'u',
+                          'v', 'w', 'x', 'y', 'z' };
+    string result = "";
+    for (int i = 0; i<len; i++)
+        result = result + alpha[rand() % ch_MAX];
+
+    return result;
+}
 
 int main(){
-    SymbolInfo s1("10", "int");
-    SymbolInfo s3("15", "float");
+    SymbolInfo s1("abc", "type"), s2("abc", "jhsad"),
+                s3("ahks", "type");
+    
+    ScopeTable s(10);
 
-    s3.setNext(&s1);
-    cout << s3 << " " << *s3.getNext();
+    s.insert(s1);
+    cout << s << endl;
+    s.insert(s2);
+
+    s.insert(s3);
+    cout << s << endl;
+    s.remove(s2);
+    // while(true){
+    //     char a;
+    //     cin >> a;
+    //     if(a == 'q') break;
+
+    //     auto str1 = RandomString(2);
+    //     auto str2 = RandomString(2);
+    //     s.insert(SymbolInfo(str1, str2));
+    //     cout << str1 << " " << str2 << endl;
+    // }
+    s.insert(s3);
+    s.insert(s2);
+    cout << s << endl;
+    
 }
