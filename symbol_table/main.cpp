@@ -178,7 +178,9 @@ class SymbolTable{
 public:
     SymbolTable(int bucket_size)
         : _bucket_size(bucket_size), _curScope(nullptr)
-        {}
+        {
+            
+        }
 
     void enterScope(){
         auto s =  new ScopeTable(_bucket_size, _curScope);
@@ -243,25 +245,76 @@ string RandomString(int len)
     return result;
 }
 
+class SymbolTableDriver{
+    SymbolTable* s;
+public:
+    SymbolTableDriver(SymbolTable * s)
+        : s(s) {}
+
+    void run(){
+        s->enterScope();
+
+        
+        while(true){
+            int res = singleStep();
+            if(res == 2) return ;
+        }
+    }
+
+    int singleStep(){
+        string input;
+        cin >> input;
+
+        if(input == "I"){
+            string name, type;
+            cin >> name >> type;
+
+            SymbolInfo symbolInfo(name, type);
+            auto res = s->insert(symbolInfo);
+
+            return res;
+        }
+        
+        if(input == "L"){
+            string name; cin >> name;
+            auto res = s->lookup(name);
+            return res == nullptr;
+        }
+        else if(input == "D"){
+            string name; cin >> name;
+            auto res = s->remove(name);
+            return res;
+        }
+        else if(input == "P"){
+            string type; cin >> type;
+            if(type == "A") cout << s << endl;
+            else if(type == "C") s->printCurrentScope(cout);
+            else cout << "Invalid Command";
+        }
+
+        else if(input == "S"){
+            s->enterScope();
+            return 1;
+        }
+        else if(input == "E"){
+            s->exitScope();
+            return 1;
+        }
+        else if(input == "Q"){
+            return 2;
+        }
+        else{
+            cout << "Invalid Command" << endl;
+            return 0;
+        }
+
+        return 0;
+    }
+};
+
 int main(){
-    SymbolInfo s1("abc", "type"), s2("abc", "jhsad"),
-                s3("ahks", "type");
-    
     SymbolTable s(10);
-    s.enterScope();
+    SymbolTableDriver driver(&s);
 
-    s.insert(s1);
-    s.insert(s3);
-
-    cout <<  s << endl;
-    cout << *s.lookup("abc") << endl;
-
-    s.enterScope();
-    s.insert(s2);
-    cout << s << endl;
-    s.exitScope();
-    
-    cout << s << endl;
-    // s.printCurrentScope(cout);
-    
+    driver.run();
 }
