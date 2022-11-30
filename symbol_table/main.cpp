@@ -253,54 +253,56 @@ public:
 
     void run(){
         s->enterScope();
+        string param1, param2, param3;
 
-        
         while(true){
-            int res = singleStep();
+            param1 = param2 = param3 = "";
+            cin >> param1;
+
+            if (cin.peek() != EOF && cin.peek() != '\n' ){
+                cin >> param2;
+            }
+            if (cin.peek() != EOF && cin.peek() != '\n' ){
+                cin >> param3;
+            }
+
+            cout << param1 << "/" << param2 << "/" << param3 << "/" << endl;
+            int res = singleStep(param1, param2, param3);
             if(res == 2) return ;
         }
     }
 
-    int singleStep(){
-        string input;
-        cin >> input;
-
-        if(input == "I"){
-            string name, type;
-            cin >> name >> type;
-
-            SymbolInfo symbolInfo(name, type);
+    int singleStep(string param1, string param2, string param3){
+        if(param1 == "I"){
+            SymbolInfo symbolInfo(param2, param3);
             auto res = s->insert(symbolInfo);
 
             return res;
         }
         
-        if(input == "L"){
-            string name; cin >> name;
-            auto res = s->lookup(name);
+        if(param1 == "L"){
+            auto res = s->lookup(param2);
             return res == nullptr;
         }
-        else if(input == "D"){
-            string name; cin >> name;
-            auto res = s->remove(name);
+        else if(param1 == "D"){
+            auto res = s->remove(param2);
             return res;
         }
-        else if(input == "P"){
-            string type; cin >> type;
-            if(type == "A") cout << s << endl;
-            else if(type == "C") s->printCurrentScope(cout);
+        else if(param1 == "P"){
+            if(param2 == "A") cout << s << endl;
+            else if(param2 == "C") s->printCurrentScope(cout);
             else cout << "Invalid Command";
         }
 
-        else if(input == "S"){
+        else if(param1 == "S"){
             s->enterScope();
             return 1;
         }
-        else if(input == "E"){
+        else if(param1 == "E"){
             s->exitScope();
             return 1;
         }
-        else if(input == "Q"){
+        else if(param1 == "Q"){
             return 2;
         }
         else{
@@ -313,7 +315,9 @@ public:
 };
 
 int main(){
-    SymbolTable s(10);
+    int no_of_bucket;
+    cin >> no_of_bucket;
+    SymbolTable s(no_of_bucket);
     SymbolTableDriver driver(&s);
 
     driver.run();
