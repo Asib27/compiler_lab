@@ -247,28 +247,79 @@ string RandomString(int len)
 
 class SymbolTableDriver{
     SymbolTable* s;
+    string msg;
 public:
     SymbolTableDriver(SymbolTable * s)
         : s(s) {}
 
-    void run(){
+
+    /* returns is there any remaining input in the line*/
+    bool inputString(istream &is, string &p1, string &p2, string &p3){
+        is >> p1;
+
+        if (is.peek() != EOF && is.peek() != '\n' ){
+            is >> p2;
+        }
+        if (is.peek() != EOF && is.peek() != '\n' ){
+            is >> p3;
+        }
+
+        if(is.peek() != EOF && is.peek() != '\n'){
+            return true;
+        }
+        return false;
+    }
+
+    bool isNoArgumentValid(string param1, string param2, string param3){
+        if(param1 == "I"){
+            if(param2 == "" || param3 == "")
+               return false;
+        }
+
+        else if(param1 == "L" || param1 == "D" || param1 == "P"){
+            if(param2 == "" || param3 != "")
+                return false;
+        }
+
+        else if(param1 == "S" || param1 == "E" || param1 == "Q"){
+            if(param2 != "" || param3 != "")
+                return false;
+        }
+
+        return true;
+    }
+
+    void run(istream &is, ostream &os){
         s->enterScope();
         string param1, param2, param3;
 
         while(true){
             param1 = param2 = param3 = "";
-            cin >> param1;
+            bool remaining = inputString(is, param1, param2, param3);
 
-            if (cin.peek() != EOF && cin.peek() != '\n' ){
-                cin >> param2;
+            os << param1 << "/" << param2 << "/" << param3 << "/" << endl;
+            if(remaining){
+                os << "Number of parameters mismatch for the command " << param1 << endl;
+                continue;
             }
-            if (cin.peek() != EOF && cin.peek() != '\n' ){
-                cin >> param3;
+            
+            if(!isNoArgumentValid(param1, param2, param3)){
+                os << "Number of parameters mismatch for the command " << param1 << endl;
+                continue;
             }
 
-            cout << param1 << "/" << param2 << "/" << param3 << "/" << endl;
-            int res = singleStep(param1, param2, param3);
-            if(res == 2) return ;
+            // checking invalid command existance
+            if(param1 != "I" && param1 != "L" && param1 != "D" && param1 != "P" 
+                && param1 != "S" && param1 != "E"  && param1 != "Q"
+            ){
+                os << "Invalid Command" << endl;
+                continue;
+            }
+
+            if(param1 == "Q") return ;
+            cout << "here " << endl;
+            // singleStep(param1, param2, param3);
+            
         }
     }
 
@@ -320,5 +371,5 @@ int main(){
     SymbolTable s(no_of_bucket);
     SymbolTableDriver driver(&s);
 
-    driver.run();
+    driver.run(cin, cout);
 }
