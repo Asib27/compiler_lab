@@ -23,9 +23,9 @@ public:
 };
 
 unsigned long long SDBMHash(string str) {
-	unsigned int hash = 0;
-	unsigned int i = 0;
-	unsigned int len = str.length();
+	unsigned long long hash = 0;
+	unsigned long long i = 0;
+	unsigned long long len = str.length();
 
 	for (i = 0; i < len; i++)
 	{
@@ -105,16 +105,39 @@ class ScopeTable
     }
 
     void printHelper(string s, int pos1, int pos2){
-        if(printer->isPrint()){
+        if(printer != nullptr && printer->isPrint()){
             auto &os = printer->getOutputStream();
-            os << "'" << s << "'" << "found in ScopeTable# " << _scopeId
+            os << "'" << s << "'" << " found in ScopeTable# " << _scopeId
                 << " at position " << pos1 << ", " << pos2 << endl;
 
         }        
     }
 
+    void printDeleteHelper(string s, int pos1, int pos2){
+        if(printer != nullptr && printer->isPrint()){
+            auto &os = printer->getOutputStream();
+            os << "Deleted '" << s << "' from ScopeTable# " << _scopeId
+                << " at position " << pos1 << ", " << pos2 << endl;
+        }
+    }
+
+    void printInsertHelper(int pos1, int pos2){
+        if(printer != nullptr && printer->isPrint()){
+            auto &os = printer->getOutputStream();
+            os << "Inserted in ScopeTable# " << _scopeId << " at position "
+                << pos1 << ", " << pos2 << endl;
+        }
+    }
+
+    void printInsertHelper(string s){
+        if(printer != nullptr && printer->isPrint()){
+            auto &os = printer->getOutputStream();
+            os << "'" << s << "'" << " already exists in the current ScopeTable" << endl;
+        }
+    }
+
     void printHelper(string s){
-        if(printer->isPrint()){
+        if(printer != nullptr && printer->isPrint()){
             auto &os = printer->getOutputStream();
             os << s << endl;
         }
@@ -126,18 +149,35 @@ public:
 		_table = new SymbolInfo*[n];
 		for(int i = 0; i < n; i++) _table[i] = nullptr;
 
-        if(printer->isPrint()){
+        if(printer != nullptr && printer->isPrint()){
             auto &os = printer->getOutputStream();
             os << "ScopeTable #" << _scopeId << " created" << endl;
         }
 	} 
 
     bool insert(SymbolInfo s){
-        if(lookup(s.getName()) != nullptr) return false;
-
         auto hash = _getHash(s.getName());
-        auto sptr = new SymbolInfo(s, _table[hash]);
-        _table[hash] = sptr;
+
+        if(_table[hash] == nullptr){
+            auto sptr = new SymbolInfo(s, _table[hash]);
+            _table[hash] = sptr;
+            printInsertHelper(hash+1, 1);
+        }
+        else{
+            auto toInsertAt = _table[hash];
+            int i = 1;
+            for(auto head = _table[hash]; head != nullptr; head = head->getNext(), i++){
+                if(*head == s.getName()){
+                    printInsertHelper(s.getName());
+                    return false;
+                }
+                toInsertAt = head;
+            }
+
+            auto sptr = new SymbolInfo(s);
+            toInsertAt->setNext(sptr);
+            printInsertHelper(hash+1, i);
+        }
 
         return true;
     }
@@ -157,18 +197,18 @@ public:
     }
 
     bool remove(string s){
-        if(lookup(s) == nullptr) {
+        auto hash = _getHash(s);
+        auto head = _table[hash];
+        
+        if(head == nullptr){
             printHelper("Not found in the current ScopeTable");
             return false;
         }
 
-        auto hash = _getHash(s);
-        auto head = _table[hash];
-        
         if(*head == s){
             _table[hash] = head->getNext();
             delete head;
-            // printHelper(s, hash, 1);
+            printDeleteHelper(s, hash+1, 1);
 
             return true;
         }
@@ -179,15 +219,14 @@ public:
                 if(*head == s){
                     prev->setNext(head->getNext());
                     delete head;
-                    // printHelper(s, hash, i);
+                    printDeleteHelper(s, hash+1, i);
                     return true;
                 }
             }
-
-            return false;
         }
 
-        return true;
+        printHelper("Not found in the current ScopeTable");
+        return false;
     }
 
     void setNext(ScopeTable *next){
@@ -211,7 +250,7 @@ public:
 		}
 		delete[] _table;
 
-        if(printer->isPrint()){
+        if(printer != nullptr && printer->isPrint()){
             auto &os = printer->getOutputStream();
             os << "ScopeTable# " << _scopeId << " removed" << endl;
         }
@@ -220,7 +259,7 @@ public:
     friend ostream& operator<<(ostream &os, const ScopeTable &s){
         os << "ScopeTable# " << s._scopeId << endl;
         for(int i = 0; i < s._no_of_bucket; i++){
-            os << i << " --> ";
+            os << i+1 << "--> ";
             auto head = s._table[i];
             for(head = s._table[i];head != nullptr; head = head->getNext()){
                 os <<*head << (head->getNext() == nullptr? "" : " ");
@@ -245,7 +284,7 @@ public:
         : _bucket_size(bucket_size), _curScope(nullptr), nextScopeId(1)
           , printer(printer)
         {
-            
+            enterScope();
         }
 
     void enterScope(){
@@ -255,6 +294,14 @@ public:
 
     void exitScope(){
         auto t = _curScope->getNext();
+        if(t == nullptr){
+            if(printer != nullptr && printer->isPrint()){
+                auto &os = printer->getOutputStream();
+	            os << "ScopeTable# " << _curScope->getScopeId() <<" cannot be removed" << endl;
+            }
+            return ;
+        }
+
         delete _curScope;
         _curScope = t;
     }
@@ -275,7 +322,7 @@ public:
 
         if(printer->isPrint()){
             auto &os = printer->getOutputStream();
-            os << "'" << s << "'" << "not found in any of the ScopeTables" << endl;
+            os << "'" << s << "'" << " not found in any of the ScopeTables" << endl;
         }
         return nullptr;
     }
@@ -360,14 +407,14 @@ public:
     }
 
     void run(istream &is, ostream &os){
-        s->enterScope();
         string param1, param2, param3;
 
-        while(true){
+        for(int i = 1; ; i++){
             param1 = param2 = param3 = "";
             bool remaining = inputString(is, param1, param2, param3);
 
-            os << param1 << "/" << param2 << "/" << param3 << "/" << endl;
+            //os << param1 << "/" << param2 << "/" << param3 << "/" << endl;
+            os << "Cmd " << i << ": " << param1 << " " << param2 << " " << param3 << endl;
             if(remaining){
                 os << "Number of parameters mismatch for the command " << param1 << endl;
                 continue;
@@ -387,7 +434,7 @@ public:
             }
 
             if(param1 == "Q") return ;
-            cout << "here " << endl;
+            // cout << "here " << endl;
             singleStep(param1, param2, param3);
             
         }
@@ -410,7 +457,7 @@ public:
             return res;
         }
         else if(param1 == "P"){
-            if(param2 == "A") cout << *s << endl;
+            if(param2 == "A") cout << *s;
             else if(param2 == "C") s->printCurrentScope(cout);
             else cout << "Invalid Command";
         }
