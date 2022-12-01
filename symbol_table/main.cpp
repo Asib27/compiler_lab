@@ -3,6 +3,25 @@
 
 using namespace std;
 
+class Printer{
+    bool _print;
+    ostream &_os;
+public:
+    Printer(ostream &os, bool print=false)
+        : _print(print), _os(os)
+    {
+
+    }
+
+    ostream &getOutputStream(){
+        return _os;
+    }
+
+    bool isPrint(){
+        return _print;
+    }
+};
+
 unsigned long long SDBMHash(string str) {
 	unsigned int hash = 0;
 	unsigned int i = 0;
@@ -76,18 +95,25 @@ class ScopeTable
 {
 	SymbolInfo** _table;
 	int _no_of_bucket;
+    int _scopeId;
 
+    Printer *printer;
     ScopeTable* _next;
 
 	unsigned long long _getHash(string s){
         return SDBMHash(s) % _no_of_bucket;
     }
 public:
-	ScopeTable(int n, ScopeTable *next=nullptr)
-     : _no_of_bucket(n), _next(next)
+	ScopeTable(int n, int scopeId, ScopeTable *next=nullptr, Printer *printer=nullptr)
+     : _no_of_bucket(n), _next(next), _scopeId(scopeId), printer(printer)
     {
 		_table = new SymbolInfo*[n];
 		for(int i = 0; i < n; i++) _table[i] = nullptr;
+
+        if(printer->isPrint()){
+            auto &os = printer->getOutputStream();
+            os << "ScopeTable #" << _scopeId << " created" << endl;
+        }
 	} 
 
     bool insert(SymbolInfo s){
@@ -144,6 +170,10 @@ public:
         return _next;
     }
 
+    int getScopeId(){
+        return _scopeId;
+    }
+
 	~ScopeTable(){
 		for(int i = 0; i < _no_of_bucket; i++){
 			for(auto head=_table[i]; head != nullptr; ){
@@ -153,17 +183,23 @@ public:
             }
 		}
 		delete[] _table;
+
+        if(printer->isPrint()){
+            auto &os = printer->getOutputStream();
+            os << "ScopeTable# " << _scopeId << " removed" << endl;
+        }
 	}
 
     friend ostream& operator<<(ostream &os, const ScopeTable &s){
+        os << "ScopeTable# " << s._scopeId << endl;
         for(int i = 0; i < s._no_of_bucket; i++){
-            cout << i << " --> ";
+            os << i << " --> ";
             auto head = s._table[i];
             for(head = s._table[i];head != nullptr; head = head->getNext()){
-                cout <<*head << " -> ";
+                os <<*head << (head->getNext() == nullptr? "" : " ");
             }
             
-            cout << endl;
+            os << endl;
         }
 
         return os;
@@ -172,18 +208,21 @@ public:
 
 
 class SymbolTable{
-   ScopeTable* _curScope; 
-   int _bucket_size;
+    ScopeTable* _curScope; 
+    int _bucket_size;
 
+    int nextScopeId;
+    Printer *printer;
 public:
-    SymbolTable(int bucket_size)
-        : _bucket_size(bucket_size), _curScope(nullptr)
+    SymbolTable(int bucket_size, Printer *printer=nullptr)
+        : _bucket_size(bucket_size), _curScope(nullptr), nextScopeId(1)
+          , printer(printer)
         {
             
         }
 
     void enterScope(){
-        auto s =  new ScopeTable(_bucket_size, _curScope);
+        auto s =  new ScopeTable(_bucket_size, nextScopeId++, _curScope, printer);
         _curScope = s;
     }
 
@@ -217,7 +256,7 @@ public:
 
     friend ostream& operator<<(ostream &os, const SymbolTable &s){
         for(auto head = s._curScope; head != nullptr; head = head->getNext()){
-            cout << *head << endl;
+            cout << *head ;
         }
         return os;
     }
@@ -318,7 +357,7 @@ public:
 
             if(param1 == "Q") return ;
             cout << "here " << endl;
-            // singleStep(param1, param2, param3);
+            singleStep(param1, param2, param3);
             
         }
     }
@@ -340,7 +379,7 @@ public:
             return res;
         }
         else if(param1 == "P"){
-            if(param2 == "A") cout << s << endl;
+            if(param2 == "A") cout << *s << endl;
             else if(param2 == "C") s->printCurrentScope(cout);
             else cout << "Invalid Command";
         }
@@ -366,9 +405,11 @@ public:
 };
 
 int main(){
+    Printer printer(cout, true);
+
     int no_of_bucket;
     cin >> no_of_bucket;
-    SymbolTable s(no_of_bucket);
+    SymbolTable s(no_of_bucket, &printer);
     SymbolTableDriver driver(&s);
 
     driver.run(cin, cout);
