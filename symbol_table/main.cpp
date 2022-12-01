@@ -103,6 +103,22 @@ class ScopeTable
 	unsigned long long _getHash(string s){
         return SDBMHash(s) % _no_of_bucket;
     }
+
+    void printHelper(string s, int pos1, int pos2){
+        if(printer->isPrint()){
+            auto &os = printer->getOutputStream();
+            os << "'" << s << "'" << "found in ScopeTable# " << _scopeId
+                << " at position " << pos1 << ", " << pos2 << endl;
+
+        }        
+    }
+
+    void printHelper(string s){
+        if(printer->isPrint()){
+            auto &os = printer->getOutputStream();
+            os << s << endl;
+        }
+    }
 public:
 	ScopeTable(int n, int scopeId, ScopeTable *next=nullptr, Printer *printer=nullptr)
      : _no_of_bucket(n), _next(next), _scopeId(scopeId), printer(printer)
@@ -129,15 +145,22 @@ public:
     SymbolInfo* lookup(string s){
         auto hash = _getHash(s);
 
-        for(SymbolInfo* cur = _table[hash]; cur != nullptr;cur = cur->getNext()){
-            if(*cur == s) return cur;
+        int i = 1;
+        for(SymbolInfo* cur = _table[hash]; cur != nullptr;cur = cur->getNext(), i++){
+            if(*cur == s) {
+                printHelper(s, hash+1, i);
+                return cur;
+            }
         }
 
         return nullptr;
     }
 
     bool remove(string s){
-        if(lookup(s) == nullptr) return false;
+        if(lookup(s) == nullptr) {
+            printHelper("Not found in the current ScopeTable");
+            return false;
+        }
 
         auto hash = _getHash(s);
         auto head = _table[hash];
@@ -145,14 +168,18 @@ public:
         if(*head == s){
             _table[hash] = head->getNext();
             delete head;
+            // printHelper(s, hash, 1);
+
             return true;
         }
         else{
             auto prev = head; 
-            for(head = head->getNext(); head != nullptr; prev = head, head = head->getNext()){
+            int i = 2;
+            for(head = head->getNext(); head != nullptr; prev = head, head = head->getNext(), i++){
                 if(*head == s){
                     prev->setNext(head->getNext());
                     delete head;
+                    // printHelper(s, hash, i);
                     return true;
                 }
             }
@@ -246,11 +273,15 @@ public:
             if(t != nullptr) return t;
         }
 
+        if(printer->isPrint()){
+            auto &os = printer->getOutputStream();
+            os << "'" << s << "'" << "not found in any of the ScopeTables" << endl;
+        }
         return nullptr;
     }
 
     ostream& printCurrentScope(ostream &os){
-        cout << *_curScope << endl;
+        cout << *_curScope;
         return os;
     }
 
