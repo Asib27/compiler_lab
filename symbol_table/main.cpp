@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include<sstream>
 
 using namespace std;
 
@@ -107,6 +108,7 @@ class ScopeTable
     void printHelper(string s, int pos1, int pos2){
         if(printer != nullptr && printer->isPrint()){
             auto &os = printer->getOutputStream();
+            os << "\t";
             os << "'" << s << "'" << " found in ScopeTable# " << _scopeId
                 << " at position " << pos1 << ", " << pos2 << endl;
 
@@ -116,6 +118,7 @@ class ScopeTable
     void printDeleteHelper(string s, int pos1, int pos2){
         if(printer != nullptr && printer->isPrint()){
             auto &os = printer->getOutputStream();
+            os << "\t";
             os << "Deleted '" << s << "' from ScopeTable# " << _scopeId
                 << " at position " << pos1 << ", " << pos2 << endl;
         }
@@ -124,6 +127,7 @@ class ScopeTable
     void printInsertHelper(int pos1, int pos2){
         if(printer != nullptr && printer->isPrint()){
             auto &os = printer->getOutputStream();
+            os << "\t";
             os << "Inserted in ScopeTable# " << _scopeId << " at position "
                 << pos1 << ", " << pos2 << endl;
         }
@@ -132,6 +136,7 @@ class ScopeTable
     void printInsertHelper(string s){
         if(printer != nullptr && printer->isPrint()){
             auto &os = printer->getOutputStream();
+            os << "\t";
             os << "'" << s << "'" << " already exists in the current ScopeTable" << endl;
         }
     }
@@ -139,6 +144,7 @@ class ScopeTable
     void printHelper(string s){
         if(printer != nullptr && printer->isPrint()){
             auto &os = printer->getOutputStream();
+            os << "\t";
             os << s << endl;
         }
     }
@@ -151,7 +157,8 @@ public:
 
         if(printer != nullptr && printer->isPrint()){
             auto &os = printer->getOutputStream();
-            os << "ScopeTable #" << _scopeId << " created" << endl;
+            os << "\t";
+            os << "ScopeTable# " << _scopeId << " created" << endl;
         }
 	} 
 
@@ -251,18 +258,21 @@ public:
 		delete[] _table;
 
         if(printer != nullptr && printer->isPrint()){
-            auto &os = printer->getOutputStream();
+            auto &os = printer->getOutputStream() ;
+            os << "\t";
             os << "ScopeTable# " << _scopeId << " removed" << endl;
         }
 	}
 
     friend ostream& operator<<(ostream &os, const ScopeTable &s){
+        os << "\t";
         os << "ScopeTable# " << s._scopeId << endl;
         for(int i = 0; i < s._no_of_bucket; i++){
+            os << "\t";
             os << i+1 << "--> ";
             auto head = s._table[i];
             for(head = s._table[i];head != nullptr; head = head->getNext()){
-                os <<*head << (head->getNext() == nullptr? "" : " ");
+                os <<*head << " "; //(head->getNext() == nullptr? "" : " ");
             }
             
             os << endl;
@@ -297,11 +307,12 @@ public:
         if(t == nullptr){
             if(printer != nullptr && printer->isPrint()){
                 auto &os = printer->getOutputStream();
+                os << "\t";
 	            os << "ScopeTable# " << _curScope->getScopeId() <<" cannot be removed" << endl;
             }
             return ;
         }
-
+                                          
         delete _curScope;
         _curScope = t;
     }
@@ -322,6 +333,7 @@ public:
 
         if(printer->isPrint()){
             auto &os = printer->getOutputStream();
+            os << "\t";
             os << "'" << s << "'" << " not found in any of the ScopeTables" << endl;
         }
         return nullptr;
@@ -372,18 +384,19 @@ public:
 
     /* returns is there any remaining input in the line*/
     bool inputString(istream &is, string &p1, string &p2, string &p3){
-        is >> p1;
+        string line;
+        getline(is, line);
 
-        if (is.peek() != EOF && is.peek() != '\n' ){
-            is >> p2;
+        stringstream ss(line);
+        ss >> p1;
+        if(!(ss >> p2)){
+            return false;
         }
-        if (is.peek() != EOF && is.peek() != '\n' ){
-            is >> p3;
+        if(!(ss >> p3)){
+            return false;
         }
 
-        if(is.peek() != EOF && is.peek() != '\n'){
-            return true;
-        }
+        
         return false;
     }
 
@@ -414,13 +427,18 @@ public:
             bool remaining = inputString(is, param1, param2, param3);
 
             //os << param1 << "/" << param2 << "/" << param3 << "/" << endl;
-            os << "Cmd " << i << ": " << param1 << " " << param2 << " " << param3 << endl;
+            os << "Cmd " << i << ": " << param1 
+                << (param2==""?"":" ") << param2 
+                << (param3==""?"":" ") << param3 << endl;
+
             if(remaining){
+                os << "\t";
                 os << "Number of parameters mismatch for the command " << param1 << endl;
                 continue;
             }
             
             if(!isNoArgumentValid(param1, param2, param3)){
+                os << "\t";
                 os << "Number of parameters mismatch for the command " << param1 << endl;
                 continue;
             }
@@ -429,18 +447,25 @@ public:
             if(param1 != "I" && param1 != "L" && param1 != "D" && param1 != "P" 
                 && param1 != "S" && param1 != "E"  && param1 != "Q"
             ){
+                os << "\t";
+                os << "Invalid Command" << endl;
+                continue;
+            }
+
+            if(param1 == "P" && (param2 != "C" && param2 != "A")){
+                os << "\t";
                 os << "Invalid Command" << endl;
                 continue;
             }
 
             if(param1 == "Q") return ;
             // cout << "here " << endl;
-            singleStep(param1, param2, param3);
+            singleStep(param1, param2, param3, os);
             
         }
     }
 
-    int singleStep(string param1, string param2, string param3){
+    int singleStep(string param1, string param2, string param3, ostream &os){
         if(param1 == "I"){
             SymbolInfo symbolInfo(param2, param3);
             auto res = s->insert(symbolInfo);
@@ -457,9 +482,8 @@ public:
             return res;
         }
         else if(param1 == "P"){
-            if(param2 == "A") cout << *s;
-            else if(param2 == "C") s->printCurrentScope(cout);
-            else cout << "Invalid Command";
+            if(param2 == "A") os << *s;
+            else if(param2 == "C") s->printCurrentScope(os);
         }
 
         else if(param1 == "S"){
@@ -473,10 +497,6 @@ public:
         else if(param1 == "Q"){
             return 2;
         }
-        else{
-            cout << "Invalid Command" << endl;
-            return 0;
-        }
 
         return 0;
     }
@@ -487,6 +507,7 @@ int main(){
 
     int no_of_bucket;
     cin >> no_of_bucket;
+    cin.ignore(100, '\n');
     SymbolTable s(no_of_bucket, &printer);
     SymbolTableDriver driver(&s);
 
