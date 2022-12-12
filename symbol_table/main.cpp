@@ -1,4 +1,5 @@
 #include<iostream>
+#include<fstream>
 #include<string>
 #include<sstream>
 
@@ -340,13 +341,13 @@ public:
     }
 
     ostream& printCurrentScope(ostream &os){
-        cout << *_curScope;
+        os << *_curScope;
         return os;
     }
 
     friend ostream& operator<<(ostream &os, const SymbolTable &s){
         for(auto head = s._curScope; head != nullptr; head = head->getNext()){
-            cout << *head ;
+            os << *head ;
         }
         return os;
     }
@@ -459,7 +460,6 @@ public:
             }
 
             if(param1 == "Q") return ;
-            // cout << "here " << endl;
             singleStep(param1, param2, param3, os);
             
         }
@@ -503,13 +503,15 @@ public:
 };
 
 int main(){
-    Printer printer(cout, true);
+    ifstream fin("sample_input.txt");
+    ofstream fout("output.txt");
+    Printer printer(fout, true);
 
     int no_of_bucket;
-    cin >> no_of_bucket;
-    cin.ignore(100, '\n');
+    fin >> no_of_bucket;
+    fin.ignore(100, '\n');
     SymbolTable s(no_of_bucket, &printer);
     SymbolTableDriver driver(&s);
 
-    driver.run(cin, cout);
+    driver.run(fin, fout);
 }
