@@ -1,0 +1,3 @@
+if 123 switch 38 case 
+while double		+break
+32938 cont

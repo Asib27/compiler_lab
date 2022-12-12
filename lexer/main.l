@@ -1,4 +1,4 @@
-%option noyywrap
+%option noyywrap  yylineno
 
 %{
 #include<cstdio>
@@ -8,7 +8,6 @@
 
 using namespace std;
 
-int line_count=1;
 
 FILE *logout;
 FILE *tokenout;
@@ -39,6 +38,36 @@ class ScopeTable{
 
 ScopeTable st;
 
+class PrintUtil{
+	FILE *logout;
+	FILE *tokenout;
+
+public:
+	PrintUtil(FILE *logout, FILE* tokenout){
+		this->logout = logout;
+		this->tokenout = tokenout;
+	}
+
+	void printKeyword(string text){
+		string upper = "";
+		for(auto i: text){
+			if(i >= 'a' && i <= 'z')
+				upper.push_back(i - 'a' + 'A');
+			else upper.push_back(i);
+		}
+
+		fprintf(tokenout,"<%s, %s>\n",upper.c_str(), text.c_str());
+		fprintf(logout,"Line# %d: TOKEN <%s> Lexeme %s found\n",yylineno,upper.c_str(), text.c_str());
+	}
+
+	void setOutput(FILE *logout, FILE* tokenout){
+		this->logout = logout;
+		this->tokenout = tokenout;
+	}
+};
+
+PrintUtil printUtil(nullptr, nullptr);
+
 %}
 
 WHITESPACE [ \t\f\r\v]+ 
@@ -47,37 +76,45 @@ DIGIT [0-9]
 NEWLINE \n
 
 %%
+\n		{}
 
-{NEWLINE} {line_count++;}
-
-"if"	{
-			fprintf(tokenout,"<IF>");
-			fprintf(logout,"Line no %d: TOKEN <IF> Lexeme %s found\n",line_count,yytext);
-		}
-		
-"else"	{
-			fprintf(tokenout,"<ELSE>");
-			fprintf(logout,"Line no %d: TOKEN <ELSE> Lexeme %s found\n",line_count,yytext);
-		}
+"if"		|		
+"for"		|
+"do"		|
+"int"		|
+"float"		|
+"void"		|
+"switch"	|
+"default"	|
+"else"		|
+"while"		|
+"break"		|
+"char"		|
+"double"	|
+"return"	|
+"case"		|
+"continue"	{
+				printUtil.printKeyword(string(yytext));
+			}
 
 "+"		|
 
 "-"		{
 			fprintf(tokenout,"<ADDOP,%s>",yytext);
-			fprintf(logout,"Line no %d: TOKEN <ADDOP> Lexeme %s found\n",line_count,yytext);
+			fprintf(logout,"Line no %d: TOKEN <ADDOP> Lexeme %s found\n",yylineno,yytext);
 			//insert in symbol table and print symbol table content(only non empty buckets)
 			// There is a '|' in "+"'s rule, this means match execute the action for following rule
 		}
 		
 {DIGIT}+ 	{
 				fprintf(tokenout,"<CONST_INT,%s>",yytext);
-				fprintf(logout,"Line no %d: TOKEN <CONST_INT> Lexeme %s found\n",line_count,yytext);
+				fprintf(logout,"Line no %d: TOKEN <CONST_INT> Lexeme %s found\n",yylineno,yytext);
 				//insert in symbol table and print symbol table content(only non empty buckets)
 				SymbolInfo *si=new SymbolInfo(string(yytext),"CONST_INT");
 				st.insert(si);
 			}
-			
 
+.			{}
 %%
 
 int main(int argc, char** argv) {
@@ -94,6 +131,7 @@ int main(int argc, char** argv) {
 	
 	logout= fopen("log.txt","w");
 	tokenout= fopen("token.txt","w");
+	printUtil.setOutput(logout, tokenout);
 
 	yyin= fin;
 	yylex();
