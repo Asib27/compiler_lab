@@ -59,3 +59,11 @@
 <ID, sja_1872_bqba>
 <ID, ___________1222>
 <ID, _>
+<STRING, hasbdakjsbdaksda>
+<STRING, >
+<STRING, ......\n>
+<STRING, nansdansjkndaasndlasndasld>
+<SEMICOLON, ;>
+<ID, adajsdioajdaidjaida>
+<STRING, >
+<STRING, gvhgvgh>

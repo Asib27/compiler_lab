@@ -59,6 +59,14 @@ Line# 11: TOKEN <ID> Lexeme ansdjan_asndajsda found
 Line# 12: TOKEN <ID> Lexeme sja_1872_bqba found
 Line# 12: TOKEN <ID> Lexeme ___________1222 found
 Line# 13: TOKEN <ID> Lexeme _ found
+Line# 14: TOKEN <STRING> Lexeme hasbdakjsbdaksda found
+Line# 15: TOKEN <STRING> Lexeme  found
+Line# 16: TOKEN <STRING> Lexeme ......\n found
+Line# 18: TOKEN <STRING> Lexeme nansdansjkndaasndlasndasld found
+Line# 18: TOKEN <SEMICOLON> Lexeme ; found
+Line# 19: TOKEN <ID> Lexeme adajsdioajdaidjaida found
+Line# 21: TOKEN <STRING> Lexeme  found
+Line# 24: TOKEN <STRING> Lexeme gvhgvgh found
 
 _andsjdna ID
 
@@ -69,3 +77,5 @@ sja_1872_bqba ID
 ___________1222 ID
 
 _ ID
+
+adajsdioajdaidjaida ID

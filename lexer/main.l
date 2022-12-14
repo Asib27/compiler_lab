@@ -55,6 +55,20 @@ class PrintUtil{
 		printToken(token, symbol);
 	}
 
+	char escapeToChar(char c){
+		const int map_size = 11;
+		const char keys[] = {'\'', '\"', 'n', 't', '\\', 'a', 'f', 'r', 'b', 'v', '0'};
+		const char values[] = {'\'', '\"', '\n', '\t', '\\', '\a', '\f', '\r', '\b', '\v', '\0'};
+
+		for(int i = 0; i < map_size; i++){
+			if(keys[i] == c){
+				return values[i];
+			} 
+		}
+
+		return '\0';
+	}
+
 public:
 	PrintUtil(FILE *logout, FILE* tokenout){
 		this->logout = logout;
@@ -97,21 +111,28 @@ public:
 	}
 
 	void printChar(string text){
-		const int map_size = 11;
-		const char keys[] = {'\'', '\"', 'n', 't', '\\', 'a', 'f', 'r', 'b', 'v', '0'};
-		const char values[] = {'\'', '\"', '\n', '\t', '\\', '\a', '\f', '\r', '\b', '\v', '\0'};
-
 		if(text.length() == 3){
-			printHelper(string("CONST_CHAR"), string(1, text[1]));
+			printHelper("CONST_CHAR", string(1, text[1]));
 		}
 		else{			
-			for(int idx = 0; idx < map_size; idx++){
-				if(keys[idx] == text[2]){
-					printHelper(string("CONST_CHAR"), string(1, values[idx]));
-					return ;
-				} 
+			printHelper("CONST_CHAR", string(1, escapeToChar(text[2])));
+		}
+	}
+
+	int printString(string text){
+		string ans = "";
+
+		for(int i = 1; i < text.length()-1; i++){
+			if(text[i] == '\\' && text[i+1] == '\n'){
+				i++;
+			}
+			else{
+				ans.push_back(text[i]);
 			}
 		}
+		printHelper("STRING", ans);
+
+		return 0;
 	}
 
 };
@@ -201,6 +222,10 @@ ESCAPES ['"nt\\afrbv0]
 							SymbolInfo *si=new SymbolInfo(string(yytext),"ID");
 							st.insert(si);
 						}	
+
+\"(([^"\\\n]|(\\{ESCAPES}))|("\\\n"))*\"	{
+							printUtil.printString(yytext);
+}
 
 .			{}
 %%
