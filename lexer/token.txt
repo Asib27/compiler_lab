@@ -5,7 +5,8 @@
 <CASE, case>
 <WHILE, while>
 <DOUBLE, double>
-<ADDOP,+><BREAK, break>
+<ADDOP, +>
+<BREAK, break>
 <CONST_INT, 32938>
 <CONST_FLOAT, 3.14159>
 <CONST_FLOAT, 3.14E-10>
@@ -19,5 +20,37 @@
 <CONST_CHAR, \>
 <CONST_CHAR, ">
 <CONST_CHAR, '>
+<CONST_CHAR, >
+<CONST_CHAR, 	>
 <CONST_CHAR, 
 >
+<ASSIGNOP, =>
+<NOT, !>
+<LPAREN, (>
+<RPAREN, )>
+<LCURL, {>
+<RCURL, }>
+<LSQUARE, [>
+<RSQUARE, ]>
+<COMMA, ,>
+<SEMICOLON, ;>
+<INCOP, ++>
+<INCOP, -->
+<RELOP, <>
+<RELOP, >>
+<RELOP, <=>
+<RELOP, >=>
+<RELOP, ==>
+<RELOP, !=>
+<LOGIOP, &&>
+<LOGIOP, ||>
+<BITOP, &>
+<BITOP, |>
+<BITOP, ^>
+<BITOP, <<>
+<BITOP, >>>
+<INCOP, ++>
+<ADDOP, +>
+<RELOP, ==>
+<ADDOP, ->
+<CONST_INT, 20>

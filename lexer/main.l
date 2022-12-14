@@ -81,6 +81,21 @@ public:
 		this->tokenout = tokenout;
 	}
 
+	void printPunctuation(string text){
+		char c = text[0];
+
+		string keys = "=!(){}[],;";
+		string values[] = {"ASSIGNOP", "NOT", "LPAREN", "RPAREN", "LCURL", "RCURL",
+			"LSQUARE", "RSQUARE", "COMMA", "SEMICOLON"
+		};
+
+		for(int i = 0; i < keys.length(); i++){
+			if(c == keys[i]){
+				printHelper(values[i], string(1, c));
+			}
+		}
+	}
+
 	void printChar(string text){
 		const int map_size = 11;
 		const char keys[] = {'\'', '\"', 'n', 't', '\\', 'a', 'f', 'r', 'b', 'v', '0'};
@@ -90,8 +105,7 @@ public:
 			printHelper(string("CONST_CHAR"), string(1, text[1]));
 		}
 		else{			
-			int idx = 0;
-			for(; idx < map_size; idx++){
+			for(int idx = 0; idx < map_size; idx++){
 				if(keys[idx] == text[2]){
 					printHelper(string("CONST_CHAR"), string(1, values[idx]));
 					return ;
@@ -136,14 +150,6 @@ ESCAPES ['"nt\\afrbv0]
 				printUtil.printKeyword(string(yytext));
 			}
 
-"+"		|
-
-"-"		{
-			fprintf(tokenout,"<ADDOP,%s>",yytext);
-			fprintf(logout,"Line no %d: TOKEN <ADDOP> Lexeme %s found\n",yylineno,yytext);
-			//insert in symbol table and print symbol table content(only non empty buckets)
-			// There is a '|' in "+"'s rule, this means match execute the action for following rule
-		}
 		
 {DIGIT}+ 	{
 				printUtil.print(string("CONST_INT"), string(yytext));
@@ -160,6 +166,39 @@ ESCAPES ['"nt\\afrbv0]
 '([^'\\]|(\\{ESCAPES}))'	{
 					printUtil.printChar(string(yytext));
 				}
+
+[=!(){}\[\],;]	{
+					printUtil.printPunctuation(string(yytext));
+				}
+
+"+"		|
+"-"		{printUtil.print("ADDOP", yytext);}
+
+"*"		|
+"/"		|
+"%"		{printUtil.print("MULOP", yytext);}
+
+"++"	|
+"--" 	{printUtil.print("INCOP", yytext);}
+
+"<"		|
+">"		|
+"<="	|
+">="	|
+"=="	|
+"!="	{printUtil.print("RELOP", yytext);}
+
+"&&"	| 
+"||"	{printUtil.print("LOGIOP", yytext);}
+
+"&"		| 
+"|"		|
+"^"		|
+"<<"	|
+">>"	{printUtil.print("BITOP", yytext);}
+
+
+
 
 .			{}
 %%

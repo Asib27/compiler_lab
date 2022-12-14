@@ -5,7 +5,7 @@ Line# 1: TOKEN <CONST_INT> Lexeme 38 found
 Line# 1: TOKEN <CASE> Lexeme case found
 Line# 2: TOKEN <WHILE> Lexeme while found
 Line# 2: TOKEN <DOUBLE> Lexeme double found
-Line no 2: TOKEN <ADDOP> Lexeme + found
+Line# 2: TOKEN <ADDOP> Lexeme + found
 Line# 2: TOKEN <BREAK> Lexeme break found
 Line# 3: TOKEN <CONST_INT> Lexeme 32938 found
 Line# 4: TOKEN <CONST_FLOAT> Lexeme 3.14159 found
@@ -20,11 +20,45 @@ Line# 6: TOKEN <CONST_CHAR> Lexeme  found
 Line# 6: TOKEN <CONST_CHAR> Lexeme \ found
 Line# 6: TOKEN <CONST_CHAR> Lexeme " found
 Line# 6: TOKEN <CONST_CHAR> Lexeme ' found
+Line# 6: TOKEN <CONST_CHAR> Lexeme  found
+Line# 6: TOKEN <CONST_CHAR> Lexeme 	 found
 Line# 7: TOKEN <CONST_CHAR> Lexeme 
  found
+Line# 8: TOKEN <ASSIGNOP> Lexeme = found
+Line# 8: TOKEN <NOT> Lexeme ! found
+Line# 8: TOKEN <LPAREN> Lexeme ( found
+Line# 8: TOKEN <RPAREN> Lexeme ) found
+Line# 8: TOKEN <LCURL> Lexeme { found
+Line# 8: TOKEN <RCURL> Lexeme } found
+Line# 8: TOKEN <LSQUARE> Lexeme [ found
+Line# 8: TOKEN <RSQUARE> Lexeme ] found
+Line# 8: TOKEN <COMMA> Lexeme , found
+Line# 8: TOKEN <SEMICOLON> Lexeme ; found
+Line# 9: TOKEN <INCOP> Lexeme ++ found
+Line# 9: TOKEN <INCOP> Lexeme -- found
+Line# 9: TOKEN <RELOP> Lexeme < found
+Line# 9: TOKEN <RELOP> Lexeme > found
+Line# 9: TOKEN <RELOP> Lexeme <= found
+Line# 9: TOKEN <RELOP> Lexeme >= found
+Line# 9: TOKEN <RELOP> Lexeme == found
+Line# 9: TOKEN <RELOP> Lexeme != found
+Line# 9: TOKEN <LOGIOP> Lexeme && found
+Line# 9: TOKEN <LOGIOP> Lexeme || found
+Line# 9: TOKEN <BITOP> Lexeme & found
+Line# 9: TOKEN <BITOP> Lexeme | found
+Line# 9: TOKEN <BITOP> Lexeme ^ found
+Line# 9: TOKEN <BITOP> Lexeme << found
+Line# 9: TOKEN <BITOP> Lexeme >> found
+Line# 10: TOKEN <INCOP> Lexeme ++ found
+Line# 10: TOKEN <ADDOP> Lexeme + found
+Line# 10: TOKEN <RELOP> Lexeme == found
+Line# 10: TOKEN <ADDOP> Lexeme - found
+Line# 10: TOKEN <CONST_INT> Lexeme 20 found
 
 123 CONST_INT
 
 38 CONST_INT
 
 32938 CONST_INT
+
+20 CONST_INT
