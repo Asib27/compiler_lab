@@ -993,104 +993,101 @@ case 17:
 YY_RULE_SETUP
 #line 149 "main.l"
 {
-				printUtil.printKeyword(string(yytext));
+				printUtil.printKeyword(yytext);
 			}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
 #line 154 "main.l"
 {
-				printUtil.print(string("CONST_INT"), string(yytext));
-				//insert in symbol table and print symbol table content(only non empty buckets)
-				SymbolInfo *si=new SymbolInfo(string(yytext),"CONST_INT");
-				st.insert(si);
+				printUtil.print("CONST_INT", yytext);
 			}
 	YY_BREAK
 case 19:
-#line 162 "main.l"
+#line 159 "main.l"
 case 20:
 YY_RULE_SETUP
-#line 162 "main.l"
+#line 159 "main.l"
 {
-					printUtil.print(string("CONST_FLOAT"), string(yytext));
+					printUtil.print("CONST_FLOAT", yytext);
 				}
 	YY_BREAK
 case 21:
 /* rule 21 can match eol */
 YY_RULE_SETUP
-#line 166 "main.l"
+#line 163 "main.l"
 {
-					printUtil.printChar(string(yytext));
+					printUtil.printChar(yytext);
 				}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 170 "main.l"
+#line 167 "main.l"
 {
-					printUtil.printPunctuation(string(yytext));
+					printUtil.printPunctuation(yytext);
 				}
 	YY_BREAK
 case 23:
-#line 175 "main.l"
+#line 172 "main.l"
 case 24:
 YY_RULE_SETUP
-#line 175 "main.l"
+#line 172 "main.l"
 {printUtil.print("ADDOP", yytext);}
 	YY_BREAK
 case 25:
-#line 178 "main.l"
+#line 175 "main.l"
 case 26:
-#line 179 "main.l"
+#line 176 "main.l"
 case 27:
 YY_RULE_SETUP
-#line 179 "main.l"
+#line 176 "main.l"
 {printUtil.print("MULOP", yytext);}
 	YY_BREAK
 case 28:
-#line 182 "main.l"
+#line 179 "main.l"
 case 29:
 YY_RULE_SETUP
-#line 182 "main.l"
+#line 179 "main.l"
 {printUtil.print("INCOP", yytext);}
 	YY_BREAK
 case 30:
-#line 185 "main.l"
+#line 182 "main.l"
 case 31:
-#line 186 "main.l"
+#line 183 "main.l"
 case 32:
-#line 187 "main.l"
+#line 184 "main.l"
 case 33:
-#line 188 "main.l"
+#line 185 "main.l"
 case 34:
-#line 189 "main.l"
+#line 186 "main.l"
 case 35:
 YY_RULE_SETUP
-#line 189 "main.l"
+#line 186 "main.l"
 {printUtil.print("RELOP", yytext);}
 	YY_BREAK
 case 36:
-#line 192 "main.l"
+#line 189 "main.l"
 case 37:
 YY_RULE_SETUP
-#line 192 "main.l"
+#line 189 "main.l"
 {printUtil.print("LOGIOP", yytext);}
 	YY_BREAK
 case 38:
-#line 195 "main.l"
+#line 192 "main.l"
 case 39:
-#line 196 "main.l"
+#line 193 "main.l"
 case 40:
-#line 197 "main.l"
+#line 194 "main.l"
 case 41:
-#line 198 "main.l"
+#line 195 "main.l"
 case 42:
 YY_RULE_SETUP
-#line 198 "main.l"
+#line 195 "main.l"
 {printUtil.print("BITOP", yytext);}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 201 "main.l"
+#line 198 "main.l"
 {
 							printUtil.print("ID", yytext);
 							//TODO: change into my implementation
@@ -1100,15 +1097,15 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 208 "main.l"
+#line 205 "main.l"
 {}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 209 "main.l"
+#line 206 "main.l"
 ECHO;
 	YY_BREAK
-#line 1112 "lex.yy.c"
+#line 1109 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2125,7 +2122,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 209 "main.l"
+#line 206 "main.l"
 
 
 int main(int argc, char** argv) {

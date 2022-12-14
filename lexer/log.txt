@@ -60,14 +60,6 @@ Line# 12: TOKEN <ID> Lexeme sja_1872_bqba found
 Line# 12: TOKEN <ID> Lexeme ___________1222 found
 Line# 13: TOKEN <ID> Lexeme _ found
 
-123 CONST_INT
-
-38 CONST_INT
-
-32938 CONST_INT
-
-20 CONST_INT
-
 _andsjdna ID
 
 ansdjan_asndajsda ID

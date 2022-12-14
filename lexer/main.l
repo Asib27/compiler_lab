@@ -147,28 +147,25 @@ ESCAPES ['"nt\\afrbv0]
 "return"	|
 "case"		|
 "continue"	{
-				printUtil.printKeyword(string(yytext));
+				printUtil.printKeyword(yytext);
 			}
 
 		
 {DIGIT}+ 	{
-				printUtil.print(string("CONST_INT"), string(yytext));
-				//insert in symbol table and print symbol table content(only non empty buckets)
-				SymbolInfo *si=new SymbolInfo(string(yytext),"CONST_INT");
-				st.insert(si);
+				printUtil.print("CONST_INT", yytext);
 			}
 
 ({DIGITS}?\.{DIGITS}{EXP}?)	|
 {DIGITS}{EXP}	{
-					printUtil.print(string("CONST_FLOAT"), string(yytext));
+					printUtil.print("CONST_FLOAT", yytext);
 				}
 
 '([^'\\]|(\\{ESCAPES}))'	{
-					printUtil.printChar(string(yytext));
+					printUtil.printChar(yytext);
 				}
 
 [=!(){}\[\],;]	{
-					printUtil.printPunctuation(string(yytext));
+					printUtil.printPunctuation(yytext);
 				}
 
 "+"		|
