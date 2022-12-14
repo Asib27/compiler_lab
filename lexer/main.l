@@ -198,7 +198,12 @@ ESCAPES ['"nt\\afrbv0]
 ">>"	{printUtil.print("BITOP", yytext);}
 
 
-
+[_a-zA-Z][_a-zA-Z0-9]*	{
+							printUtil.print("ID", yytext);
+							//TODO: change into my implementation
+							SymbolInfo *si=new SymbolInfo(string(yytext),"ID");
+							st.insert(si);
+						}	
 
 .			{}
 %%

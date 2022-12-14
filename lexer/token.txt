@@ -54,3 +54,8 @@
 <RELOP, ==>
 <ADDOP, ->
 <CONST_INT, 20>
+<ID, _andsjdna>
+<ID, ansdjan_asndajsda>
+<ID, sja_1872_bqba>
+<ID, ___________1222>
+<ID, _>

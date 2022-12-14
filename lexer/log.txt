@@ -54,6 +54,11 @@ Line# 10: TOKEN <ADDOP> Lexeme + found
 Line# 10: TOKEN <RELOP> Lexeme == found
 Line# 10: TOKEN <ADDOP> Lexeme - found
 Line# 10: TOKEN <CONST_INT> Lexeme 20 found
+Line# 11: TOKEN <ID> Lexeme _andsjdna found
+Line# 11: TOKEN <ID> Lexeme ansdjan_asndajsda found
+Line# 12: TOKEN <ID> Lexeme sja_1872_bqba found
+Line# 12: TOKEN <ID> Lexeme ___________1222 found
+Line# 13: TOKEN <ID> Lexeme _ found
 
 123 CONST_INT
 
@@ -62,3 +67,13 @@ Line# 10: TOKEN <CONST_INT> Lexeme 20 found
 32938 CONST_INT
 
 20 CONST_INT
+
+_andsjdna ID
+
+ansdjan_asndajsda ID
+
+sja_1872_bqba ID
+
+___________1222 ID
+
+_ ID
