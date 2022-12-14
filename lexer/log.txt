@@ -1,13 +1,27 @@
-Line no 1: TOKEN <IF> Lexeme if found
-Line no 1: TOKEN <CONST_INT> Lexeme 123 found
-Line no 1: TOKEN <SWITCH> Lexeme switch found
-Line no 1: TOKEN <CONST_INT> Lexeme 38 found
-Line no 1: TOKEN <CASE> Lexeme case found
-Line no 2: TOKEN <WHILE> Lexeme while found
-Line no 2: TOKEN <DOUBLE> Lexeme double found
+Line# 1: TOKEN <IF> Lexeme if found
+Line# 1: TOKEN <CONST_INT> Lexeme 123 found
+Line# 1: TOKEN <SWITCH> Lexeme switch found
+Line# 1: TOKEN <CONST_INT> Lexeme 38 found
+Line# 1: TOKEN <CASE> Lexeme case found
+Line# 2: TOKEN <WHILE> Lexeme while found
+Line# 2: TOKEN <DOUBLE> Lexeme double found
 Line no 2: TOKEN <ADDOP> Lexeme + found
-Line no 2: TOKEN <BREAK> Lexeme break found
-Line no 3: TOKEN <CONST_INT> Lexeme 32938 found
+Line# 2: TOKEN <BREAK> Lexeme break found
+Line# 3: TOKEN <CONST_INT> Lexeme 32938 found
+Line# 4: TOKEN <CONST_FLOAT> Lexeme 3.14159 found
+Line# 4: TOKEN <CONST_FLOAT> Lexeme 3.14E-10 found
+Line# 4: TOKEN <CONST_FLOAT> Lexeme .3145 found
+Line# 4: TOKEN <CONST_FLOAT> Lexeme 3149E10 found
+Line# 5: TOKEN <CONST_FLOAT> Lexeme 3.1434E10 found
+Line# 6: TOKEN <CONST_CHAR> Lexeme a found
+Line# 6: TOKEN <CONST_CHAR> Lexeme b found
+Line# 6: TOKEN <CONST_CHAR> Lexeme   found
+Line# 6: TOKEN <CONST_CHAR> Lexeme  found
+Line# 6: TOKEN <CONST_CHAR> Lexeme \ found
+Line# 6: TOKEN <CONST_CHAR> Lexeme " found
+Line# 6: TOKEN <CONST_CHAR> Lexeme ' found
+Line# 7: TOKEN <CONST_CHAR> Lexeme 
+ found
 
 123 CONST_INT
 
