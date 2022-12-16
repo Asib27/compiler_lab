@@ -1,86 +1,115 @@
-Line# 1: TOKEN <IF> Lexeme if found
-Line# 1: TOKEN <CONST_INT> Lexeme 123 found
-Line# 1: TOKEN <SWITCH> Lexeme switch found
-Line# 1: TOKEN <CONST_INT> Lexeme 38 found
-Line# 1: TOKEN <CASE> Lexeme case found
-Line# 2: TOKEN <WHILE> Lexeme while found
-Line# 2: TOKEN <DOUBLE> Lexeme double found
-Line# 2: TOKEN <ADDOP> Lexeme + found
-Line# 2: TOKEN <BREAK> Lexeme break found
-Line# 3: TOKEN <CONST_INT> Lexeme 32938 found
-Line# 4: TOKEN <CONST_FLOAT> Lexeme 3.14159 found
-Line# 4: TOKEN <CONST_FLOAT> Lexeme 3.14E-10 found
-Line# 4: TOKEN <CONST_FLOAT> Lexeme .3145 found
-Line# 4: TOKEN <CONST_FLOAT> Lexeme 3149E10 found
-Line# 5: TOKEN <CONST_FLOAT> Lexeme 3.1434E10 found
-Line# 6: TOKEN <CONST_CHAR> Lexeme a found
-Line# 6: TOKEN <CONST_CHAR> Lexeme b found
-Line# 6: TOKEN <CONST_CHAR> Lexeme   found
-Line# 6: TOKEN <CONST_CHAR> Lexeme  found
-Line# 6: TOKEN <CONST_CHAR> Lexeme \ found
-Line# 6: TOKEN <CONST_CHAR> Lexeme " found
-Line# 6: TOKEN <CONST_CHAR> Lexeme ' found
-Line# 6: TOKEN <CONST_CHAR> Lexeme  found
-Line# 6: TOKEN <CONST_CHAR> Lexeme 	 found
-Line# 7: TOKEN <CONST_CHAR> Lexeme 
- found
+Line# 1: TOKEN <VOID> Lexeme void found
+Line# 1: TOKEN <ID> Lexeme main found
+Line# 1: TOKEN <LPAREN> Lexeme ( found
+Line# 1: TOKEN <RPAREN> Lexeme ) found
+Line# 1: TOKEN <LCURL> Lexeme { found
+Line# 2: TOKEN <INT> Lexeme int found
+Line# 2: TOKEN <ID> Lexeme x found
+Line# 2: TOKEN <COMMA> Lexeme , found
+Line# 2: TOKEN <ID> Lexeme y found
+Line# 2: TOKEN <SEMICOLON> Lexeme ; found
+Line# 3: TOKEN <ID> Lexeme x found
+Line# 3: TOKEN <ASSIGNOP> Lexeme = found
+Line# 3: TOKEN <ID> Lexeme x found
+Line# 3: TOKEN <ADDOP> Lexeme + found
+Line# 3: TOKEN <CONST_INT> Lexeme 1 found
+Line# 3: TOKEN <SEMICOLON> Lexeme ; found
+Line# 4: TOKEN <ID> Lexeme y found
+Line# 4: TOKEN <ASSIGNOP> Lexeme = found
+Line# 4: TOKEN <ID> Lexeme y found
+Line# 4: TOKEN <MULOP> Lexeme * found
+Line# 4: TOKEN <CONST_INT> Lexeme 2 found
+Line# 4: TOKEN <SEMICOLON> Lexeme ; found
+Line# 6: TOKEN <FLOAT> Lexeme float found
+Line# 6: TOKEN <ID> Lexeme f found
+Line# 6: TOKEN <SEMICOLON> Lexeme ; found
+Line# 7: TOKEN <ID> Lexeme f found
+Line# 7: TOKEN <ASSIGNOP> Lexeme = found
+Line# 7: TOKEN <ID> Lexeme f found
+Line# 7: TOKEN <ADDOP> Lexeme - found
+Line# 7: TOKEN <CONST_FLOAT> Lexeme 3.14 found
+Line# 7: TOKEN <SEMICOLON> Lexeme ; found
+Line# 8: TOKEN <ID> Lexeme f found
 Line# 8: TOKEN <ASSIGNOP> Lexeme = found
-Line# 8: TOKEN <NOT> Lexeme ! found
-Line# 8: TOKEN <LPAREN> Lexeme ( found
-Line# 8: TOKEN <RPAREN> Lexeme ) found
-Line# 8: TOKEN <LCURL> Lexeme { found
-Line# 8: TOKEN <RCURL> Lexeme } found
-Line# 8: TOKEN <LSQUARE> Lexeme [ found
-Line# 8: TOKEN <RSQUARE> Lexeme ] found
-Line# 8: TOKEN <COMMA> Lexeme , found
+Line# 8: TOKEN <ID> Lexeme f found
+Line# 8: TOKEN <MULOP> Lexeme * found
+Line# 8: TOKEN <CONST_FLOAT> Lexeme 2.81E0 found
 Line# 8: TOKEN <SEMICOLON> Lexeme ; found
-Line# 9: TOKEN <INCOP> Lexeme ++ found
-Line# 9: TOKEN <INCOP> Lexeme -- found
-Line# 9: TOKEN <RELOP> Lexeme < found
-Line# 9: TOKEN <RELOP> Lexeme > found
-Line# 9: TOKEN <RELOP> Lexeme <= found
-Line# 9: TOKEN <RELOP> Lexeme >= found
-Line# 9: TOKEN <RELOP> Lexeme == found
-Line# 9: TOKEN <RELOP> Lexeme != found
-Line# 9: TOKEN <LOGIOP> Lexeme && found
-Line# 9: TOKEN <LOGIOP> Lexeme || found
-Line# 9: TOKEN <BITOP> Lexeme & found
-Line# 9: TOKEN <BITOP> Lexeme | found
-Line# 9: TOKEN <BITOP> Lexeme ^ found
-Line# 9: TOKEN <BITOP> Lexeme << found
-Line# 9: TOKEN <BITOP> Lexeme >> found
-Line# 10: TOKEN <INCOP> Lexeme ++ found
-Line# 10: TOKEN <ADDOP> Lexeme + found
-Line# 10: TOKEN <RELOP> Lexeme == found
-Line# 10: TOKEN <ADDOP> Lexeme - found
-Line# 10: TOKEN <CONST_INT> Lexeme 20 found
-Line# 11: TOKEN <ID> Lexeme _andsjdna found
-Line# 11: TOKEN <ID> Lexeme ansdjan_asndajsda found
-Line# 12: TOKEN <ID> Lexeme sja_1872_bqba found
-Line# 12: TOKEN <ID> Lexeme ___________1222 found
-Line# 13: TOKEN <ID> Lexeme _ found
-Line# 14: TOKEN <STRING> Lexeme hasbdakjsbdaksda found
-Line# 15: TOKEN <STRING> Lexeme  found
-Line# 16: TOKEN <STRING> Lexeme ......\n found
-Line# 18: TOKEN <STRING> Lexeme nansdansjkndaasndlasndasld found
+Line# 10: TOKEN <CHAR> Lexeme char found
+Line# 10: TOKEN <ID> Lexeme ch found
+Line# 10: TOKEN <ASSIGNOP> Lexeme = found
+Line# 10: TOKEN <CONST_CHAR> Lexeme z found
+Line# 10: TOKEN <SEMICOLON> Lexeme ; found
+Line# 11: TOKEN <ID> Lexeme ch found
+Line# 11: TOKEN <ASSIGNOP> Lexeme = found
+Line# 11: TOKEN <CONST_CHAR> Lexeme 	 found
+Line# 11: TOKEN <SEMICOLON> Lexeme ; found
+Line# 13: TOKEN <CHAR> Lexeme char found
+Line# 13: TOKEN <ID> Lexeme str found
+Line# 13: TOKEN <LSQUARE> Lexeme [ found
+Line# 13: TOKEN <RSQUARE> Lexeme ] found
+Line# 13: TOKEN <ASSIGNOP> Lexeme = found
+Line# 13: TOKEN <STRING> Lexeme hello\tworld found
+Line# 13: TOKEN <SEMICOLON> Lexeme ; found
+Line# 16: TOKEN <COMMENT> Lexeme // December 3, 2022 found
+Line# 16: TOKEN <ID> Lexeme printf found
+Line# 16: TOKEN <LPAREN> Lexeme ( found
+Line# 16: TOKEN <ID> Lexeme The found
+Line# 16: TOKEN <ID> Lexeme day found
+Line# 17: TOKEN <ID> Lexeme was found
+Line# 18: TOKEN <ID> Lexeme sunny found
+Line# 18: TOKEN <RPAREN> Lexeme ) found
 Line# 18: TOKEN <SEMICOLON> Lexeme ; found
-Line# 19: TOKEN <ID> Lexeme adajsdioajdaidjaida found
-Line# 21: TOKEN <STRING> Lexeme  found
-Line# 24: TOKEN <STRING> Lexeme gvhgvgh found
-Line# 27: TOKEN <COMMENT> Lexeme comment \t \n  found
-Line# 29: TOKEN <COMMENT> Lexeme comment2comment2.2 found
-Line# 30: TOKEN <ID> Lexeme nansjan found
+Line# 21: TOKEN <COMMENT> Lexeme * ** CSE 310
+	*** Compiler Sessional ** found
+Line# 23: TOKEN <COMMENT> Lexeme // It is a\ found
+Line# 23: TOKEN <ID> Lexeme fun found
+Line# 23: TOKEN <ID> Lexeme course found
+Line# 24: TOKEN <RETURN> Lexeme return found
+Line# 24: TOKEN <CONST_INT> Lexeme 0 found
+Line# 24: TOKEN <SEMICOLON> Lexeme ; found
+Line# 25: TOKEN <RCURL> Lexeme } found
 
-_andsjdna ID
+main ID
 
-ansdjan_asndajsda ID
+x ID
 
-sja_1872_bqba ID
+y ID
 
-___________1222 ID
+x ID
 
-_ ID
+x ID
 
-adajsdioajdaidjaida ID
+y ID
 
-nansjan ID
+y ID
+
+f ID
+
+f ID
+
+f ID
+
+f ID
+
+f ID
+
+ch ID
+
+ch ID
+
+str ID
+
+printf ID
+
+The ID
+
+day ID
+
+was ID
+
+sunny ID
+
+fun ID
+
+course ID

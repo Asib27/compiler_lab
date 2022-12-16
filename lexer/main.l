@@ -1,8 +1,11 @@
 %option noyywrap  yylineno
 
+%x COMMENT
+
 %{
 #include<cstdio>
 #include<cstdlib>
+#include<iostream>
 #include<string>
 #include<vector>
 
@@ -144,13 +147,15 @@ public:
 	}
 
 	void printComment(string text){
-		string ans = removerSlashNewline(text);
-		ans = ans.substr(1, ans.length()-1);
-		printLog("COMMENT", ans);
+		// string ans = removerSlashNewline(text);
+		// ans = ans.substr(1, ans.length()-1);
+		text = text.substr(0, text.length()-1);
+		printLog("COMMENT", text);
 	}
 };
 
 PrintUtil printUtil(nullptr, nullptr);
+string multilineComment = "";
 
 %}
 
@@ -244,6 +249,19 @@ ESCAPES ['"nt\\afrbv0]
 	printUtil.printComment(yytext);
 }
 
+"/*"					{BEGIN(COMMENT);}
+<COMMENT>"*/"			{
+							BEGIN(INITIAL);
+							printUtil.print("COMMENT", multilineComment);
+							multilineComment = "";
+						}
+<COMMENT>([^*]|\n)+|.	{multilineComment.append(yytext);}
+<COMMENT><<EOF>>		{
+							cout << "unterminated string" << endl;
+							return 0;
+						}
+
+[ \t\n]+		{/*Ignore*/}
 .			{}
 %%
 
