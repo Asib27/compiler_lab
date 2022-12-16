@@ -58,6 +58,7 @@ class PrintUtil{
 		printToken(token, symbol);
 	}
 
+
 	char escapeToChar(char c){
 		const int map_size = 11;
 		const char keys[] = {'\'', '\"', 'n', 't', '\\', 'a', 'f', 'r', 'b', 'v', '0'};
@@ -152,12 +153,18 @@ public:
 	}
 
 	void printChar(string text){
-		if(text.length() == 3){
+		if(text.length() == 2){
+			printError("EMPTY_CONST_CHAR", text);
+		}
+		else if(text.length() == 3){
 			printHelper("CONST_CHAR", string(1, text[1]));
 		}
-		else{			
+		else if(text.length() == 4 && text[1] == '\\'){			
 			//TODO: EMPTY CHAR HANDLE CODE
 			printHelper("CONST_CHAR", string(1, escapeToChar(text[2])));
+		}
+		else{
+			printError("MULTICHAR_CONST_CHAR", text);
 		}
 	}
 
@@ -183,6 +190,10 @@ public:
 
 	void printMultilineComment(string text){
 		printLog("COMMENT", text);
+	}
+
+	void printError(string error, string text){
+		fprintf(logout, "Error at line# %d: %s %s\n", yylineno, error.c_str(), text.c_str());
 	}
 };
 
@@ -231,7 +242,7 @@ ESCAPES ['"nt\\afrbv0]
 					printUtil.print("CONST_FLOAT", yytext);
 				}
 
-'([^'\\]|(\\{ESCAPES}))'	{
+'([^'\\]|(\\{ESCAPES}))*'	{
 					printUtil.printChar(yytext);
 				}
 
@@ -289,12 +300,13 @@ ESCAPES ['"nt\\afrbv0]
 						}
 <COMMENT>([^*]|\n)+|.	{multilineComment.append(yytext);}
 <COMMENT><<EOF>>		{
-							cout << "unterminated string" << endl;
-							return 0;
+							printUtil.printError("UNFINISHED_COMMENT", "/*" + multilineComment);
+							multilineComment = "";
+							BEGIN(INITIAL);
 						}
 
-[ \t\n]+		{/*Ignore*/}
-.			{}
+[ \t\n]+		{ /* IGNORE */}
+.				{printUtil.printError("UNRECOGNIZED_CHAR", yytext);}
 %%
 
 int main(int argc, char** argv) {
