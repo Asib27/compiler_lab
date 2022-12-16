@@ -22,3 +22,9 @@ adajsdioajdaidjaida
 
 "gvhgvgh\
 "
+
+//comment \t \n 
+//comment2\
+comment2.2
+
+nansjan

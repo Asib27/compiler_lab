@@ -67,6 +67,9 @@ Line# 18: TOKEN <SEMICOLON> Lexeme ; found
 Line# 19: TOKEN <ID> Lexeme adajsdioajdaidjaida found
 Line# 21: TOKEN <STRING> Lexeme  found
 Line# 24: TOKEN <STRING> Lexeme gvhgvgh found
+Line# 27: TOKEN <COMMENT> Lexeme comment \t \n  found
+Line# 29: TOKEN <COMMENT> Lexeme comment2comment2.2 found
+Line# 30: TOKEN <ID> Lexeme nansjan found
 
 _andsjdna ID
 
@@ -79,3 +82,5 @@ ___________1222 ID
 _ ID
 
 adajsdioajdaidjaida ID
+
+nansjan ID

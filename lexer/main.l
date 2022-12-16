@@ -69,6 +69,23 @@ class PrintUtil{
 		return '\0';
 	}
 
+	/**
+	* removes first and last char also
+	*/
+	string removerSlashNewline(string text){
+		string ans = "";
+		for(int i = 1; i < text.length()-1; i++){
+			if(text[i] == '\\' && text[i+1] == '\n'){
+				i++;
+			}
+			else{
+				ans.push_back(text[i]);
+			}
+		}
+
+		return ans;
+	}
+
 public:
 	PrintUtil(FILE *logout, FILE* tokenout){
 		this->logout = logout;
@@ -120,21 +137,17 @@ public:
 	}
 
 	int printString(string text){
-		string ans = "";
-
-		for(int i = 1; i < text.length()-1; i++){
-			if(text[i] == '\\' && text[i+1] == '\n'){
-				i++;
-			}
-			else{
-				ans.push_back(text[i]);
-			}
-		}
+		string ans = removerSlashNewline(text);
 		printHelper("STRING", ans);
 
 		return 0;
 	}
 
+	void printComment(string text){
+		string ans = removerSlashNewline(text);
+		ans = ans.substr(1, ans.length()-1);
+		printLog("COMMENT", ans);
+	}
 };
 
 PrintUtil printUtil(nullptr, nullptr);
@@ -225,6 +238,10 @@ ESCAPES ['"nt\\afrbv0]
 
 \"(([^"\\\n]|(\\{ESCAPES}))|("\\\n"))*\"	{
 							printUtil.printString(yytext);
+}
+
+"//"(.|"\\\n")*\n	{
+	printUtil.printComment(yytext);
 }
 
 .			{}
