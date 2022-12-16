@@ -242,8 +242,16 @@ ESCAPES ['"nt\\afrbv0]
 					printUtil.print("CONST_FLOAT", yytext);
 				}
 
-'([^'\\]|(\\{ESCAPES}))*'	{
+
+'([^'\\\n]|(\\{ESCAPES}))*'	{
 					printUtil.printChar(yytext);
+				}
+
+"'\\'"	|
+'([^'\\\n]|(\\{ESCAPES}))*\n	{
+					string text = yytext;
+					if(text.back() == '\n') text = text.substr(0, text.length()-1);
+					printUtil.printError("UNFINISHED_CONST_CHAR", text);
 				}
 
 [=!(){}\[\],;]	{
@@ -284,8 +292,16 @@ ESCAPES ['"nt\\afrbv0]
 							st.insert(si);
 						}	
 
+[0-9][_a-zA-Z0-9]+		{
+							printUtil.printError("INVALID_ID_SUFFIX_NUM_PREFIX", yytext);
+						}
+
 \"(([^"\\\n]|(\\{ESCAPES}))|("\\\n"))*\"	{
 							printUtil.printString(yytext);
+}
+\"(([^"\\\n]|(\\{ESCAPES}))|("\\\n"))*\n	{
+	string text = yytext;
+	printUtil.printError("UNFINISHED_STRING", text.substr(0, text.length()-1));
 }
 
 "//"(.|"\\\n")*\n	{

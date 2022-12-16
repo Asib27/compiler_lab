@@ -1,46 +1,34 @@
-Line# 1: TOKEN <CONST_FLOAT> Lexeme 1.2 found
-Line# 1: TOKEN <CONST_FLOAT> Lexeme .345 found
-Error at line# 1: UNRECOGNIZED_CHAR 
-Line# 2: TOKEN <CONST_FLOAT> Lexeme 1E10 found
-Line# 2: TOKEN <CONST_FLOAT> Lexeme .7 found
-Error at line# 2: UNRECOGNIZED_CHAR 
-Line# 3: TOKEN <CONST_INT> Lexeme 12 found
-Line# 3: TOKEN <ID> Lexeme abcd found
-Error at line# 3: UNRECOGNIZED_CHAR 
-Error at line# 4: UNRECOGNIZED_CHAR @
-Error at line# 4: UNRECOGNIZED_CHAR 
-Error at line# 5: MULTICHAR_CONST_CHAR 'ab'
-Error at line# 5: UNRECOGNIZED_CHAR 
-Error at line# 7: MULTICHAR_CONST_CHAR 'a
-'
-Error at line# 7: UNRECOGNIZED_CHAR 
-Error at line# 8: MULTICHAR_CONST_CHAR 'ab cd'
-Error at line# 8: UNRECOGNIZED_CHAR 
-Error at line# 10: MULTICHAR_CONST_CHAR '\'
-'
-Error at line# 10: UNRECOGNIZED_CHAR '
-Error at line# 10: UNRECOGNIZED_CHAR 
-Error at line# 11: UNRECOGNIZED_CHAR "
-Line# 11: TOKEN <ID> Lexeme abcd found
-Error at line# 11: UNRECOGNIZED_CHAR 
-Error at line# 12: UNRECOGNIZED_CHAR "
-Line# 12: TOKEN <ID> Lexeme abcd found
-Error at line# 12: UNRECOGNIZED_CHAR \
-Error at line# 12: UNRECOGNIZED_CHAR 
-Line# 13: TOKEN <ID> Lexeme efgh found
-Error at line# 13: UNRECOGNIZED_CHAR 
-Line# 14: TOKEN <ID> Lexeme ijk found
-Error at line# 14: UNRECOGNIZED_CHAR "
-Error at line# 14: UNRECOGNIZED_CHAR 
-Error at line# 16: UNFINISHED_COMMENT /**abc
-def
+Error at line# 1: INVALID_ID_SUFFIX_NUM_PREFIX 12abcd
+Error at line# 2: UNRECOGNIZED_CHAR @
+Error at line# 3: MULTICHAR_CONST_CHAR 'ab'
+Error at line# 4: MULTICHAR_CONST_CHAR 'acnajscals'
+Error at line# 5: EMPTY_CONST_CHAR ''
+Line# 6: TOKEN <CONST_CHAR> Lexeme 
+ found
+Error at line# 7: MULTICHAR_CONST_CHAR '\\n'
+Error at line# 9: UNFINISHED_CONST_CHAR '\'
+Error at line# 10: UNFINISHED_CONST_CHAR 'najsndjasnjda
+Error at line# 11: UNFINISHED_CONST_CHAR 'n
+Line# 11: TOKEN <ID> Lexeme abcde found
+Line# 12: TOKEN <SINGLE LINE STRING> Lexeme asdads found
+Error at line# 14: UNFINISHED_STRING "asdasd
+Error at line# 16: UNFINISHED_STRING "sfgsdg\
+dgfsdg
+Line# 17: TOKEN <ID> Lexeme abc found
+Line# 18: TOKEN <CONST_FLOAT> Lexeme 123.122 found
+Line# 18: TOKEN <CONST_FLOAT> Lexeme .332342 found
+Line# 19: TOKEN <CONST_FLOAT> Lexeme 123.333 found
+Line# 20: TOKEN <CONST_FLOAT> Lexeme 123.2222 found
+Line# 20: TOKEN <CONST_FLOAT> Lexeme .22222 found
+Error at line# 20: UNRECOGNIZED_CHAR .
+Line# 20: TOKEN <CONST_FLOAT> Lexeme .222312 found
+Line# 20: TOKEN <CONST_FLOAT> Lexeme .1231231 found
+Line# 20: TOKEN <CONST_FLOAT> Lexeme .31231313123 found
+Line# 20: TOKEN <CONST_FLOAT> Lexeme .12313123123 found
+Line# 21: TOKEN <CONST_INT> Lexeme 12333 found
+Error at line# 21: UNRECOGNIZED_CHAR .
+Line# 21: TOKEN <CONST_FLOAT> Lexeme .333 found
 
-abcd ID
+abcde ID
 
-abcd ID
-
-abcd ID
-
-efgh ID
-
-ijk ID
+abc ID
