@@ -69,7 +69,8 @@ class PrintUtil{
 			} 
 		}
 
-		return '\0';
+		//TODO: EMPTY CHAR HANDLE CODE
+		return c;
 	}
 
 	/**
@@ -86,6 +87,26 @@ class PrintUtil{
 			}
 		}
 
+		return ans;
+	}
+
+	string insertEscapeInString(string text){
+		string ans = "";
+
+		for(int i = 0; i < text.length() -1; i++){
+			if(text[i] == '\\'){
+				char c = escapeToChar(text[i+1]);
+				ans.append(1,c);
+				i++;
+			}
+			else{
+				ans.append(1,text[i]);
+			}
+		}
+
+		// insert last char as it will not be processed
+		if(text.length() > 2 && text[text.length()-2] != '\\')
+			ans.append(1,text.back());
 		return ans;
 	}
 
@@ -135,13 +156,20 @@ public:
 			printHelper("CONST_CHAR", string(1, text[1]));
 		}
 		else{			
+			//TODO: EMPTY CHAR HANDLE CODE
 			printHelper("CONST_CHAR", string(1, escapeToChar(text[2])));
 		}
 	}
 
 	int printString(string text){
-		string ans = removerSlashNewline(text);
-		printHelper("STRING", ans);
+		string singleLine = removerSlashNewline(text);
+		string ans = insertEscapeInString(singleLine);
+
+		if(singleLine.length() < text.length() - 2){
+			printHelper("MULTI LINE STRING", ans);
+		}
+		else
+			printHelper("SINGLE LINE STRING", ans);
 
 		return 0;
 	}
@@ -150,6 +178,10 @@ public:
 		// string ans = removerSlashNewline(text);
 		// ans = ans.substr(1, ans.length()-1);
 		text = text.substr(0, text.length()-1);
+		printLog("COMMENT", text);
+	}
+
+	void printMultilineComment(string text){
 		printLog("COMMENT", text);
 	}
 };
@@ -252,7 +284,7 @@ ESCAPES ['"nt\\afrbv0]
 "/*"					{BEGIN(COMMENT);}
 <COMMENT>"*/"			{
 							BEGIN(INITIAL);
-							printUtil.print("COMMENT", multilineComment);
+							printUtil.printMultilineComment(multilineComment);
 							multilineComment = "";
 						}
 <COMMENT>([^*]|\n)+|.	{multilineComment.append(yytext);}

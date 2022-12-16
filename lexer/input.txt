@@ -1,40 +1,25 @@
-if 123 switch 38 case 
-while double		+break
-32938
-3.14159 3.14E-10 .3145 3149E10
-3.1434E10
-'a' 'b' ' ' '\a' '\\' '\"' '\''  '\0' '\t'
-'\n'
-=!(){}[],;
-++--<><=>===!=&&||&|^<<>>
-+++==-20
-_andsjdna ansdjan_asndajsda 
-sja_1872_bqba ___________1222
-_
-"hasbdakjsbdaksda"
-""
-"......\n"
-"nansdansjknda\
-asndlasndasld";
-adajsdioajdaidjaida
-"\
-"
-
-"gvhgvgh\
-"
-
-//comment \t \n 
-//comment2\
-comment2.2
-
-nansjan
-/*adajsdioajdaidjaida***********
-adfasfjasdfj ********
-fakdjfsa ******
-asndjai 
-*/
-
-/*
-
-asndlasndasld
-*/
+void main() {
+	int x, y;
+	x = x + 1;
+	y = y * 2;
+	
+	float f;
+	f = f - 3.14;
+	f = f * 2.81E0;
+	
+	char ch = 'z';
+	ch = '\t';
+	
+	char str[] = "hello\tworld";
+	
+	// December 3, 2022
+	printf("The day\
+	was\
+	sunny");
+	
+	/** ** CSE 310
+	*** Compiler Sessional ***/
+	// It is a\
+	fun course
+	return 0;
+}

@@ -49,22 +49,18 @@ Line# 13: TOKEN <ID> Lexeme str found
 Line# 13: TOKEN <LSQUARE> Lexeme [ found
 Line# 13: TOKEN <RSQUARE> Lexeme ] found
 Line# 13: TOKEN <ASSIGNOP> Lexeme = found
-Line# 13: TOKEN <STRING> Lexeme hello\tworld found
+Line# 13: TOKEN <SINGLE LINE STRING> Lexeme hello	world found
 Line# 13: TOKEN <SEMICOLON> Lexeme ; found
-Line# 16: TOKEN <COMMENT> Lexeme // December 3, 2022 found
+Line# 16: TOKEN <COMMENT> Lexeme // December 3, 2022 found
 Line# 16: TOKEN <ID> Lexeme printf found
 Line# 16: TOKEN <LPAREN> Lexeme ( found
-Line# 16: TOKEN <ID> Lexeme The found
-Line# 16: TOKEN <ID> Lexeme day found
-Line# 17: TOKEN <ID> Lexeme was found
-Line# 18: TOKEN <ID> Lexeme sunny found
+Line# 18: TOKEN <MULTI LINE STRING> Lexeme The day	was	sunny found
 Line# 18: TOKEN <RPAREN> Lexeme ) found
 Line# 18: TOKEN <SEMICOLON> Lexeme ; found
 Line# 21: TOKEN <COMMENT> Lexeme * ** CSE 310
 	*** Compiler Sessional ** found
-Line# 23: TOKEN <COMMENT> Lexeme // It is a\ found
-Line# 23: TOKEN <ID> Lexeme fun found
-Line# 23: TOKEN <ID> Lexeme course found
+Line# 24: TOKEN <COMMENT> Lexeme // It is a\
+	fun course found
 Line# 24: TOKEN <RETURN> Lexeme return found
 Line# 24: TOKEN <CONST_INT> Lexeme 0 found
 Line# 24: TOKEN <SEMICOLON> Lexeme ; found
@@ -101,15 +97,3 @@ ch ID
 str ID
 
 printf ID
-
-The ID
-
-day ID
-
-was ID
-
-sunny ID
-
-fun ID
-
-course ID

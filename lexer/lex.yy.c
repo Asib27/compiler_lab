@@ -636,7 +636,8 @@ class PrintUtil{
 			} 
 		}
 
-		return '\0';
+		//TODO: EMPTY CHAR HANDLE CODE
+		return c;
 	}
 
 	/**
@@ -653,6 +654,26 @@ class PrintUtil{
 			}
 		}
 
+		return ans;
+	}
+
+	string insertEscapeInString(string text){
+		string ans = "";
+
+		for(int i = 0; i < text.length() -1; i++){
+			if(text[i] == '\\'){
+				char c = escapeToChar(text[i+1]);
+				ans.append(1,c);
+				i++;
+			}
+			else{
+				ans.append(1,text[i]);
+			}
+		}
+
+		// insert last char as it will not be processed
+		if(text.length() > 2 && text[text.length()-2] != '\\')
+			ans.append(1,text.back());
 		return ans;
 	}
 
@@ -702,13 +723,20 @@ public:
 			printHelper("CONST_CHAR", string(1, text[1]));
 		}
 		else{			
+			//TODO: EMPTY CHAR HANDLE CODE
 			printHelper("CONST_CHAR", string(1, escapeToChar(text[2])));
 		}
 	}
 
 	int printString(string text){
-		string ans = removerSlashNewline(text);
-		printHelper("STRING", ans);
+		string singleLine = removerSlashNewline(text);
+		string ans = insertEscapeInString(singleLine);
+
+		if(singleLine.length() < text.length() - 2){
+			printHelper("MULTI LINE STRING", ans);
+		}
+		else
+			printHelper("SINGLE LINE STRING", ans);
 
 		return 0;
 	}
@@ -719,13 +747,17 @@ public:
 		text = text.substr(0, text.length()-1);
 		printLog("COMMENT", text);
 	}
+
+	void printMultilineComment(string text){
+		printLog("COMMENT", text);
+	}
 };
 
 PrintUtil printUtil(nullptr, nullptr);
 string multilineComment = "";
 
-#line 728 "lex.yy.c"
-#line 729 "lex.yy.c"
+#line 760 "lex.yy.c"
+#line 761 "lex.yy.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -943,9 +975,9 @@ YY_DECL
 		}
 
 	{
-#line 170 "main.l"
+#line 202 "main.l"
 
-#line 949 "lex.yy.c"
+#line 981 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1015,58 +1047,58 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 171 "main.l"
+#line 203 "main.l"
 {}
 	YY_BREAK
 case 2:
-#line 174 "main.l"
+#line 206 "main.l"
 case 3:
-#line 175 "main.l"
+#line 207 "main.l"
 case 4:
-#line 176 "main.l"
+#line 208 "main.l"
 case 5:
-#line 177 "main.l"
+#line 209 "main.l"
 case 6:
-#line 178 "main.l"
+#line 210 "main.l"
 case 7:
-#line 179 "main.l"
+#line 211 "main.l"
 case 8:
-#line 180 "main.l"
+#line 212 "main.l"
 case 9:
-#line 181 "main.l"
+#line 213 "main.l"
 case 10:
-#line 182 "main.l"
+#line 214 "main.l"
 case 11:
-#line 183 "main.l"
+#line 215 "main.l"
 case 12:
-#line 184 "main.l"
+#line 216 "main.l"
 case 13:
-#line 185 "main.l"
+#line 217 "main.l"
 case 14:
-#line 186 "main.l"
+#line 218 "main.l"
 case 15:
-#line 187 "main.l"
+#line 219 "main.l"
 case 16:
-#line 188 "main.l"
+#line 220 "main.l"
 case 17:
 YY_RULE_SETUP
-#line 188 "main.l"
+#line 220 "main.l"
 {
 				printUtil.printKeyword(yytext);
 			}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 193 "main.l"
+#line 225 "main.l"
 {
 				printUtil.print("CONST_INT", yytext);
 			}
 	YY_BREAK
 case 19:
-#line 198 "main.l"
+#line 230 "main.l"
 case 20:
 YY_RULE_SETUP
-#line 198 "main.l"
+#line 230 "main.l"
 {
 					printUtil.print("CONST_FLOAT", yytext);
 				}
@@ -1074,79 +1106,79 @@ YY_RULE_SETUP
 case 21:
 /* rule 21 can match eol */
 YY_RULE_SETUP
-#line 202 "main.l"
+#line 234 "main.l"
 {
 					printUtil.printChar(yytext);
 				}
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 206 "main.l"
+#line 238 "main.l"
 {
 					printUtil.printPunctuation(yytext);
 				}
 	YY_BREAK
 case 23:
-#line 211 "main.l"
+#line 243 "main.l"
 case 24:
 YY_RULE_SETUP
-#line 211 "main.l"
+#line 243 "main.l"
 {printUtil.print("ADDOP", yytext);}
 	YY_BREAK
 case 25:
-#line 214 "main.l"
+#line 246 "main.l"
 case 26:
-#line 215 "main.l"
+#line 247 "main.l"
 case 27:
 YY_RULE_SETUP
-#line 215 "main.l"
+#line 247 "main.l"
 {printUtil.print("MULOP", yytext);}
 	YY_BREAK
 case 28:
-#line 218 "main.l"
+#line 250 "main.l"
 case 29:
 YY_RULE_SETUP
-#line 218 "main.l"
+#line 250 "main.l"
 {printUtil.print("INCOP", yytext);}
 	YY_BREAK
 case 30:
-#line 221 "main.l"
+#line 253 "main.l"
 case 31:
-#line 222 "main.l"
+#line 254 "main.l"
 case 32:
-#line 223 "main.l"
+#line 255 "main.l"
 case 33:
-#line 224 "main.l"
+#line 256 "main.l"
 case 34:
-#line 225 "main.l"
+#line 257 "main.l"
 case 35:
 YY_RULE_SETUP
-#line 225 "main.l"
+#line 257 "main.l"
 {printUtil.print("RELOP", yytext);}
 	YY_BREAK
 case 36:
-#line 228 "main.l"
+#line 260 "main.l"
 case 37:
 YY_RULE_SETUP
-#line 228 "main.l"
+#line 260 "main.l"
 {printUtil.print("LOGIOP", yytext);}
 	YY_BREAK
 case 38:
-#line 231 "main.l"
+#line 263 "main.l"
 case 39:
-#line 232 "main.l"
+#line 264 "main.l"
 case 40:
-#line 233 "main.l"
+#line 265 "main.l"
 case 41:
-#line 234 "main.l"
+#line 266 "main.l"
 case 42:
 YY_RULE_SETUP
-#line 234 "main.l"
+#line 266 "main.l"
 {printUtil.print("BITOP", yytext);}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 237 "main.l"
+#line 269 "main.l"
 {
 							printUtil.print("ID", yytext);
 							//TODO: change into my implementation
@@ -1157,7 +1189,7 @@ YY_RULE_SETUP
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
-#line 244 "main.l"
+#line 276 "main.l"
 {
 							printUtil.printString(yytext);
 }
@@ -1165,33 +1197,33 @@ YY_RULE_SETUP
 case 45:
 /* rule 45 can match eol */
 YY_RULE_SETUP
-#line 248 "main.l"
+#line 280 "main.l"
 {
 	printUtil.printComment(yytext);
 }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 252 "main.l"
+#line 284 "main.l"
 {BEGIN(COMMENT);}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 253 "main.l"
+#line 285 "main.l"
 {
 							BEGIN(INITIAL);
-							printUtil.print("COMMENT", multilineComment);
+							printUtil.printMultilineComment(multilineComment);
 							multilineComment = "";
 						}
 	YY_BREAK
 case 48:
 /* rule 48 can match eol */
 YY_RULE_SETUP
-#line 258 "main.l"
+#line 290 "main.l"
 {multilineComment.append(yytext);}
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 259 "main.l"
+#line 291 "main.l"
 {
 							cout << "unterminated string" << endl;
 							return 0;
@@ -1200,20 +1232,20 @@ case YY_STATE_EOF(COMMENT):
 case 49:
 /* rule 49 can match eol */
 YY_RULE_SETUP
-#line 264 "main.l"
+#line 296 "main.l"
 {/*Ignore*/}
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 265 "main.l"
+#line 297 "main.l"
 {}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 266 "main.l"
+#line 298 "main.l"
 ECHO;
 	YY_BREAK
-#line 1217 "lex.yy.c"
+#line 1249 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2230,7 +2262,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 266 "main.l"
+#line 298 "main.l"
 
 
 int main(int argc, char** argv) {

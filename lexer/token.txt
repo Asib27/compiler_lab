@@ -49,20 +49,13 @@
 <LSQUARE, [>
 <RSQUARE, ]>
 <ASSIGNOP, =>
-<STRING, hello\tworld>
+<SINGLE LINE STRING, hello	world>
 <SEMICOLON, ;>
 <ID, printf>
 <LPAREN, (>
-<ID, The>
-<ID, day>
-<ID, was>
-<ID, sunny>
+<MULTI LINE STRING, The day	was	sunny>
 <RPAREN, )>
 <SEMICOLON, ;>
-<COMMENT, * ** CSE 310
-	*** Compiler Sessional **>
-<ID, fun>
-<ID, course>
 <RETURN, return>
 <CONST_INT, 0>
 <SEMICOLON, ;>
