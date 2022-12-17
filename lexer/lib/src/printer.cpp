@@ -1,4 +1,4 @@
-#include"printer.h"
+#include"../printer.h"
 
 Printer::Printer(std::ostream &os, bool print)
         : _print(print), _os(os)

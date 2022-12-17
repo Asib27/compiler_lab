@@ -1,4 +1,4 @@
-#include"symbolInfo.h"
+#include"../symbolInfo.h"
 
 SymbolInfo::SymbolInfo() : _next(nullptr) {}
 SymbolInfo::SymbolInfo(std::string name, std::string type, SymbolInfo* next)

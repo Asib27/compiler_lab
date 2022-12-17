@@ -1,4 +1,4 @@
-#include"symbolTable.h"
+#include"../symbolTable.h"
 
 SymbolTable::SymbolTable(int bucket_size, Printer *printer)
     : _bucket_size(bucket_size), _curScope(nullptr), nextScopeId(1)

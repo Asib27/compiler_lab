@@ -1,4 +1,4 @@
-#include"scopeTable.h"
+#include"../scopeTable.h"
 
 
 unsigned long long ScopeTable::SDBMHash(std::string str) {
