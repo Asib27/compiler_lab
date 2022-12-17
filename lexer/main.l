@@ -13,167 +13,9 @@
 #include"lib/symbolTable.h"
 #include"lib/symbolInfo.h"
 #include"lib/printer.h"
+#include"lib/printUtil.h"
 
 using namespace std;
-
-
-
-
-class PrintUtil{
-	ostream& logos;
-	ostream& tokenos;
-
-	void printLog(string token, string symbol){
-		logos << "Line# " << yylineno << ": Token <" << token 
-			<< "> Lexeme " << symbol << "found" << endl;
-		// fprintf(logout,"Line# %d: TOKEN <%s> Lexeme %s found\n",yylineno,token.c_str(), symbol.c_str());
-	}
-
-	void printToken(string token, string symbol){
-		tokenos << "<" << token << ", " << symbol << ">" << endl;
-		// fprintf(tokenout,"<%s, %s>\n",token.c_str(), symbol.c_str());
-	}
-
-	void printHelper(string token, string symbol){
-		printLog(token, symbol);
-		printToken(token, symbol);
-	}
-
-
-	char escapeToChar(char c){
-		const int map_size = 11;
-		const char keys[] = {'\'', '\"', 'n', 't', '\\', 'a', 'f', 'r', 'b', 'v', '0'};
-		const char values[] = {'\'', '\"', '\n', '\t', '\\', '\a', '\f', '\r', '\b', '\v', '\0'};
-
-		for(int i = 0; i < map_size; i++){
-			if(keys[i] == c){
-				return values[i];
-			} 
-		}
-
-		//TODO: EMPTY CHAR HANDLE CODE
-		return c;
-	}
-
-	/**
-	* removes first and last char also
-	*/
-	string removerSlashNewline(string text){
-		string ans = "";
-		for(int i = 1; i < text.length()-1; i++){
-			if(text[i] == '\\' && text[i+1] == '\n'){
-				i++;
-			}
-			else{
-				ans.push_back(text[i]);
-			}
-		}
-
-		return ans;
-	}
-
-	string insertEscapeInString(string text){
-		string ans = "";
-
-		for(int i = 0; i < text.length() -1; i++){
-			if(text[i] == '\\'){
-				char c = escapeToChar(text[i+1]);
-				ans.append(1,c);
-				i++;
-			}
-			else{
-				ans.append(1,text[i]);
-			}
-		}
-
-		// insert last char as it will not be processed
-		if(text.length() > 2 && text[text.length()-2] != '\\')
-			ans.append(1,text.back());
-		return ans;
-	}
-
-public:
-	PrintUtil(ostream &token, ostream &log)
-		: tokenos(token), logos(log)
-	{
-
-	}
-
-	void printKeyword(string text){
-		string upper = "";
-		for(auto i: text){
-			if(i >= 'a' && i <= 'z')
-				upper.push_back(i - 'a' + 'A');
-			else upper.push_back(i);
-		}
-
-		printHelper(upper, text);
-	}
-
-	void print(string token, string text){
-		printHelper(token, text);
-	}
-
-	void printPunctuation(string text){
-		char c = text[0];
-
-		string keys = "=!(){}[],;";
-		string values[] = {"ASSIGNOP", "NOT", "LPAREN", "RPAREN", "LCURL", "RCURL",
-			"LSQUARE", "RSQUARE", "COMMA", "SEMICOLON"
-		};
-
-		for(int i = 0; i < keys.length(); i++){
-			if(c == keys[i]){
-				printHelper(values[i], string(1, c));
-			}
-		}
-	}
-
-	void printChar(string text){
-		if(text.length() == 2){
-			printError("EMPTY_CONST_CHAR", text);
-		}
-		else if(text.length() == 3){
-			printHelper("CONST_CHAR", string(1, text[1]));
-		}
-		else if(text.length() == 4 && text[1] == '\\'){			
-			//TODO: EMPTY CHAR HANDLE CODE
-			printHelper("CONST_CHAR", string(1, escapeToChar(text[2])));
-		}
-		else{
-			printError("MULTICHAR_CONST_CHAR", text);
-		}
-	}
-
-	int printString(string text){
-		string singleLine = removerSlashNewline(text);
-		string ans = insertEscapeInString(singleLine);
-
-		if(singleLine.length() < text.length() - 2){
-			printHelper("MULTI LINE STRING", ans);
-		}
-		else
-			printHelper("SINGLE LINE STRING", ans);
-
-		return 0;
-	}
-
-	void printComment(string text){
-		// string ans = removerSlashNewline(text);
-		// ans = ans.substr(1, ans.length()-1);
-		text = text.substr(0, text.length()-1);
-		printLog("COMMENT", text);
-	}
-
-	void printMultilineComment(string text){
-		printLog("COMMENT", text);
-	}
-
-	void printError(string error, string text){
-		logos << "Error at line# " << yylineno << ": " << error << " " << text << endl;
-	}
-
-};
 
 ofstream logout("log.txt"), tokenout("token.txt");
 PrintUtil printUtil(tokenout, logout);
@@ -210,108 +52,108 @@ ESCAPES ['"nt\\afrbv0]
 "return"	|
 "case"		|
 "continue"	{
-				printUtil.printKeyword(yytext);
+				printUtil.printKeyword(yytext, yylineno);
 			}
 
 		
 {DIGIT}+ 	{
-				printUtil.print("CONST_INT", yytext);
+				printUtil.print("CONST_INT", yytext, yylineno);
 			}
 
 ({DIGITS}?\.{DIGITS}{EXP}?)	|
 {DIGITS}{EXP}	{
-					printUtil.print("CONST_FLOAT", yytext);
+					printUtil.print("CONST_FLOAT", yytext, yylineno);
 				}
 
 {DIGITS}?((\.)+{DIGITS}){2,}{EXP}?	|
 {DIGITS}?(\.)+{DIGITS}?	{
-	printUtil.printError("TOO_MANY_DECIMAL_POINTS", yytext);
+	printUtil.printError("TOO_MANY_DECIMAL_POINTS", yytext, yylineno);
 }
 
 {DIGITS}(\.{DIGITS})?(E+[+-]?{DIGITS}?(\.)[0-9(\.)]*)	{
-	printUtil.printError("ILLFORMED_NUMBER", yytext);
+	printUtil.printError("ILLFORMED_NUMBER", yytext, yylineno);
 }
 
 '([^'\\\n]|(\\{ESCAPES}))*'	{
-					printUtil.printChar(yytext);
+					printUtil.printChar(yytext, yylineno);
 				}
 
 "'\\'"	|
 '([^'\\\n]|(\\{ESCAPES}))*\n	{
 					string text = yytext;
 					if(text.back() == '\n') text = text.substr(0, text.length()-1);
-					printUtil.printError("UNFINISHED_CONST_CHAR", text);
+					printUtil.printError("UNFINISHED_CONST_CHAR", text, yylineno);
 				}
 
 [=!(){}\[\],;]	{
-					printUtil.printPunctuation(yytext);
+					printUtil.printPunctuation(yytext, yylineno);
 				}
 
 "+"		|
-"-"		{printUtil.print("ADDOP", yytext);}
+"-"		{printUtil.print("ADDOP", yytext, yylineno);}
 
 "*"		|
 "/"		|
-"%"		{printUtil.print("MULOP", yytext);}
+"%"		{printUtil.print("MULOP", yytext, yylineno);}
 
 "++"	|
-"--" 	{printUtil.print("INCOP", yytext);}
+"--" 	{printUtil.print("INCOP", yytext, yylineno);}
 
 "<"		|
 ">"		|
 "<="	|
 ">="	|
 "=="	|
-"!="	{printUtil.print("RELOP", yytext);}
+"!="	{printUtil.print("RELOP", yytext, yylineno);}
 
 "&&"	| 
-"||"	{printUtil.print("LOGIOP", yytext);}
+"||"	{printUtil.print("LOGIOP", yytext, yylineno);}
 
 "&"		| 
 "|"		|
 "^"		|
 "<<"	|
-">>"	{printUtil.print("BITOP", yytext);}
+">>"	{printUtil.print("BITOP", yytext, yylineno);}
 
 
 [_a-zA-Z][_a-zA-Z0-9]*	{
-							printUtil.print("ID", yytext);
+							printUtil.print("ID", yytext, yylineno);
 							//TODO: change into my implementation
 							SymbolInfo symbolInfo("NAME", "TYPE");
 							symbolTable.insert(symbolInfo);
 						}	
 
 [0-9][_a-zA-Z0-9]+		{
-							printUtil.printError("INVALID_ID_SUFFIX_NUM_PREFIX", yytext);
+							printUtil.printError("INVALID_ID_SUFFIX_NUM_PREFIX", yytext, yylineno);
 						}
 
 \"(([^"\\\n]|(\\{ESCAPES}))|("\\\n"))*\"	{
-							printUtil.printString(yytext);
+							printUtil.printString(yytext, yylineno);
 }
 \"(([^"\\\n]|(\\{ESCAPES}))|("\\\n"))*\n	{
 	string text = yytext;
-	printUtil.printError("UNFINISHED_STRING", text.substr(0, text.length()-1));
+	printUtil.printError("UNFINISHED_STRING", text.substr(0, text.length()-1), yylineno);
 }
 
 "//"(.|"\\\n")*\n	{
-	printUtil.printComment(yytext);
+	printUtil.printComment(yytext, yylineno);
 }
 
 "/*"					{BEGIN(COMMENT);}
 <COMMENT>"*/"			{
 							BEGIN(INITIAL);
-							printUtil.printMultilineComment(multilineComment);
+							printUtil.printMultilineComment(multilineComment, yylineno);
 							multilineComment = "";
 						}
 <COMMENT>([^*]|\n)+|.	{multilineComment.append(yytext);}
 <COMMENT><<EOF>>		{
-							printUtil.printError("UNFINISHED_COMMENT", "/*" + multilineComment);
+							printUtil.printError("UNFINISHED_COMMENT", "/*" + multilineComment, yylineno);
 							multilineComment = "";
 							BEGIN(INITIAL);
 						}
 
 [ \t\n]+		{ /* IGNORE */}
-.				{printUtil.printError("UNRECOGNIZED_CHAR", yytext);}
+.				{printUtil.printError("UNRECOGNIZED_CHAR", yytext, yylineno);}
 %%
 
 int main(int argc, char** argv) {
