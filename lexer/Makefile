@@ -1,7 +1,11 @@
-lexer.out: main.l lib/bin/printer.o lib/bin/scopeTable.o lib/bin/symbolInfo.o lib/bin/symbolTable.o
+lexer.out: main.l lib/bin/printer.o lib/bin/scopeTable.o lib/bin/symbolInfo.o lib/bin/symbolTable.o lib/bin/printUtil.o
 	flex main.l
 	g++ -c lex.yy.c
-	g++ -o lexer.out lex.yy.o lib/bin/printer.o lib/bin/scopeTable.o lib/bin/symbolInfo.o lib/bin/symbolTable.o
+	g++ -o lexer.out lex.yy.o lib/bin/printer.o lib/bin/scopeTable.o lib/bin/symbolInfo.o lib/bin/symbolTable.o lib/bin/printUtil.o
+
+lib/bin/printUtil.o: lib/src/printUtil.cpp
+	g++ -c lib/src/printUtil.cpp
+	mv printUtil.o lib/bin/
 
 lib/bin/printer.o:	lib/src/printer.cpp
 	g++ -c lib/src/printer.cpp

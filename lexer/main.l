@@ -10,33 +10,14 @@
 #include<string>
 #include<vector>
 
+#include"lib/symbolTable.h"
+#include"lib/symbolInfo.h"
+#include"lib/printer.h"
+
 using namespace std;
 
-class SymbolInfo{
-public:
-	string symbol;
-	string type;
-	SymbolInfo(){
-		symbol="";type="";
-	}
-	SymbolInfo(string symbol,string type){
-		this->symbol=symbol;this->type=type;
-	}
-};
-class ScopeTable{
-	vector<SymbolInfo *> syminfo;
-	public:
-	void insert(SymbolInfo *s){
-		syminfo.push_back(s);
-	}
-	void print(){
-		for(int i=0;i<syminfo.size();i++){
-			// fprintf(logout,"\n%s %s\n",syminfo[i]->symbol.c_str(),syminfo[i]->type.c_str());
-		}
-	}
-};
 
-ScopeTable st;
+
 
 class PrintUtil{
 	ostream& logos;
@@ -196,6 +177,8 @@ public:
 
 ofstream logout("log.txt"), tokenout("token.txt");
 PrintUtil printUtil(tokenout, logout);
+Printer printer(logout, true);
+SymbolTable symbolTable(7, &printer);
 string multilineComment = "";
 
 %}
@@ -294,8 +277,8 @@ ESCAPES ['"nt\\afrbv0]
 [_a-zA-Z][_a-zA-Z0-9]*	{
 							printUtil.print("ID", yytext);
 							//TODO: change into my implementation
-							SymbolInfo *si=new SymbolInfo(string(yytext),"ID");
-							st.insert(si);
+							SymbolInfo symbolInfo("NAME", "TYPE");
+							symbolTable.insert(symbolInfo);
 						}	
 
 [0-9][_a-zA-Z0-9]+		{
@@ -346,7 +329,7 @@ int main(int argc, char** argv) {
 
 	yyin= fin;
 	yylex();
-	st.print();
+	// st.print();
 	fclose(yyin);
 
 	return 0;
