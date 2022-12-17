@@ -601,14 +601,11 @@ char *yytext;
 #include<cstdio>
 #include<cstdlib>
 #include<iostream>
+#include<fstream>
 #include<string>
 #include<vector>
 
 using namespace std;
-
-
-FILE *logout;
-FILE *tokenout;
 
 class SymbolInfo{
 public:
@@ -629,7 +626,7 @@ class ScopeTable{
 	}
 	void print(){
 		for(int i=0;i<syminfo.size();i++){
-			fprintf(logout,"\n%s %s\n",syminfo[i]->symbol.c_str(),syminfo[i]->type.c_str());
+			// fprintf(logout,"\n%s %s\n",syminfo[i]->symbol.c_str(),syminfo[i]->type.c_str());
 		}
 	}
 };
@@ -637,15 +634,18 @@ class ScopeTable{
 ScopeTable st;
 
 class PrintUtil{
-	FILE *logout;
-	FILE *tokenout;
+	ostream& logos;
+	ostream& tokenos;
 
 	void printLog(string token, string symbol){
-		fprintf(logout,"Line# %d: TOKEN <%s> Lexeme %s found\n",yylineno,token.c_str(), symbol.c_str());
+		logos << "Line# " << yylineno << ": Token <" << token 
+			<< "> Lexeme " << symbol << "found" << endl;
+		// fprintf(logout,"Line# %d: TOKEN <%s> Lexeme %s found\n",yylineno,token.c_str(), symbol.c_str());
 	}
 
 	void printToken(string token, string symbol){
-		fprintf(tokenout,"<%s, %s>\n",token.c_str(), symbol.c_str());
+		tokenos << "<" << token << ", " << symbol << ">" << endl;
+		// fprintf(tokenout,"<%s, %s>\n",token.c_str(), symbol.c_str());
 	}
 
 	void printHelper(string token, string symbol){
@@ -707,9 +707,10 @@ class PrintUtil{
 	}
 
 public:
-	PrintUtil(FILE *logout, FILE* tokenout){
-		this->logout = logout;
-		this->tokenout = tokenout;
+	PrintUtil(ostream &token, ostream &log)
+		: tokenos(token), logos(log)
+	{
+
 	}
 
 	void printKeyword(string text){
@@ -727,10 +728,10 @@ public:
 		printHelper(token, text);
 	}
 
-	void setOutput(FILE *logout, FILE* tokenout){
-		this->logout = logout;
-		this->tokenout = tokenout;
-	}
+	// void setOutput(FILE *logout, FILE* tokenout){
+	// 	this->logout = logout;
+	// 	this->tokenout = tokenout;
+	// }
 
 	void printPunctuation(string text){
 		char c = text[0];
@@ -788,15 +789,18 @@ public:
 	}
 
 	void printError(string error, string text){
-		fprintf(logout, "Error at line# %d: %s %s\n", yylineno, error.c_str(), text.c_str());
+		logos << "Error" << endl;
+		//fprintf(logout, "Error at line# %d: %s %s\n", yylineno, error.c_str(), text.c_str());
 	}
+
 };
 
-PrintUtil printUtil(nullptr, nullptr);
+ofstream logout("log.txt"), tokenout("token.txt");
+PrintUtil printUtil(logout, tokenout);
 string multilineComment = "";
 
-#line 799 "lex.yy.c"
-#line 800 "lex.yy.c"
+#line 803 "lex.yy.c"
+#line 804 "lex.yy.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -1014,9 +1018,9 @@ YY_DECL
 		}
 
 	{
-#line 213 "main.l"
+#line 217 "main.l"
 
-#line 1020 "lex.yy.c"
+#line 1024 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1086,91 +1090,91 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 214 "main.l"
+#line 218 "main.l"
 {}
 	YY_BREAK
 case 2:
-#line 217 "main.l"
-case 3:
-#line 218 "main.l"
-case 4:
-#line 219 "main.l"
-case 5:
-#line 220 "main.l"
-case 6:
 #line 221 "main.l"
-case 7:
+case 3:
 #line 222 "main.l"
-case 8:
+case 4:
 #line 223 "main.l"
-case 9:
+case 5:
 #line 224 "main.l"
-case 10:
+case 6:
 #line 225 "main.l"
-case 11:
+case 7:
 #line 226 "main.l"
-case 12:
+case 8:
 #line 227 "main.l"
-case 13:
+case 9:
 #line 228 "main.l"
-case 14:
+case 10:
 #line 229 "main.l"
-case 15:
+case 11:
 #line 230 "main.l"
-case 16:
+case 12:
 #line 231 "main.l"
+case 13:
+#line 232 "main.l"
+case 14:
+#line 233 "main.l"
+case 15:
+#line 234 "main.l"
+case 16:
+#line 235 "main.l"
 case 17:
 YY_RULE_SETUP
-#line 231 "main.l"
+#line 235 "main.l"
 {
 				printUtil.printKeyword(yytext);
 			}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 236 "main.l"
+#line 240 "main.l"
 {
 				printUtil.print("CONST_INT", yytext);
 			}
 	YY_BREAK
 case 19:
-#line 241 "main.l"
+#line 245 "main.l"
 case 20:
 YY_RULE_SETUP
-#line 241 "main.l"
+#line 245 "main.l"
 {
 					printUtil.print("CONST_FLOAT", yytext);
 				}
 	YY_BREAK
 case 21:
-#line 246 "main.l"
+#line 250 "main.l"
 case 22:
 YY_RULE_SETUP
-#line 246 "main.l"
+#line 250 "main.l"
 {
 	printUtil.printError("TOO_MANY_DECIMAL_POINTS", yytext);
 }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 250 "main.l"
+#line 254 "main.l"
 {
 	printUtil.printError("ILLFORMED_NUMBER", yytext);
 }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 254 "main.l"
+#line 258 "main.l"
 {
 					printUtil.printChar(yytext);
 				}
 	YY_BREAK
 case 25:
-#line 259 "main.l"
+#line 263 "main.l"
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 259 "main.l"
+#line 263 "main.l"
 {
 					string text = yytext;
 					if(text.back() == '\n') text = text.substr(0, text.length()-1);
@@ -1179,72 +1183,72 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 265 "main.l"
+#line 269 "main.l"
 {
 					printUtil.printPunctuation(yytext);
 				}
 	YY_BREAK
 case 28:
-#line 270 "main.l"
+#line 274 "main.l"
 case 29:
 YY_RULE_SETUP
-#line 270 "main.l"
+#line 274 "main.l"
 {printUtil.print("ADDOP", yytext);}
 	YY_BREAK
 case 30:
-#line 273 "main.l"
+#line 277 "main.l"
 case 31:
-#line 274 "main.l"
+#line 278 "main.l"
 case 32:
 YY_RULE_SETUP
-#line 274 "main.l"
+#line 278 "main.l"
 {printUtil.print("MULOP", yytext);}
 	YY_BREAK
 case 33:
-#line 277 "main.l"
+#line 281 "main.l"
 case 34:
 YY_RULE_SETUP
-#line 277 "main.l"
+#line 281 "main.l"
 {printUtil.print("INCOP", yytext);}
 	YY_BREAK
 case 35:
-#line 280 "main.l"
-case 36:
-#line 281 "main.l"
-case 37:
-#line 282 "main.l"
-case 38:
-#line 283 "main.l"
-case 39:
 #line 284 "main.l"
+case 36:
+#line 285 "main.l"
+case 37:
+#line 286 "main.l"
+case 38:
+#line 287 "main.l"
+case 39:
+#line 288 "main.l"
 case 40:
 YY_RULE_SETUP
-#line 284 "main.l"
+#line 288 "main.l"
 {printUtil.print("RELOP", yytext);}
 	YY_BREAK
 case 41:
-#line 287 "main.l"
+#line 291 "main.l"
 case 42:
 YY_RULE_SETUP
-#line 287 "main.l"
+#line 291 "main.l"
 {printUtil.print("LOGIOP", yytext);}
 	YY_BREAK
 case 43:
-#line 290 "main.l"
+#line 294 "main.l"
 case 44:
-#line 291 "main.l"
+#line 295 "main.l"
 case 45:
-#line 292 "main.l"
+#line 296 "main.l"
 case 46:
-#line 293 "main.l"
+#line 297 "main.l"
 case 47:
 YY_RULE_SETUP
-#line 293 "main.l"
+#line 297 "main.l"
 {printUtil.print("BITOP", yytext);}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 296 "main.l"
+#line 300 "main.l"
 {
 							printUtil.print("ID", yytext);
 							//TODO: change into my implementation
@@ -1254,7 +1258,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 303 "main.l"
+#line 307 "main.l"
 {
 							printUtil.printError("INVALID_ID_SUFFIX_NUM_PREFIX", yytext);
 						}
@@ -1262,7 +1266,7 @@ YY_RULE_SETUP
 case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
-#line 307 "main.l"
+#line 311 "main.l"
 {
 							printUtil.printString(yytext);
 }
@@ -1270,7 +1274,7 @@ YY_RULE_SETUP
 case 51:
 /* rule 51 can match eol */
 YY_RULE_SETUP
-#line 310 "main.l"
+#line 314 "main.l"
 {
 	string text = yytext;
 	printUtil.printError("UNFINISHED_STRING", text.substr(0, text.length()-1));
@@ -1279,19 +1283,19 @@ YY_RULE_SETUP
 case 52:
 /* rule 52 can match eol */
 YY_RULE_SETUP
-#line 315 "main.l"
+#line 319 "main.l"
 {
 	printUtil.printComment(yytext);
 }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 319 "main.l"
+#line 323 "main.l"
 {BEGIN(COMMENT);}
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 320 "main.l"
+#line 324 "main.l"
 {
 							BEGIN(INITIAL);
 							printUtil.printMultilineComment(multilineComment);
@@ -1301,11 +1305,11 @@ YY_RULE_SETUP
 case 55:
 /* rule 55 can match eol */
 YY_RULE_SETUP
-#line 325 "main.l"
+#line 329 "main.l"
 {multilineComment.append(yytext);}
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 326 "main.l"
+#line 330 "main.l"
 {
 							printUtil.printError("UNFINISHED_COMMENT", "/*" + multilineComment);
 							multilineComment = "";
@@ -1315,20 +1319,20 @@ case YY_STATE_EOF(COMMENT):
 case 56:
 /* rule 56 can match eol */
 YY_RULE_SETUP
-#line 332 "main.l"
+#line 336 "main.l"
 { /* IGNORE */}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 333 "main.l"
+#line 337 "main.l"
 {printUtil.printError("UNRECOGNIZED_CHAR", yytext);}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 334 "main.l"
+#line 338 "main.l"
 ECHO;
 	YY_BREAK
-#line 1332 "lex.yy.c"
+#line 1336 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2345,7 +2349,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 334 "main.l"
+#line 338 "main.l"
 
 
 int main(int argc, char** argv) {
@@ -2360,16 +2364,18 @@ int main(int argc, char** argv) {
 		return 0;
 	}
 	
-	logout= fopen("log.txt","w");
-	tokenout= fopen("token.txt","w");
-	printUtil.setOutput(logout, tokenout);
+	// logout= fopen("log.txt","w");
+	// tokenout= fopen("token.txt","w");
+	// ofstream logout("log.txt"), tokenout("token.txt");
+	//printUtil = PrintUtil("token.txt", "log.txt");
+	//printUtil.setOutput(logout, tokenout);
 
 	yyin= fin;
 	yylex();
 	st.print();
 	fclose(yyin);
-	fclose(tokenout);
-	fclose(logout);
+	// fclose(tokenout);
+	// fclose(logout);
 	return 0;
 }
 

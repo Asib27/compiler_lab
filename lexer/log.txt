@@ -1,54 +1,62 @@
-Error at line# 1: INVALID_ID_SUFFIX_NUM_PREFIX 12abcd
-Error at line# 2: UNRECOGNIZED_CHAR @
-Error at line# 3: MULTICHAR_CONST_CHAR 'ab'
-Error at line# 4: MULTICHAR_CONST_CHAR 'acnajscals'
-Error at line# 5: EMPTY_CONST_CHAR ''
-Line# 6: TOKEN <CONST_CHAR> Lexeme 
- found
-Error at line# 7: MULTICHAR_CONST_CHAR '\\n'
-Error at line# 9: UNFINISHED_CONST_CHAR '\'
-Error at line# 10: UNFINISHED_CONST_CHAR 'najsndjasnjda
-Error at line# 11: UNFINISHED_CONST_CHAR 'n
-Line# 11: TOKEN <ID> Lexeme abcde found
-Line# 12: TOKEN <SINGLE LINE STRING> Lexeme asdads found
-Error at line# 14: UNFINISHED_STRING "asdasd
-Error at line# 16: UNFINISHED_STRING "sfgsdg\
-dgfsdg
-Line# 17: TOKEN <ID> Lexeme abc found
-Error at line# 18: REDUNDANT_DECIMAL 123.122.332342
-Line# 19: TOKEN <CONST_FLOAT> Lexeme 123.333 found
-Error at line# 22: REDUNDANT_DECIMAL 123.2222.22222..222312.1231231.31231313123.12313123123
-Error at line# 23: REDUNDANT_DECIMAL 12333..333
-Error at line# 25: REDUNDANT_DECIMAL 123..333.333
-Error at line# 26: REDUNDANT_DECIMAL 123.333..333
-Error at line# 27: REDUNDANT_DECIMAL 123..33
-Error at line# 28: REDUNDANT_DECIMAL .
-Error at line# 30: ILL_FORMED 123E21.213
-Error at line# 31: ILL_FORMED 1111E.1212
-Error at line# 32: ILL_FORMED 1E...123
-Error at line# 33: ILL_FORMED 1E+12.22
-Error at line# 34: ILL_FORMED 1EEE+12....222
-Error at line# 36: REDUNDANT_DECIMAL 1.2.345
-Error at line# 37: ILL_FORMED 1E10.7
-Error at line# 38: INVALID_ID_SUFFIX_NUM_PREFIX 12abcd
-Error at line# 39: UNRECOGNIZED_CHAR @
-Error at line# 40: MULTICHAR_CONST_CHAR 'ab'
-Error at line# 42: UNFINISHED_CONST_CHAR 'a
-Error at line# 43: UNFINISHED_CONST_CHAR '
-Error at line# 43: MULTICHAR_CONST_CHAR 'ab cd'
-Error at line# 45: UNFINISHED_CONST_CHAR '\'
-Error at line# 45: EMPTY_CONST_CHAR ''
-Error at line# 47: UNFINISHED_STRING "abcd
-Error at line# 49: UNFINISHED_STRING "abcd\
-efgh
-Line# 49: TOKEN <ID> Lexeme ijk found
-Error at line# 50: UNFINISHED_STRING "
-Error at line# 52: UNFINISHED_COMMENT /**abc
-def
-
-
-abcde ID
-
-abc ID
-
-ijk ID
+<VOID, void>
+<ID, main>
+<LPAREN, (>
+<RPAREN, )>
+<LCURL, {>
+<INT, int>
+<ID, x>
+<COMMA, ,>
+<ID, y>
+<SEMICOLON, ;>
+<ID, x>
+<ASSIGNOP, =>
+<ID, x>
+<ADDOP, +>
+<CONST_INT, 1>
+<SEMICOLON, ;>
+<ID, y>
+<ASSIGNOP, =>
+<ID, y>
+<MULOP, *>
+<CONST_INT, 2>
+<SEMICOLON, ;>
+<FLOAT, float>
+<ID, f>
+<SEMICOLON, ;>
+<ID, f>
+<ASSIGNOP, =>
+<ID, f>
+<ADDOP, ->
+<CONST_FLOAT, 3.14>
+<SEMICOLON, ;>
+<ID, f>
+<ASSIGNOP, =>
+<ID, f>
+<MULOP, *>
+<CONST_FLOAT, 2.81E0>
+<SEMICOLON, ;>
+<CHAR, char>
+<ID, ch>
+<ASSIGNOP, =>
+<CONST_CHAR, z>
+<SEMICOLON, ;>
+<ID, ch>
+<ASSIGNOP, =>
+<CONST_CHAR, 	>
+<SEMICOLON, ;>
+<CHAR, char>
+<ID, str>
+<LSQUARE, [>
+<RSQUARE, ]>
+<ASSIGNOP, =>
+<SINGLE LINE STRING, hello	world>
+<SEMICOLON, ;>
+<ID, printf>
+<LPAREN, (>
+<MULTI LINE STRING, The day	was	sunny>
+<RPAREN, )>
+<SEMICOLON, ;>
+<RETURN, return>
+<CONST_INT, 0>
+<SEMICOLON, ;>
+<RCURL, }>

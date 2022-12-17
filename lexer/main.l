@@ -6,14 +6,11 @@
 #include<cstdio>
 #include<cstdlib>
 #include<iostream>
+#include<fstream>
 #include<string>
 #include<vector>
 
 using namespace std;
-
-
-FILE *logout;
-FILE *tokenout;
 
 class SymbolInfo{
 public:
@@ -34,7 +31,7 @@ class ScopeTable{
 	}
 	void print(){
 		for(int i=0;i<syminfo.size();i++){
-			fprintf(logout,"\n%s %s\n",syminfo[i]->symbol.c_str(),syminfo[i]->type.c_str());
+			// fprintf(logout,"\n%s %s\n",syminfo[i]->symbol.c_str(),syminfo[i]->type.c_str());
 		}
 	}
 };
@@ -42,15 +39,18 @@ class ScopeTable{
 ScopeTable st;
 
 class PrintUtil{
-	FILE *logout;
-	FILE *tokenout;
+	ostream& logos;
+	ostream& tokenos;
 
 	void printLog(string token, string symbol){
-		fprintf(logout,"Line# %d: TOKEN <%s> Lexeme %s found\n",yylineno,token.c_str(), symbol.c_str());
+		logos << "Line# " << yylineno << ": Token <" << token 
+			<< "> Lexeme " << symbol << "found" << endl;
+		// fprintf(logout,"Line# %d: TOKEN <%s> Lexeme %s found\n",yylineno,token.c_str(), symbol.c_str());
 	}
 
 	void printToken(string token, string symbol){
-		fprintf(tokenout,"<%s, %s>\n",token.c_str(), symbol.c_str());
+		tokenos << "<" << token << ", " << symbol << ">" << endl;
+		// fprintf(tokenout,"<%s, %s>\n",token.c_str(), symbol.c_str());
 	}
 
 	void printHelper(string token, string symbol){
@@ -112,9 +112,10 @@ class PrintUtil{
 	}
 
 public:
-	PrintUtil(FILE *logout, FILE* tokenout){
-		this->logout = logout;
-		this->tokenout = tokenout;
+	PrintUtil(ostream &token, ostream &log)
+		: tokenos(token), logos(log)
+	{
+
 	}
 
 	void printKeyword(string text){
@@ -130,11 +131,6 @@ public:
 
 	void print(string token, string text){
 		printHelper(token, text);
-	}
-
-	void setOutput(FILE *logout, FILE* tokenout){
-		this->logout = logout;
-		this->tokenout = tokenout;
 	}
 
 	void printPunctuation(string text){
@@ -193,11 +189,13 @@ public:
 	}
 
 	void printError(string error, string text){
-		fprintf(logout, "Error at line# %d: %s %s\n", yylineno, error.c_str(), text.c_str());
+		logos << "Error at line# " << yylineno << ": " << error << " " << text << endl;
 	}
+
 };
 
-PrintUtil printUtil(nullptr, nullptr);
+ofstream logout("log.txt"), tokenout("token.txt");
+PrintUtil printUtil(tokenout, logout);
 string multilineComment = "";
 
 %}
@@ -345,15 +343,11 @@ int main(int argc, char** argv) {
 		return 0;
 	}
 	
-	logout= fopen("log.txt","w");
-	tokenout= fopen("token.txt","w");
-	printUtil.setOutput(logout, tokenout);
 
 	yyin= fin;
 	yylex();
 	st.print();
 	fclose(yyin);
-	fclose(tokenout);
-	fclose(logout);
+
 	return 0;
 }
