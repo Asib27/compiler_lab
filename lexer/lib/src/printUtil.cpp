@@ -2,7 +2,7 @@
 
 void PrintUtil::printLog(std::string token, std::string symbol, int lineNo){
     logos << "Line# " << lineNo << ": Token <" << token 
-        << "> Lexeme " << symbol << "found" << std::endl;
+        << "> Lexeme " << symbol << " found" << std::endl;
     // fprintf(logout,"Line# %d: TOKEN <%s> Lexeme %s found\n",yylineno,token.c_str(), symbol.c_str());
 }
 
@@ -67,7 +67,7 @@ std::string PrintUtil::insertEscapeInString(std::string text){
 }
 
 PrintUtil::PrintUtil(std::ostream &token, std::ostream &log)
-    : tokenos(token), logos(log)
+    : tokenos(token), logos(log), errorCount(0)
 {
 
 }
@@ -143,5 +143,10 @@ void PrintUtil::printMultilineComment(std::string text, int lineNo){
 }
 
 void PrintUtil::printError(std::string error, std::string text, int lineNo){
+    errorCount++;
     logos << "Error at line# " << lineNo << ": " << error << " " << text << std::endl;
+}
+
+int PrintUtil::getErrorCount(){
+    return errorCount;
 }

@@ -50,7 +50,7 @@ void ScopeTable::printInsertHelper(std::string s){
     if(printer != nullptr && printer->isPrint()){
         auto &os = printer->getOutputStream();
         os << "\t";
-        os << "'" << s << "'" << " already exists in the current ScopeTable" << std::endl;
+        os << s << " already exists in the current ScopeTable" << std::endl;
     }
 }
 
@@ -70,8 +70,8 @@ ScopeTable::ScopeTable(int n, int scopeId, ScopeTable *next, Printer *printer)
 
     if(printer != nullptr && printer->isPrint()){
         auto &os = printer->getOutputStream();
-        os << "\t";
-        os << "ScopeTable# " << _scopeId << " created" << std::endl;
+        // os << "\t";
+        // os << "ScopeTable# " << _scopeId << " created" << std::endl;
     }
 } 
 
@@ -81,7 +81,7 @@ bool ScopeTable::insert(SymbolInfo s){
     if(_table[hash] == nullptr){
         auto sptr = new SymbolInfo(s, _table[hash]);
         _table[hash] = sptr;
-        printInsertHelper(hash+1, 1);
+        // printInsertHelper(hash+1, 1);
     }
     else{
         auto toInsertAt = _table[hash];
@@ -96,7 +96,7 @@ bool ScopeTable::insert(SymbolInfo s){
 
         auto sptr = new SymbolInfo(s);
         toInsertAt->setNext(sptr);
-        printInsertHelper(hash+1, i);
+        // printInsertHelper(hash+1, i);
     }
 
     return true;
@@ -172,8 +172,8 @@ ScopeTable::~ScopeTable(){
 
     if(printer != nullptr && printer->isPrint()){
         auto &os = printer->getOutputStream() ;
-        os << "\t";
-        os << "ScopeTable# " << _scopeId << " removed" << std::endl;
+        // os << "\t";
+        // os << "ScopeTable# " << _scopeId << " removed" << std::endl;
     }
 }
 
@@ -181,6 +181,8 @@ std::ostream& operator<<(std::ostream &os, const ScopeTable &s){
     os << "\t";
     os << "ScopeTable# " << s._scopeId << std::endl;
     for(int i = 0; i < s._no_of_bucket; i++){
+        if(s._table[i] == nullptr) continue; 
+
         os << "\t";
         os << i+1 << "--> ";
         auto head = s._table[i];

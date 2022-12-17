@@ -20,7 +20,9 @@ using namespace std;
 ofstream logout("log.txt"), tokenout("token.txt");
 PrintUtil printUtil(tokenout, logout);
 Printer printer(logout, true);
-SymbolTable symbolTable(7, &printer);
+SymbolTable symbolTable(13, &printer);
+
+int error_count = 0;
 string multilineComment = "";
 
 %}
@@ -86,6 +88,12 @@ ESCAPES ['"nt\\afrbv0]
 				}
 
 [=!(){}\[\],;]	{
+					if(yytext[0] == '{'){
+						symbolTable.enterScope();
+					}
+					if(yytext[0] == '}'){
+						symbolTable.exitScope();
+					}
 					printUtil.printPunctuation(yytext, yylineno);
 				}
 
@@ -118,9 +126,12 @@ ESCAPES ['"nt\\afrbv0]
 
 [_a-zA-Z][_a-zA-Z0-9]*	{
 							printUtil.print("ID", yytext, yylineno);
-							//TODO: change into my implementation
-							SymbolInfo symbolInfo("NAME", "TYPE");
-							symbolTable.insert(symbolInfo);
+							SymbolInfo symbolInfo(yytext, "ID");
+							bool isInserted = symbolTable.insert(symbolInfo);
+
+							if(isInserted){
+								logout << symbolTable;
+							}
 						}	
 
 [0-9][_a-zA-Z0-9]+		{
@@ -171,7 +182,11 @@ int main(int argc, char** argv) {
 
 	yyin= fin;
 	yylex();
-	// st.print();
+	
+	logout << symbolTable;
+	logout << "Total lines: " << yylineno << endl;
+	logout << "Total errors: " << printUtil.getErrorCount() << endl;
+
 	fclose(yyin);
 
 	return 0;

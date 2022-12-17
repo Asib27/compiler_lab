@@ -7,6 +7,7 @@
 class PrintUtil{
 	std::ostream& logos;
 	std::ostream& tokenos;
+	int errorCount;
 
 	void printLog(std::string token, std::string symbol, int lineNo);
 	void printToken(std::string token, std::string symbol);
@@ -29,6 +30,8 @@ public:
 	void printComment(std::string text, int lineNo);
 	void printMultilineComment(std::string text, int lineNo);
 	void printError(std::string error, std::string text, int lineNo);
+
+	int getErrorCount();
 };
 
 #endif
