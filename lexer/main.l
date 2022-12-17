@@ -242,6 +242,14 @@ ESCAPES ['"nt\\afrbv0]
 					printUtil.print("CONST_FLOAT", yytext);
 				}
 
+{DIGITS}?((\.)+{DIGITS}){2,}{EXP}?	|
+{DIGITS}?(\.)+{DIGITS}?	{
+	printUtil.printError("TOO_MANY_DECIMAL_POINTS", yytext);
+}
+
+{DIGITS}(\.{DIGITS})?(E+[+-]?{DIGITS}?(\.)[0-9(\.)]*)	{
+	printUtil.printError("ILLFORMED_NUMBER", yytext);
+}
 
 '([^'\\\n]|(\\{ESCAPES}))*'	{
 					printUtil.printChar(yytext);

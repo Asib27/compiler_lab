@@ -15,20 +15,40 @@ Error at line# 14: UNFINISHED_STRING "asdasd
 Error at line# 16: UNFINISHED_STRING "sfgsdg\
 dgfsdg
 Line# 17: TOKEN <ID> Lexeme abc found
-Line# 18: TOKEN <CONST_FLOAT> Lexeme 123.122 found
-Line# 18: TOKEN <CONST_FLOAT> Lexeme .332342 found
+Error at line# 18: REDUNDANT_DECIMAL 123.122.332342
 Line# 19: TOKEN <CONST_FLOAT> Lexeme 123.333 found
-Line# 20: TOKEN <CONST_FLOAT> Lexeme 123.2222 found
-Line# 20: TOKEN <CONST_FLOAT> Lexeme .22222 found
-Error at line# 20: UNRECOGNIZED_CHAR .
-Line# 20: TOKEN <CONST_FLOAT> Lexeme .222312 found
-Line# 20: TOKEN <CONST_FLOAT> Lexeme .1231231 found
-Line# 20: TOKEN <CONST_FLOAT> Lexeme .31231313123 found
-Line# 20: TOKEN <CONST_FLOAT> Lexeme .12313123123 found
-Line# 21: TOKEN <CONST_INT> Lexeme 12333 found
-Error at line# 21: UNRECOGNIZED_CHAR .
-Line# 21: TOKEN <CONST_FLOAT> Lexeme .333 found
+Error at line# 22: REDUNDANT_DECIMAL 123.2222.22222..222312.1231231.31231313123.12313123123
+Error at line# 23: REDUNDANT_DECIMAL 12333..333
+Error at line# 25: REDUNDANT_DECIMAL 123..333.333
+Error at line# 26: REDUNDANT_DECIMAL 123.333..333
+Error at line# 27: REDUNDANT_DECIMAL 123..33
+Error at line# 28: REDUNDANT_DECIMAL .
+Error at line# 30: ILL_FORMED 123E21.213
+Error at line# 31: ILL_FORMED 1111E.1212
+Error at line# 32: ILL_FORMED 1E...123
+Error at line# 33: ILL_FORMED 1E+12.22
+Error at line# 34: ILL_FORMED 1EEE+12....222
+Error at line# 36: REDUNDANT_DECIMAL 1.2.345
+Error at line# 37: ILL_FORMED 1E10.7
+Error at line# 38: INVALID_ID_SUFFIX_NUM_PREFIX 12abcd
+Error at line# 39: UNRECOGNIZED_CHAR @
+Error at line# 40: MULTICHAR_CONST_CHAR 'ab'
+Error at line# 42: UNFINISHED_CONST_CHAR 'a
+Error at line# 43: UNFINISHED_CONST_CHAR '
+Error at line# 43: MULTICHAR_CONST_CHAR 'ab cd'
+Error at line# 45: UNFINISHED_CONST_CHAR '\'
+Error at line# 45: EMPTY_CONST_CHAR ''
+Error at line# 47: UNFINISHED_STRING "abcd
+Error at line# 49: UNFINISHED_STRING "abcd\
+efgh
+Line# 49: TOKEN <ID> Lexeme ijk found
+Error at line# 50: UNFINISHED_STRING "
+Error at line# 52: UNFINISHED_COMMENT /**abc
+def
+
 
 abcde ID
 
 abc ID
+
+ijk ID
