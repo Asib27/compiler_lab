@@ -32,6 +32,17 @@ char PrintUtil::escapeToChar(char c){
     return c;
 }
 
+bool PrintUtil::isEscapeChar(char c){
+    const int map_size = 11;
+    const char keys[] = {'\'', '\"', 'n', 't', '\\', 'a', 'f', 'r', 'b', 'v', '0'};
+
+    for(int i = 0; i < map_size; i++){
+        if(keys[i] == c) return true;
+    }
+
+    return false;
+}
+
 std::string PrintUtil::removerSlashNewline(std::string text){
     std::string ans = "";
     for(int i = 1; i < text.length()-1; i++){
@@ -109,8 +120,7 @@ void PrintUtil::printChar(std::string text, int lineNo){
     else if(text.length() == 3){
         printHelper("CONST_CHAR", std::string(1, text[1]), lineNo);
     }
-    else if(text.length() == 4 && text[1] == '\\'){			
-        //TODO: EMPTY CHAR HANDLE CODE
+    else if(text.length() == 4 && text[1] == '\\' && isEscapeChar(text[2])){			
         printHelper("CONST_CHAR", std::string(1, escapeToChar(text[2])), lineNo);
     }
     else{
@@ -123,23 +133,42 @@ int PrintUtil::printString(std::string text, int lineNo){
     std::string ans = insertEscapeInString(singleLine);
 
     if(singleLine.length() < text.length() - 2){
-        printHelper("MULTI LINE STRING", ans, lineNo);
+        int lineSpanByComment = (text.length() - 2 - singleLine.length()) / 2;
+        printToken("MULTI LINE STRING", ans);
+        printLog("MULTI LINE STRING", text, lineNo - lineSpanByComment);
+        // printHelper("MULTI LINE STRING", ans, lineNo);
     }
-    else
-        printHelper("SINGLE LINE STRING", ans, lineNo);
+    else{
+        printToken("SINGLE LINE STRING", ans);
+        printLog("SINGLE LINE STRING", text, lineNo);
+        // printHelper("SINGLE LINE STRING", ans, lineNo);
+    }
 
     return 0;
+}
+
+
+int PrintUtil::newLineCount(std::string text){
+    int lineCount = 0;
+
+    for(auto i: text){
+        if(i == '\n') lineCount++;
+    }
+
+    return lineCount;
 }
 
 void PrintUtil::printComment(std::string text, int lineNo){
     // string ans = removerSlashNewline(text);
     // ans = ans.substr(1, ans.length()-1);
+    int lineCount = newLineCount(text);
     text = text.substr(0, text.length()-1);
-    printLog("COMMENT", text, lineNo);
+    printLog("SINGLE LINE COMMENT", text, lineNo - lineCount);
 }
 
 void PrintUtil::printMultilineComment(std::string text, int lineNo){
-    printLog("COMMENT", text, lineNo);
+    int lineCount = newLineCount(text);
+    printLog("MULTI LINE COMMENT", "/*" + text + "*/", lineNo - lineCount);
 }
 
 void PrintUtil::printError(std::string error, std::string text, int lineNo){

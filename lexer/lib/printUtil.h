@@ -14,12 +14,14 @@ class PrintUtil{
 	void printHelper(std::string token, std::string symbol, int lineNo);
 
 	char escapeToChar(char c);
+	bool isEscapeChar(char c);
 	/**
 	* removes first and last char also
 	*/
 	std::string removerSlashNewline(std::string text);
 	std::string insertEscapeInString(std::string text);
 
+	int newLineCount(std::string text);
 public:
 	PrintUtil(std::ostream &token, std::ostream &log);
 	void printKeyword(std::string text, int lineNo);

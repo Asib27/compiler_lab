@@ -20,10 +20,11 @@ using namespace std;
 ofstream logout("log.txt"), tokenout("token.txt");
 PrintUtil printUtil(tokenout, logout);
 Printer printer(logout, true);
-SymbolTable symbolTable(13, &printer);
+SymbolTable symbolTable(10, &printer);
 
 int error_count = 0;
 string multilineComment = "";
+int multilineCommentStart = 0;
 
 %}
 
@@ -33,7 +34,7 @@ DIGIT [0-9]
 DIGITS ({DIGIT}+)
 EXP (E[+-]?{DIGITS})
 NEWLINE \n
-ESCAPES ['"nt\\afrbv0]
+ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 
 %%
 \n		{}
@@ -81,10 +82,15 @@ ESCAPES ['"nt\\afrbv0]
 				}
 
 "'\\'"	|
-'([^'\\\n]|(\\{ESCAPES}))*\n	{
+'([^'\\\n;]|(\\{ESCAPES}))*(\n|";")	{
 					string text = yytext;
-					if(text.back() == '\n') text = text.substr(0, text.length()-1);
-					printUtil.printError("UNFINISHED_CONST_CHAR", text, yylineno);
+					bool isNewLine = (text.back() == '\n');
+
+					text = text.substr(0, text.length()-1);
+					printUtil.printError("UNFINISHED_CONST_CHAR", text, yylineno - isNewLine);
+					if(!isNewLine){ 
+						printUtil.printPunctuation(";", yylineno);
+					}
 				}
 
 [=!(){}\[\],;]	{
@@ -143,23 +149,33 @@ ESCAPES ['"nt\\afrbv0]
 }
 \"(([^"\\\n]|(\\{ESCAPES}))|("\\\n"))*\n	{
 	string text = yytext;
-	printUtil.printError("UNFINISHED_STRING", text.substr(0, text.length()-1), yylineno);
+	int newLineCount = 0;
+	for(auto i: text) if(i == '\n') newLineCount++;
+
+	printUtil.printError("UNFINISHED_STRING", text.substr(0, text.length()-1), yylineno-newLineCount);
 }
 
 "//"(.|"\\\n")*\n	{
 	printUtil.printComment(yytext, yylineno);
 }
 
-"/*"					{BEGIN(COMMENT);}
+"/*"					{
+							BEGIN(COMMENT);
+							multilineCommentStart = yylineno;
+						}
 <COMMENT>"*/"			{
 							BEGIN(INITIAL);
 							printUtil.printMultilineComment(multilineComment, yylineno);
 							multilineComment = "";
 						}
-<COMMENT>([^*]|\n)+|.	{multilineComment.append(yytext);}
+<COMMENT>([^*]|\n)+|.	{
+							multilineComment.append(yytext);
+						}
 <COMMENT><<EOF>>		{
-							printUtil.printError("UNFINISHED_COMMENT", "/*" + multilineComment, yylineno);
+							if(multilineComment.back() == '\n') multilineComment.pop_back();
+							printUtil.printError("UNFINISHED_COMMENT", "/*" + multilineComment, multilineCommentStart);
 							multilineComment = "";
+							yylineno--;
 							BEGIN(INITIAL);
 						}
 

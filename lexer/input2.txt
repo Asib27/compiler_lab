@@ -33,19 +33,5 @@ abc
 1E+12.22
 1EEE+12....222
 
-1.2.345
-1E10.7
-12abcd
-@
-'ab'
-'a
-'
-'ab cd'
-'\'
-''
-"abcd
-"abcd\
-efgh
-ijk"
-/**abc
-def
+'\x'
+'\y'
