@@ -3,7 +3,8 @@
 #include<cstdlib>
 #include<cstring>
 #include<cmath>
-#include "symbol.h"
+#include"lib/symbolTable.h"
+#include "lib/symbolInfo.h"
 #define YYSTYPE SymbolInfo*
 
 using namespace std;
@@ -23,89 +24,88 @@ void yyerror(char *s)
 
 %}
 
-%token IF ELSE FOR WHILE
-
-%left 
-%right
-
-%nonassoc 
-
+%token IF FOR DO INT FLOAT VOID SWITCH DEFAULT ELSE WHILE BREAK 
+%token CHAR DOUBLE RETURN CASE CONTINUE MAIN
+%token CONST_INT CONST_FLOAT CONST_CHAR 
+%token ASSIGNOP NOT LPAREN RPAREN LTHIRD RTHIRD LCURL RCURL COMMA SEMICOLON
+%token ADDOP MULOP INCOP DECOP RELOP LOGICOP BITOP ID PRINTLN
 
 %%
 
-start : program
+// program
+start : arguments
 	{
 		//write your code in this block in all the similar blocks below
 	}
 	;
 
-program : program unit 
-	| unit
-	;
+// program : program unit 
+// 	| unit
+// 	;
 	
-unit : var_declaration
-     | func_declaration
-     | func_definition
-     ;
+// unit : var_declaration
+//      | func_declaration
+//      | func_definition
+//      ;
      
-func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
-		| type_specifier ID LPAREN RPAREN SEMICOLON
-		;
+// func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
+// 		| type_specifier ID LPAREN RPAREN SEMICOLON
+// 		;
 		 
-func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
-		| type_specifier ID LPAREN RPAREN compound_statement
- 		;				
+// func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
+// 		| type_specifier ID LPAREN RPAREN compound_statement
+//  		;				
 
 
-parameter_list  : parameter_list COMMA type_specifier ID
-		| parameter_list COMMA type_specifier
- 		| type_specifier ID
-		| type_specifier
- 		;
+// parameter_list  : parameter_list COMMA type_specifier ID
+// 		| parameter_list COMMA type_specifier
+//  		| type_specifier ID
+// 		| type_specifier
+//  		;
 
  		
-compound_statement : LCURL statements RCURL
- 		    | LCURL RCURL
- 		    ;
+// compound_statement : LCURL statements RCURL
+//  		    | LCURL RCURL
+//  		    ;
  		    
-var_declaration : type_specifier declaration_list SEMICOLON
- 		 ;
+// var_declaration : type_specifier declaration_list SEMICOLON
+//  		 ;
  		 
-type_specifier	: INT
- 		| FLOAT
- 		| VOID
- 		;
+// type_specifier	: INT
+//  		| FLOAT
+//  		| VOID
+//  		;
  		
-declaration_list : declaration_list COMMA ID
- 		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
- 		  | ID
- 		  | ID LTHIRD CONST_INT RTHIRD
- 		  ;
+// declaration_list : declaration_list COMMA ID
+//  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
+//  		  | ID
+//  		  | ID LTHIRD CONST_INT RTHIRD
+//  		  ;
  		  
-statements : statement
-	   | statements statement
-	   ;
+// statements : statement
+// 	   | statements statement
+// 	   ;
 	   
-statement : var_declaration
-	  | expression_statement
-	  | compound_statement
-	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
-	  | IF LPAREN expression RPAREN statement
-	  | IF LPAREN expression RPAREN statement ELSE statement
-	  | WHILE LPAREN expression RPAREN statement
-	  | PRINTLN LPAREN ID RPAREN SEMICOLON
-	  | RETURN expression SEMICOLON
-	  ;
+// statement : var_declaration
+// 	  | expression_statement
+// 	  | compound_statement
+// 	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
+// 	  | IF LPAREN expression RPAREN statement
+// 	  | IF LPAREN expression RPAREN statement ELSE statement
+// 	  | WHILE LPAREN expression RPAREN statement
+// 	  | PRINTLN LPAREN ID RPAREN SEMICOLON
+// 	  | RETURN expression SEMICOLON
+// 	  ;
 	  
-expression_statement 	: SEMICOLON			
-			| expression SEMICOLON 
-			;
+// expression_statement 	: SEMICOLON			
+// 			| expression SEMICOLON 
+// 			;
 	  
 variable : ID 		
 	 | ID LTHIRD expression RTHIRD 
 	 ;
 	 
- expression : logic_expression	
+expression : logic_expression	
 	   | variable ASSIGNOP logic_expression 	
 	   ;
 			
@@ -147,20 +147,19 @@ arguments : arguments COMMA logic_expression
 	      | logic_expression
 	      ;
  
-
 %%
 int main(int argc,char *argv[])
 {
-
-	if((fp=fopen(argv[1],"r"))==NULL)
+	auto fp = fopen(argv[1], "r");
+	if(fp==NULL)
 	{
 		printf("Cannot Open Input File.\n");
 		exit(1);
 	}
 
-	fp2= fopen(argv[2],"w");
+	auto fp2= fopen(argv[2],"w");
 	fclose(fp2);
-	fp3= fopen(argv[3],"w");
+	auto fp3= fopen(argv[3],"w");
 	fclose(fp3);
 	
 	fp2= fopen(argv[2],"a");

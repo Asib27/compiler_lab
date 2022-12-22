@@ -1,137 +1,209 @@
-%{
-#include<iostream>
-#include<stdlib.h>
-#include<string.h>
-#include "SymbolTable.h"
-#include "SymbolInfo.h"
-#include "y.tab.h"
+%option noyywrap  yylineno
 
+%x COMMENT
+
+%{
+#include<cstdio>
+#include<cstdlib>
+#include<iostream>
+#include<fstream>
+#include<string>
+#include<vector>
+
+#include"lib/symbolTable.h"
+#include"lib/symbolInfo.h"
+#include"lib/printer.h"
+#include"lib/printUtil.h"
 
 using namespace std;
 
-extern YYSTYPE yylval;
-extern SymbolTable *table;
-void yyerror(char *);
+ofstream logout("log.txt"), tokenout("token.txt");
+PrintUtil printUtil(tokenout, logout);
+Printer printer(logout, true);
+SymbolTable symbolTable(10, &printer);
 
-int line_count=1;
-int error=0;
-
+int error_count = 0;
+string multilineComment = "";
+int multilineCommentStart = 0;
 
 %}
 
-
-
-digit [0-9]
-letter [A-Za-z]
-delim [ \t\r\f\v]
-newline \n
-ws [delim]+
-id (_|{letter})(_|{letter}|{digit})*
-integer {digit}+
-number {digit}*(\.{digit}+)?(E[+-]?{digit}+)?
-ADDOP [+-] 
-MULOP [*/%]
+WHITESPACE [ \t\f\r\v]+ 
+LETTER [a-zA-Z]
+DIGIT [0-9]
+DIGITS ({DIGIT}+)
+EXP (E[+-]?{DIGITS})
+NEWLINE \n
+ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 
 %%
+\n		{}
 
-{delim}+	{}
-{newline} {line_count++;}
-
-"if" {return IF;}
-"else" {return ELSE;}
-"for" {return FOR;}
-"while" {return WHILE;}
-"int" {return INT;}
-"float" {return FLOAT;}
-"double" {return DOUBLE;}
-"char" {return CHAR;}
-"return" {return RETURN;}
-"void" {return VOID;}
-"main"	{return MAIN;}
-"println"	{return PRINTLN;}
-
-{ADDOP} { 
-			SymbolInfo *s= new  SymbolInfo(yytext, (char *)"ADDOP");
-			yylval = (YYSTYPE)s;
-			return ADDOP;
-		}
-
-
-
-{MULOP}	{
-			SymbolInfo *s= new  SymbolInfo(yytext, (char *)"MULOP");
-			yylval = (YYSTYPE)s;
-			return MULOP;
-		}
-
-
-"=" 	{return ASSIGNOP;}
-
-">" |
-"<" |
-">=" |
-"<=" |
-"==" |
-"!=" {
-		SymbolInfo *s= new  SymbolInfo(yytext, (char *)"RELOP");
-		yylval = (YYSTYPE)s;
-		return RELOP;
-	}
-
-"&&"	|
-"||"	{
-			SymbolInfo *s= new  SymbolInfo(yytext, (char *)"LOGICOP");
-			yylval = (YYSTYPE)s;
-			return LOGICOP;
-		}
-"!"		{	return NOT; }
-
-
-";" 	{ return SEMICOLON;}
-"," 	{return COMMA;}
-"(" 	{return LPAREN;}
-")" 	{return RPAREN;}
-"{" 	{return LCURL;}
-"}" 	{return RCURL;}
-"[" 	{return LTHIRD;}
-"]" 	{return RTHIRD;}
-"++" 	{return INCOP;}
-"--" 	{return DECOP;}
-
-
-
-{integer}	{
-				SymbolInfo *s= new  SymbolInfo(yytext, (char *)"CONST_INT");
-				yylval = (YYSTYPE)s;
-				return CONST_INT;
+"if"		|		
+"for"		|
+"do"		|
+"int"		|
+"float"		|
+"void"		|
+"switch"	|
+"default"	|
+"else"		|
+"while"		|
+"break"		|
+"char"		|
+"double"	|
+"return"	|
+"case"		|
+"continue"	{
+				printUtil.printKeyword(yytext, yylineno);
 			}
-{number} 	{	
-				SymbolInfo *s= new  SymbolInfo(yytext, (char *)"CONST_FLOAT");
-				yylval = (YYSTYPE)s;
-				return CONST_FLOAT; 
+
+		
+{DIGIT}+ 	{
+				printUtil.print("CONST_INT", yytext, yylineno);
 			}
-{id} 		{	 
-				
-				SymbolInfo *s= table->lookup(yytext);
-				if(s==NULL)
-				{					
-					s= new SymbolInfo(yytext, (char *)"ID");
+
+({DIGITS}?\.{DIGITS}{EXP}?)	|
+{DIGITS}{EXP}	{
+					printUtil.print("CONST_FLOAT", yytext, yylineno);
 				}
-				yylval = (YYSTYPE)s;
-							
-				return ID;
-			}
 
-
-%%
-
-int yywrap(void)
-{
-	return 1;
+{DIGITS}?((\.)+{DIGITS}){2,}{EXP}?	|
+{DIGITS}?(\.)+{DIGITS}?	{
+	printUtil.printError("TOO_MANY_DECIMAL_POINTS", yytext, yylineno);
 }
 
+{DIGITS}(\.{DIGITS})?(E+[+-]?{DIGITS}?(\.)[0-9(\.)]*)	{
+	printUtil.printError("ILLFORMED_NUMBER", yytext, yylineno);
+}
+
+'([^'\\\n]|(\\{ESCAPES}))*'	{
+					printUtil.printChar(yytext, yylineno);
+				}
+
+"'\\'"	|
+'([^'\\\n;]|(\\{ESCAPES}))*(\n|";")	{
+					string text = yytext;
+					bool isNewLine = (text.back() == '\n');
+
+					text = text.substr(0, text.length()-1);
+					printUtil.printError("UNFINISHED_CONST_CHAR", text, yylineno - isNewLine);
+					if(!isNewLine){ 
+						printUtil.printPunctuation(";", yylineno);
+					}
+				}
+
+[=!(){}\[\],;]	{
+					if(yytext[0] == '{'){
+						symbolTable.enterScope();
+					}
+					if(yytext[0] == '}'){
+						symbolTable.exitScope();
+					}
+					printUtil.printPunctuation(yytext, yylineno);
+				}
+
+"+"		|
+"-"		{printUtil.print("ADDOP", yytext, yylineno);}
+
+"*"		|
+"/"		|
+"%"		{printUtil.print("MULOP", yytext, yylineno);}
+
+"++"	|
+"--" 	{printUtil.print("INCOP", yytext, yylineno);}
+
+"<"		|
+">"		|
+"<="	|
+">="	|
+"=="	|
+"!="	{printUtil.print("RELOP", yytext, yylineno);}
+
+"&&"	| 
+"||"	{printUtil.print("LOGIOP", yytext, yylineno);}
+
+"&"		| 
+"|"		|
+"^"		|
+"<<"	|
+">>"	{printUtil.print("BITOP", yytext, yylineno);}
 
 
+[_a-zA-Z][_a-zA-Z0-9]*	{
+							printUtil.print("ID", yytext, yylineno);
+							SymbolInfo symbolInfo(yytext, "ID");
+							bool isInserted = symbolTable.insert(symbolInfo);
 
+							if(isInserted){
+								logout << symbolTable;
+							}
+						}	
 
+[0-9][_a-zA-Z0-9]+		{
+							printUtil.printError("INVALID_ID_SUFFIX_NUM_PREFIX", yytext, yylineno);
+						}
 
+\"(([^"\\\n]|(\\{ESCAPES}))|("\\\n"))*\"	{
+							printUtil.printString(yytext, yylineno);
+}
+\"(([^"\\\n]|(\\{ESCAPES}))|("\\\n"))*\n	{
+	string text = yytext;
+	int newLineCount = 0;
+	for(auto i: text) if(i == '\n') newLineCount++;
+
+	printUtil.printError("UNFINISHED_STRING", text.substr(0, text.length()-1), yylineno-newLineCount);
+}
+
+"//"(.|"\\\n")*\n	{
+	printUtil.printComment(yytext, yylineno);
+}
+
+"/*"					{
+							BEGIN(COMMENT);
+							multilineCommentStart = yylineno;
+						}
+<COMMENT>"*/"			{
+							BEGIN(INITIAL);
+							printUtil.printMultilineComment(multilineComment, yylineno);
+							multilineComment = "";
+						}
+<COMMENT>([^*]|\n)+|.	{
+							multilineComment.append(yytext);
+						}
+<COMMENT><<EOF>>		{
+							if(multilineComment.back() == '\n') multilineComment.pop_back();
+							printUtil.printError("UNFINISHED_COMMENT", "/*" + multilineComment, multilineCommentStart);
+							multilineComment = "";
+							yylineno--;
+							BEGIN(INITIAL);
+						}
+
+[ \t\n]+		{ /* IGNORE */}
+.				{printUtil.printError("UNRECOGNIZED_CHAR", yytext, yylineno);}
+%%
+
+// int main(int argc, char** argv) {
+// 	if(argc!=2){
+// 		printf("Please provide input file name and try again\n");
+// 		return 0;
+// 	}
+	
+// 	FILE *fin=fopen(argv[1],"r");
+// 	if(fin==NULL){
+// 		printf("Cannot open specified file\n");
+// 		return 0;
+// 	}
+	
+
+// 	yyin= fin;
+// 	yylex();
+	
+// 	logout << symbolTable;
+// 	logout << "Total lines: " << yylineno << endl;
+// 	logout << "Total errors: " << printUtil.getErrorCount() << endl;
+
+// 	fclose(yyin);
+
+// 	return 0;
+// }
