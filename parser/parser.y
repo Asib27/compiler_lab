@@ -5,6 +5,7 @@
 #include<cmath>
 #include"lib/symbolTable.h"
 #include "lib/symbolInfo.h"
+#include "lib/ast.h"
 #define YYSTYPE SymbolInfo*
 
 using namespace std;

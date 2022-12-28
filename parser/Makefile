@@ -1,7 +1,7 @@
 lib_path := gen/lib/bin
 lib_src := gen/lib/src
 gen := gen
-lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o ${lib_path}/symbolTable.o ${lib_path}/printUtil.o
+lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o ${lib_path}/symbolTable.o ${lib_path}/printUtil.o ${lib_path}/tokenHelper.o ${lib_path}/ast.o
 
 parser.out:	${gen}/parser.o ${gen}/lexer.o ${lib}
 	g++ ${gen}/parser.o ${gen}/lexer.o ${lib} -o parser.out
@@ -35,6 +35,15 @@ ${lib_path}/symbolInfo.o:	${lib_src}/symbolInfo.cpp
 ${lib_path}/symbolTable.o:	${lib_src}/symbolTable.cpp
 	g++ -c ${lib_src}/symbolTable.cpp
 	mv symbolTable.o ${lib_path}
+
+
+${lib_path}/tokenHelper.o:	${lib_src}/tokenHelper.cpp
+	g++ -c ${lib_src}/tokenHelper.cpp
+	mv tokenHelper.o ${lib_path}
+
+${lib_path}/ast.o:	${lib_src}/ast.cpp
+	g++ -c ${lib_src}/ast.cpp
+	mv ast.o ${lib_path}
 
 clean:
 	rm ${gen}/lex.yy.c ${gen}/y.tab.c 

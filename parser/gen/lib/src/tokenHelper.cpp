@@ -1,0 +1,11 @@
+#include"../tokenHelper.h"
+
+std::string NodeTypeToString[] = {
+    "variable", "expression", "logic_expression", "rel_expression",
+    "simple_expression", "term", "unary_expression", "factor",
+    "arg_list", "args"
+};
+
+std::string getStringofNode(NodeType n){
+    return NodeTypeToString[static_cast<int>(n)];
+}

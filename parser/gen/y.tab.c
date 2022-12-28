@@ -74,6 +74,7 @@
 #include<cmath>
 #include"lib/symbolTable.h"
 #include "lib/symbolInfo.h"
+#include "lib/ast.h"
 #define YYSTYPE SymbolInfo*
 
 using namespace std;
@@ -92,7 +93,7 @@ void yyerror(char *s)
 
 
 
-#line 96 "y.tab.c"
+#line 97 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -600,9 +601,9 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    36,    36,   104,   105,   108,   109,   112,   113,   116,
-     117,   120,   121,   124,   125,   128,   129,   130,   133,   134,
-     135,   136,   137,   138,   139,   142,   143,   146,   147
+       0,    37,    37,   105,   106,   109,   110,   113,   114,   117,
+     118,   121,   122,   125,   126,   129,   130,   131,   134,   135,
+     136,   137,   138,   139,   140,   143,   144,   147,   148
 };
 #endif
 
@@ -1422,15 +1423,15 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 37 "parser.y"
+#line 38 "parser.y"
         {
 		//write your code in this block in all the similar blocks below
 	}
-#line 1430 "y.tab.c"
+#line 1431 "y.tab.c"
     break;
 
 
-#line 1434 "y.tab.c"
+#line 1435 "y.tab.c"
 
       default: break;
     }
@@ -1662,7 +1663,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 150 "parser.y"
+#line 151 "parser.y"
 
 int main(int argc,char *argv[])
 {
