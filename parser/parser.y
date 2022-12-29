@@ -7,14 +7,15 @@
 #include"lib/symbolTable.h"
 #include "lib/symbolInfo.h"
 #include "lib/ast.h"
-#define YYSTYPE SymbolInfo*
+#define YYSTYPE AST*
 
 using namespace std;
 
 int yyparse(void);
 int yylex(void);
-extern FILE *yyin;
 
+extern FILE *yyin;
+extern int yylineno;
 
 ofstream logout("log.txt"), tokenout("token.txt");
 // PrintUtil printUtil(tokenout, logout);
@@ -30,6 +31,11 @@ void yyerror(char *s)
 
 
 %}
+
+// %union {
+// 	class AST *ast;
+// }
+
 
 %token IF FOR DO INT FLOAT VOID SWITCH DEFAULT ELSE WHILE BREAK 
 %token CHAR DOUBLE RETURN CASE CONTINUE MAIN
@@ -76,19 +82,27 @@ void yyerror(char *s)
 //  		    | LCURL RCURL
 //  		    ;
  		    
-// var_declaration : type_specifier declaration_list SEMICOLON
-//  		 ;
+var_declaration : type_specifier declaration_list SEMICOLON 
+		{	
+			cout << "var_declaration found" << endl;
+			$2->print(cout);
+		}
+ 		 ;
  		 
-// type_specifier	: INT
-//  		| FLOAT
-//  		| VOID
-//  		;
+type_specifier	: INT {cout << "int found" << endl;}
+ 		| FLOAT {cout << "float found" << endl;}
+ 		| VOID {cout << "void found" << endl;}
+ 		;
  		
-// declaration_list : declaration_list COMMA ID
-//  		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
-//  		  | ID
-//  		  | ID LTHIRD CONST_INT RTHIRD
-//  		  ;
+declaration_list : declaration_list COMMA ID
+ 		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
+ 		  | ID 
+		  {
+			cout << "id: " << *curSymbol << " found" << endl;
+		  	$$ = new AST(NodeType::VARIABLE,curSymbol,yylineno);
+		  }
+ 		  | ID LTHIRD CONST_INT RTHIRD {cout << "array declaration" << endl;}
+ 		  ;
  		  
 // statements : statement
 // 	   | statements statement
@@ -109,51 +123,51 @@ void yyerror(char *s)
 // 			| expression SEMICOLON 
 // 			;
 	  
-variable : ID 	{cout << "found id" << curSymbol << " " << *curSymbol << endl;}	
-	 | ID LTHIRD expression RTHIRD 
-	 ;
+// variable : ID 	{cout << "found id" << curSymbol << " " << *curSymbol << endl;}	
+// 	 | ID LTHIRD expression RTHIRD 
+// 	 ;
 	 
-expression : logic_expression	
-	   | variable ASSIGNOP logic_expression 	
-	   ;
+// expression : logic_expression	
+// 	   | variable ASSIGNOP logic_expression 	
+// 	   ;
 			
-logic_expression : rel_expression 	
-		 | rel_expression LOGICOP rel_expression 	
-		 ;
+// logic_expression : rel_expression 	
+// 		 | rel_expression LOGICOP rel_expression 	
+// 		 ;
 			
-rel_expression	: simple_expression 
-		| simple_expression RELOP simple_expression	
-		;
+// rel_expression	: simple_expression 
+// 		| simple_expression RELOP simple_expression	
+// 		;
 				
-simple_expression : term 
-		  | simple_expression ADDOP term 
-		  ;
+// simple_expression : term 
+// 		  | simple_expression ADDOP term 
+// 		  ;
 					
-term :	unary_expression
-     |  term MULOP unary_expression
-     ;
+// term :	unary_expression
+//      |  term MULOP unary_expression
+//      ;
 
-unary_expression : ADDOP unary_expression  
-		 | NOT unary_expression 
-		 | factor 
-		 ;
+// unary_expression : ADDOP unary_expression  
+// 		 | NOT unary_expression 
+// 		 | factor 
+// 		 ;
 	
-factor	: variable 
-	| ID LPAREN argument_list RPAREN
-	| LPAREN expression RPAREN
-	| CONST_INT 
-	| CONST_FLOAT
-	| variable INCOP 
-	| variable DECOP
-	;
+// factor	: variable 
+// 	| ID LPAREN argument_list RPAREN
+// 	| LPAREN expression RPAREN
+// 	| CONST_INT 
+// 	| CONST_FLOAT
+// 	| variable INCOP 
+// 	| variable DECOP
+// 	;
 	
-argument_list : arguments
-			  |
-			  ;
+// argument_list : arguments
+// 			  |
+// 			  ;
 	
-arguments : arguments COMMA logic_expression
-	      | logic_expression
-	      ;
+// arguments : arguments COMMA logic_expression
+// 	      | logic_expression
+// 	      ;
  
 %%
 int main(int argc,char *argv[])

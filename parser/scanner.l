@@ -14,6 +14,7 @@
 #include"lib/symbolInfo.h"
 #include"lib/printer.h"
 #include"lib/printUtil.h"
+#include"lib/ast.h"
 #include"y.tab.h"
 
 using namespace std;

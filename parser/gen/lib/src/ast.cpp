@@ -5,6 +5,14 @@ AST::AST(NodeType type, int startLineNo, int endLineNo)
 {
     if(endLineNo == -1) endLineNo = startLine;
     endLine = endLineNo;
+
+    symbolInfo = nullptr;
+}
+
+AST::AST(NodeType type, SymbolInfo* symbolInfo, int startLineNo, int endLineNo)
+    : AST(type, startLineNo, endLineNo)
+{
+    this->symbolInfo = symbolInfo;
 }
 
 void AST::addChild(AST * child){

@@ -608,6 +608,7 @@ char *yytext;
 #include"lib/symbolInfo.h"
 #include"lib/printer.h"
 #include"lib/printUtil.h"
+#include"lib/ast.h"
 #include"y.tab.h"
 
 using namespace std;
@@ -622,8 +623,8 @@ int error_count = 0;
 string multilineComment = "";
 int multilineCommentStart = 0;
 
-#line 626 "lex.yy.c"
 #line 627 "lex.yy.c"
+#line 628 "lex.yy.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -841,9 +842,9 @@ YY_DECL
 		}
 
 	{
-#line 41 "scanner.l"
+#line 42 "scanner.l"
 
-#line 847 "lex.yy.c"
+#line 848 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -913,94 +914,94 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 42 "scanner.l"
+#line 43 "scanner.l"
 {}
 	YY_BREAK
 case 2:
-#line 45 "scanner.l"
-case 3:
 #line 46 "scanner.l"
-case 4:
+case 3:
 #line 47 "scanner.l"
-case 5:
+case 4:
 #line 48 "scanner.l"
-case 6:
+case 5:
 #line 49 "scanner.l"
-case 7:
+case 6:
 #line 50 "scanner.l"
-case 8:
+case 7:
 #line 51 "scanner.l"
-case 9:
+case 8:
 #line 52 "scanner.l"
-case 10:
+case 9:
 #line 53 "scanner.l"
-case 11:
+case 10:
 #line 54 "scanner.l"
-case 12:
+case 11:
 #line 55 "scanner.l"
-case 13:
+case 12:
 #line 56 "scanner.l"
-case 14:
+case 13:
 #line 57 "scanner.l"
-case 15:
+case 14:
 #line 58 "scanner.l"
-case 16:
+case 15:
 #line 59 "scanner.l"
+case 16:
+#line 60 "scanner.l"
 case 17:
 YY_RULE_SETUP
-#line 59 "scanner.l"
+#line 60 "scanner.l"
 {
 				return printUtil.printKeyword(yytext, yylineno);
 			}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 64 "scanner.l"
+#line 65 "scanner.l"
 {
 				printUtil.print("CONST_INT", yytext, yylineno);
 				return CONST_INT;
 			}
 	YY_BREAK
 case 19:
-#line 70 "scanner.l"
+#line 71 "scanner.l"
 case 20:
 YY_RULE_SETUP
-#line 70 "scanner.l"
+#line 71 "scanner.l"
 {
 					printUtil.print("CONST_FLOAT", yytext, yylineno);
 					return CONST_FLOAT;
 				}
 	YY_BREAK
 case 21:
-#line 76 "scanner.l"
+#line 77 "scanner.l"
 case 22:
 YY_RULE_SETUP
-#line 76 "scanner.l"
+#line 77 "scanner.l"
 {
 	printUtil.printError("TOO_MANY_DECIMAL_POINTS", yytext, yylineno);
 }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 80 "scanner.l"
+#line 81 "scanner.l"
 {
 	printUtil.printError("ILLFORMED_NUMBER", yytext, yylineno);
 }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 84 "scanner.l"
+#line 85 "scanner.l"
 {
 					printUtil.printChar(yytext, yylineno);
 					return CONST_CHAR;
 				}
 	YY_BREAK
 case 25:
-#line 90 "scanner.l"
+#line 91 "scanner.l"
 case 26:
 /* rule 26 can match eol */
 YY_RULE_SETUP
-#line 90 "scanner.l"
+#line 91 "scanner.l"
 {
 					string text = yytext;
 					bool isNewLine = (text.back() == '\n');
@@ -1014,7 +1015,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 101 "scanner.l"
+#line 102 "scanner.l"
 {
 					if(yytext[0] == '{'){
 						symbolTable.enterScope();
@@ -1026,66 +1027,66 @@ YY_RULE_SETUP
 				}
 	YY_BREAK
 case 28:
-#line 112 "scanner.l"
+#line 113 "scanner.l"
 case 29:
 YY_RULE_SETUP
-#line 112 "scanner.l"
+#line 113 "scanner.l"
 {printUtil.print("ADDOP", yytext, yylineno); return ADDOP;}
 	YY_BREAK
 case 30:
-#line 115 "scanner.l"
-case 31:
 #line 116 "scanner.l"
+case 31:
+#line 117 "scanner.l"
 case 32:
 YY_RULE_SETUP
-#line 116 "scanner.l"
+#line 117 "scanner.l"
 {printUtil.print("MULOP", yytext, yylineno); return MULOP;}
 	YY_BREAK
 case 33:
-#line 119 "scanner.l"
+#line 120 "scanner.l"
 case 34:
 YY_RULE_SETUP
-#line 119 "scanner.l"
+#line 120 "scanner.l"
 {printUtil.print("INCOP", yytext, yylineno); return INCOP;}
 	YY_BREAK
 case 35:
-#line 122 "scanner.l"
-case 36:
 #line 123 "scanner.l"
-case 37:
+case 36:
 #line 124 "scanner.l"
-case 38:
+case 37:
 #line 125 "scanner.l"
-case 39:
+case 38:
 #line 126 "scanner.l"
+case 39:
+#line 127 "scanner.l"
 case 40:
 YY_RULE_SETUP
-#line 126 "scanner.l"
+#line 127 "scanner.l"
 {printUtil.print("RELOP", yytext, yylineno); return RELOP;}
 	YY_BREAK
 case 41:
-#line 129 "scanner.l"
+#line 130 "scanner.l"
 case 42:
 YY_RULE_SETUP
-#line 129 "scanner.l"
+#line 130 "scanner.l"
 {printUtil.print("LOGIOP", yytext, yylineno); return LOGICOP;}
 	YY_BREAK
 case 43:
-#line 132 "scanner.l"
-case 44:
 #line 133 "scanner.l"
-case 45:
+case 44:
 #line 134 "scanner.l"
-case 46:
+case 45:
 #line 135 "scanner.l"
+case 46:
+#line 136 "scanner.l"
 case 47:
 YY_RULE_SETUP
-#line 135 "scanner.l"
+#line 136 "scanner.l"
 {printUtil.print("BITOP", yytext, yylineno); return BITOP;}
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 138 "scanner.l"
+#line 139 "scanner.l"
 {
 							printUtil.print("ID", yytext, yylineno);
 
@@ -1103,7 +1104,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 153 "scanner.l"
+#line 154 "scanner.l"
 {
 							printUtil.printError("INVALID_ID_SUFFIX_NUM_PREFIX", yytext, yylineno);
 						}
@@ -1111,7 +1112,7 @@ YY_RULE_SETUP
 case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
-#line 157 "scanner.l"
+#line 158 "scanner.l"
 {
 							printUtil.printString(yytext, yylineno);
 }
@@ -1119,7 +1120,7 @@ YY_RULE_SETUP
 case 51:
 /* rule 51 can match eol */
 YY_RULE_SETUP
-#line 160 "scanner.l"
+#line 161 "scanner.l"
 {
 	string text = yytext;
 	int newLineCount = 0;
@@ -1131,14 +1132,14 @@ YY_RULE_SETUP
 case 52:
 /* rule 52 can match eol */
 YY_RULE_SETUP
-#line 168 "scanner.l"
+#line 169 "scanner.l"
 {
 	printUtil.printComment(yytext, yylineno);
 }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 172 "scanner.l"
+#line 173 "scanner.l"
 {
 							BEGIN(COMMENT);
 							multilineCommentStart = yylineno;
@@ -1146,7 +1147,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 176 "scanner.l"
+#line 177 "scanner.l"
 {
 							BEGIN(INITIAL);
 							printUtil.printMultilineComment(multilineComment, yylineno);
@@ -1156,13 +1157,13 @@ YY_RULE_SETUP
 case 55:
 /* rule 55 can match eol */
 YY_RULE_SETUP
-#line 181 "scanner.l"
+#line 182 "scanner.l"
 {
 							multilineComment.append(yytext);
 						}
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 184 "scanner.l"
+#line 185 "scanner.l"
 {
 							if(multilineComment.back() == '\n') multilineComment.pop_back();
 							printUtil.printError("UNFINISHED_COMMENT", "/*" + multilineComment, multilineCommentStart);
@@ -1174,20 +1175,20 @@ case YY_STATE_EOF(COMMENT):
 case 56:
 /* rule 56 can match eol */
 YY_RULE_SETUP
-#line 192 "scanner.l"
+#line 193 "scanner.l"
 { /* IGNORE */}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 193 "scanner.l"
+#line 194 "scanner.l"
 {printUtil.printError("UNRECOGNIZED_CHAR", yytext, yylineno);}
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 194 "scanner.l"
+#line 195 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1191 "lex.yy.c"
+#line 1192 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2204,7 +2205,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 194 "scanner.l"
+#line 195 "scanner.l"
 
 
 // int main(int argc, char** argv) {

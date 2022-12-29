@@ -1,2 +1,3 @@
-<ID, asd>
-<ID, jsd>
+<INT, int>
+<ID, abc>
+<SEMICOLON, ;>
