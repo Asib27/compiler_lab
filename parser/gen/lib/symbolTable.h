@@ -15,7 +15,7 @@ public:
 
     void exitScope();
 
-    bool insert(SymbolInfo s);
+    SymbolInfo* insert(SymbolInfo s);
 
     bool remove(std::string s);
 

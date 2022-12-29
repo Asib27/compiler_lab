@@ -3,6 +3,7 @@
 
 #include<iostream>
 #include<string>
+#include"../y.tab.h"
 
 class PrintUtil{
 	std::ostream& logos;

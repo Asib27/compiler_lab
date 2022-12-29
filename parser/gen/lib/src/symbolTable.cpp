@@ -27,7 +27,7 @@ void SymbolTable::exitScope(){
     _curScope = t;
 }
 
-bool SymbolTable::insert(SymbolInfo s){
+SymbolInfo* SymbolTable::insert(SymbolInfo s){
     return _curScope->insert(s);
 }
 

@@ -1,5 +1,6 @@
 %{
 #include<iostream>
+#include<fstream>
 #include<cstdlib>
 #include<cstring>
 #include<cmath>
@@ -14,7 +15,12 @@ int yyparse(void);
 int yylex(void);
 extern FILE *yyin;
 
-SymbolTable *table;
+
+ofstream logout("log.txt"), tokenout("token.txt");
+// PrintUtil printUtil(tokenout, logout);
+Printer printer(logout, true);
+SymbolTable symbolTable(10, &printer);
+SymbolInfo *curSymbol = nullptr;
 
 
 void yyerror(char *s)
@@ -33,12 +39,13 @@ void yyerror(char *s)
 
 %%
 
-// program
-start : arguments
-	{
-		//write your code in this block in all the similar blocks below
-	}
-	;
+
+// start : arguments
+// 	{
+// 		//write your code in this block in all the similar blocks below
+// 	}
+// 		: program
+// 	;
 
 // program : program unit 
 // 	| unit
@@ -102,7 +109,7 @@ start : arguments
 // 			| expression SEMICOLON 
 // 			;
 	  
-variable : ID 		
+variable : ID 	{cout << "found id" << curSymbol << " " << *curSymbol << endl;}	
 	 | ID LTHIRD expression RTHIRD 
 	 ;
 	 
@@ -158,21 +165,21 @@ int main(int argc,char *argv[])
 		exit(1);
 	}
 
-	auto fp2= fopen(argv[2],"w");
-	fclose(fp2);
-	auto fp3= fopen(argv[3],"w");
-	fclose(fp3);
+	// auto fp2= fopen(argv[2],"w");
+	// fclose(fp2);
+	// auto fp3= fopen(argv[3],"w");
+	// fclose(fp3);
 	
-	fp2= fopen(argv[2],"a");
-	fp3= fopen(argv[3],"a");
+	// fp2= fopen(argv[2],"a");
+	// fp3= fopen(argv[3],"a");
 	
 
 	yyin=fp;
 	yyparse();
 	
 
-	fclose(fp2);
-	fclose(fp3);
+	// fclose(fp2);
+	// fclose(fp3);
 	
 	return 0;
 }

@@ -14,13 +14,15 @@
 #include"lib/symbolInfo.h"
 #include"lib/printer.h"
 #include"lib/printUtil.h"
+#include"y.tab.h"
 
 using namespace std;
 
-ofstream logout("log.txt"), tokenout("token.txt");
+extern ofstream logout, tokenout;
 PrintUtil printUtil(tokenout, logout);
-Printer printer(logout, true);
-SymbolTable symbolTable(10, &printer);
+extern SymbolTable symbolTable;
+extern YYSTYPE yylval;
+extern SymbolInfo *curSymbol;
 
 int error_count = 0;
 string multilineComment = "";
@@ -132,12 +134,17 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 
 [_a-zA-Z][_a-zA-Z0-9]*	{
 							printUtil.print("ID", yytext, yylineno);
-							SymbolInfo symbolInfo(yytext, "ID");
-							bool isInserted = symbolTable.insert(symbolInfo);
 
-							if(isInserted){
-								logout << symbolTable;
+							SymbolInfo *s = symbolTable.lookup(yytext);
+							if(s==nullptr){
+								SymbolInfo symbolInfo(yytext, "ID");
+								s = symbolTable.insert(symbolInfo);
 							}
+
+							//yylval = (YYSTYPE)s;
+							
+							curSymbol = s;
+							return ID;
 						}	
 
 [0-9][_a-zA-Z0-9]+		{
