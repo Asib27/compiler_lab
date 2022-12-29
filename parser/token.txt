@@ -1,6 +1,3 @@
 <INT, int>
-<ID, abc>
-<LTHIRD, [>
-<CONST_INT, 10>
-<RTHIRD, ]>
+<ID, a>
 <SEMICOLON, ;>

@@ -25,11 +25,11 @@ void AST::addChild(AST * child){
 
 AST::~AST()
 {
-    if(nodeType == NodeType::TOKEN){
-        delete symbolInfo;
-    }
+    // if(nodeType == NodeType::TOKEN){
+    //     delete symbolInfo;
+    // }
     for(auto i: childs){
-        i->~AST();
+        delete i;
     }
 }
 
@@ -53,12 +53,18 @@ std::ostream& AST::print(std::ostream &os, int tab){
 }
 
 // int main(){
-//     AST ast1(NodeType::EXP, 1), ast2(NodeType::VARIABLE, 1), ast3(NodeType::FACTOR, 2);
+//     AST ast1(NodeType::EXP, "EXP", 1);
+//     AST* ast2= new AST(NodeType::VARIABLE, "VAR", 1);
+
+//     auto t = new SymbolInfo("as", "sd");
+//     AST* ast3= new AST(t, 2);
 //     ast1.print(std::cout);
 
-//     ast1.addChild(&ast2);
+//     ast1.addChild(ast2);
 //     ast1.print(std::cout);
 
-//     ast1.addChild(&ast3);
+//     ast1.addChild(ast3);
 //     ast1.print(std::cout);
+
+//     delete t;
 // }

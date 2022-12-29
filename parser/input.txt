@@ -1,1 +1,1 @@
-int abc[10];
+int a;

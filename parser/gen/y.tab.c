@@ -623,8 +623,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   100,   100,   109,   116,   123,   123,   132,   133,   134,
-     139,   154,   159
+       0,   100,   100,   110,   117,   124,   124,   133,   134,   135,
+     140,   155,   163
 };
 #endif
 
@@ -1435,60 +1435,61 @@ yyreduce:
 			yyval->addChild(yyvsp[-2]);
 			yyval->addChild(yyvsp[-1]);
 			yyval->print(cout);
+			delete yyval;
 		}
-#line 1440 "y.tab.c"
+#line 1441 "y.tab.c"
     break;
 
   case 3:
-#line 110 "parser.y"
+#line 111 "parser.y"
         {
 		auto s = getSymbol("int", "INT");
 		auto t = new AST(s, yylineno);
 		yyval = new AST(NodeType::TYPE_SPECIFIER, "INT", yylineno);
 		yyval->addChild(t);
 	}
-#line 1451 "y.tab.c"
+#line 1452 "y.tab.c"
     break;
 
   case 4:
-#line 117 "parser.y"
+#line 118 "parser.y"
         {
 		auto s = getSymbol("float", "FLOAT");
 		auto t = new AST(s, yylineno);
 		yyval = new AST(NodeType::TYPE_SPECIFIER, "FLOAT", yylineno);
 		yyval->addChild(t);
 	}
-#line 1462 "y.tab.c"
+#line 1463 "y.tab.c"
     break;
 
   case 5:
-#line 123 "parser.y"
+#line 124 "parser.y"
                        {cout << "void found" << endl;}
-#line 1468 "y.tab.c"
+#line 1469 "y.tab.c"
     break;
 
   case 6:
-#line 124 "parser.y"
+#line 125 "parser.y"
         {
 		auto s = getSymbol("void", "VOID");
 		auto t = new AST(s, yylineno);
 		yyval = new AST(NodeType::TYPE_SPECIFIER, "VOID", yylineno);
 		yyval->addChild(t);
 	}
-#line 1479 "y.tab.c"
+#line 1480 "y.tab.c"
     break;
 
   case 9:
-#line 135 "parser.y"
+#line 136 "parser.y"
                   {
 			yyval = new AST(NodeType::DECL_LIST, "ID", yylineno);
 			yyval->addChild(yyvsp[0]);
 		  }
-#line 1488 "y.tab.c"
+#line 1489 "y.tab.c"
     break;
 
   case 10:
-#line 140 "parser.y"
+#line 141 "parser.y"
                   {
 			yyval = new AST(NodeType::DECL_LIST, "ID LTHIRD CONST_INT RTHIRD", yylineno);
 			yyval->addChild(yyvsp[-3]);
@@ -1501,27 +1502,30 @@ yyreduce:
 			t = new AST(getSymbol("]", "RTHIRD"), yylineno);
 			yyval->addChild(t);
 		  }
-#line 1505 "y.tab.c"
+#line 1506 "y.tab.c"
     break;
 
   case 11:
-#line 155 "parser.y"
+#line 156 "parser.y"
                 {
-			yyval = new AST(curSymbol, yylineno);
+			auto t = getSymbol(curSymbol->getName(), curSymbol->getType());
+			delete curSymbol;
+			yyval = new AST(t, yylineno);
+			
 		}
-#line 1513 "y.tab.c"
+#line 1517 "y.tab.c"
     break;
 
   case 12:
-#line 160 "parser.y"
+#line 164 "parser.y"
                 {
 			yyval = new AST(curSymbol, yylineno);
 		}
-#line 1521 "y.tab.c"
+#line 1525 "y.tab.c"
     break;
 
 
-#line 1525 "y.tab.c"
+#line 1529 "y.tab.c"
 
       default: break;
     }
@@ -1753,7 +1757,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 228 "parser.y"
+#line 232 "parser.y"
 
 int main(int argc,char *argv[])
 {
@@ -1779,6 +1783,7 @@ int main(int argc,char *argv[])
 
 	// fclose(fp2);
 	// fclose(fp3);
+	fclose(fp);
 	
 	return 0;
 }

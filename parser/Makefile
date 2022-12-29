@@ -4,17 +4,17 @@ gen := gen
 lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o ${lib_path}/symbolTable.o ${lib_path}/printUtil.o ${lib_path}/tokenHelper.o ${lib_path}/ast.o
 
 parser.out:	${gen}/parser.o ${gen}/lexer.o ${lib}
-	g++ ${gen}/parser.o ${gen}/lexer.o ${lib} -o parser.out
+	g++ -ggdb3 ${gen}/parser.o ${gen}/lexer.o ${lib} -o parser.out
 
 ${gen}/parser.o: parser.y
 	yacc -y -d parser.y
 	mv y.tab.c y.tab.h ${gen}
-	g++ -c ${gen}/y.tab.c -o ${gen}/parser.o
+	g++ -ggdb3 -c ${gen}/y.tab.c -o ${gen}/parser.o
 
 ${gen}/lexer.o: scanner.l ${gen}/y.tab.h
 	flex scanner.l
 	mv lex.yy.c ${gen} 
-	g++ -c ${gen}/lex.yy.c -o ${gen}/lexer.o
+	g++ -ggdb3 -c ${gen}/lex.yy.c -o ${gen}/lexer.o
 
 ${lib_path}/printUtil.o: ${lib_src}/printUtil.cpp
 	g++ -c ${lib_src}/printUtil.cpp

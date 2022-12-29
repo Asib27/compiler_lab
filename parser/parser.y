@@ -103,6 +103,7 @@ var_declaration : type_specifier declaration_list SEMICOLON
 			$$->addChild($1);
 			$$->addChild($2);
 			$$->print(cout);
+			delete $$;
 		}
  		 ;
  		 
@@ -153,7 +154,10 @@ declaration_list : declaration_list COMMA identifier
 
 int_const : CONST_INT 
 		{
-			$$ = new AST(curSymbol, yylineno);
+			auto t = getSymbol(curSymbol->getName(), curSymbol->getType());
+			delete curSymbol;
+			$$ = new AST(t, yylineno);
+			
 		}		  
 
 identifier : ID
@@ -250,6 +254,7 @@ int main(int argc,char *argv[])
 
 	// fclose(fp2);
 	// fclose(fp3);
+	fclose(fp);
 	
 	return 0;
 }
