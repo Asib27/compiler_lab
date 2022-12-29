@@ -131,7 +131,25 @@ type_specifier	: INT
  		;
  		
 declaration_list : declaration_list COMMA identifier
+			{
+				$$ = new AST(NodeType::DECL_LIST, "declaration_list COMMA ID", yylineno);
+				$$->addChild($1);
+
+				$$->addChild(new AST(getSymbol(",", "COMMA"), yylineno));
+				$$->addChild($3);
+			}
  		  | declaration_list COMMA identifier LTHIRD int_const RTHIRD
+		  {
+			$$ = new AST(NodeType::DECL_LIST, "declaration_list COMMA ID LTHIRD CONST_INT RTHIRD", yylineno);
+			$$->addChild($1);
+
+			$$->addChild(new AST(getSymbol(",", "COMMA"), yylineno));
+			$$->addChild($3);
+
+			$$->addChild(new AST(getSymbol("[", "LTHIRD"), yylineno));
+			$$->addChild($5);
+			$$->addChild(new AST(getSymbol("]", "RTHIRD"), yylineno));
+		  }
  		  | identifier 
 		  {
 			$$ = new AST(NodeType::DECL_LIST, "ID", yylineno);

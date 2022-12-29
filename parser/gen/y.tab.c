@@ -623,8 +623,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   100,   100,   110,   117,   124,   124,   133,   134,   135,
-     140,   155,   163
+       0,   100,   100,   110,   117,   124,   124,   133,   141,   153,
+     158,   173,   181
 };
 #endif
 
@@ -1479,17 +1479,45 @@ yyreduce:
 #line 1480 "y.tab.c"
     break;
 
+  case 7:
+#line 134 "parser.y"
+                        {
+				yyval = new AST(NodeType::DECL_LIST, "declaration_list COMMA ID", yylineno);
+				yyval->addChild(yyvsp[-2]);
+
+				yyval->addChild(new AST(getSymbol(",", "COMMA"), yylineno));
+				yyval->addChild(yyvsp[0]);
+			}
+#line 1492 "y.tab.c"
+    break;
+
+  case 8:
+#line 142 "parser.y"
+                  {
+			yyval = new AST(NodeType::DECL_LIST, "declaration_list COMMA ID LTHIRD CONST_INT RTHIRD", yylineno);
+			yyval->addChild(yyvsp[-5]);
+
+			yyval->addChild(new AST(getSymbol(",", "COMMA"), yylineno));
+			yyval->addChild(yyvsp[-3]);
+
+			yyval->addChild(new AST(getSymbol("[", "LTHIRD"), yylineno));
+			yyval->addChild(yyvsp[-1]);
+			yyval->addChild(new AST(getSymbol("]", "RTHIRD"), yylineno));
+		  }
+#line 1508 "y.tab.c"
+    break;
+
   case 9:
-#line 136 "parser.y"
+#line 154 "parser.y"
                   {
 			yyval = new AST(NodeType::DECL_LIST, "ID", yylineno);
 			yyval->addChild(yyvsp[0]);
 		  }
-#line 1489 "y.tab.c"
+#line 1517 "y.tab.c"
     break;
 
   case 10:
-#line 141 "parser.y"
+#line 159 "parser.y"
                   {
 			yyval = new AST(NodeType::DECL_LIST, "ID LTHIRD CONST_INT RTHIRD", yylineno);
 			yyval->addChild(yyvsp[-3]);
@@ -1502,30 +1530,30 @@ yyreduce:
 			t = new AST(getSymbol("]", "RTHIRD"), yylineno);
 			yyval->addChild(t);
 		  }
-#line 1506 "y.tab.c"
+#line 1534 "y.tab.c"
     break;
 
   case 11:
-#line 156 "parser.y"
+#line 174 "parser.y"
                 {
 			auto t = getSymbol(curSymbol->getName(), curSymbol->getType());
 			delete curSymbol;
 			yyval = new AST(t, yylineno);
 			
 		}
-#line 1517 "y.tab.c"
+#line 1545 "y.tab.c"
     break;
 
   case 12:
-#line 164 "parser.y"
+#line 182 "parser.y"
                 {
 			yyval = new AST(curSymbol, yylineno);
 		}
-#line 1525 "y.tab.c"
+#line 1553 "y.tab.c"
     break;
 
 
-#line 1529 "y.tab.c"
+#line 1557 "y.tab.c"
 
       default: break;
     }
@@ -1757,7 +1785,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 232 "parser.y"
+#line 250 "parser.y"
 
 int main(int argc,char *argv[])
 {

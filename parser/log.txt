@@ -1,4 +1,16 @@
 Line# 1: Token <INT> Lexeme int found
 Line# 1: Token <ID> Lexeme a found
 	'a' not found in any of the ScopeTables
-Line# 1: Token <SEMICOLON> Lexeme ; found
+Line# 1: Token <LTHIRD> Lexeme [ found
+Line# 1: Token <CONST_INT> Lexeme 10 found
+Line# 1: Token <RTHIRD> Lexeme ] found
+Line# 1: Token <COMMA> Lexeme , found
+Line# 1: Token <ID> Lexeme b found
+	'b' not found in any of the ScopeTables
+Line# 1: Token <COMMA> Lexeme , found
+Line# 1: Token <ID> Lexeme c found
+	'c' not found in any of the ScopeTables
+Line# 1: Token <COMMA> Lexeme , found
+Line# 2: Token <ID> Lexeme d found
+	'd' not found in any of the ScopeTables
+Line# 2: Token <SEMICOLON> Lexeme ; found

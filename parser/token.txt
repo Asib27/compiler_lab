@@ -1,3 +1,12 @@
 <INT, int>
 <ID, a>
+<LTHIRD, [>
+<CONST_INT, 10>
+<RTHIRD, ]>
+<COMMA, ,>
+<ID, b>
+<COMMA, ,>
+<ID, c>
+<COMMA, ,>
+<ID, d>
 <SEMICOLON, ;>
