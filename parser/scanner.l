@@ -71,6 +71,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 ({DIGITS}?\.{DIGITS}{EXP}?)	|
 {DIGITS}{EXP}	{
 					printUtil.print("CONST_FLOAT", yytext, yylineno);
+					curSymbol =  new SymbolInfo(yytext, "CONST_FLOAT");
 					return CONST_FLOAT;
 				}
 
@@ -111,30 +112,50 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 				}
 
 "+"		|
-"-"		{printUtil.print("ADDOP", yytext, yylineno); return ADDOP;}
+"-"		{
+			printUtil.print("ADDOP", yytext, yylineno); 
+			curSymbol = new SymbolInfo(yytext, "ADDOP");
+			return ADDOP;
+		}
 
 "*"		|
 "/"		|
-"%"		{printUtil.print("MULOP", yytext, yylineno); return MULOP;}
+"%"		{
+			printUtil.print("MULOP", yytext, yylineno); 
+			curSymbol = new SymbolInfo(yytext, "MULOP");
+			return MULOP;
+		}
 
-"++"	|
-"--" 	{printUtil.print("INCOP", yytext, yylineno); return INCOP;}
+"++"	{printUtil.print("INCOP", yytext, yylineno); return INCOP;}
+"--"	{printUtil.print("DECOP", yytext, yylineno); return DECOP;}
 
 "<"		|
 ">"		|
 "<="	|
 ">="	|
 "=="	|
-"!="	{printUtil.print("RELOP", yytext, yylineno); return RELOP;}
+"!="	{
+			printUtil.print("RELOP", yytext, yylineno); 
+			curSymbol = new SymbolInfo(yytext, "RELOP");
+			return RELOP;
+		}
 
 "&&"	| 
-"||"	{printUtil.print("LOGIOP", yytext, yylineno); return LOGICOP;}
+"||"	{
+			printUtil.print("LOGIOP", yytext, yylineno); 
+			curSymbol = new SymbolInfo(yytext, "LOGICOP");
+			return LOGICOP;
+		}
 
 "&"		| 
 "|"		|
 "^"		|
 "<<"	|
-">>"	{printUtil.print("BITOP", yytext, yylineno); return BITOP;}
+">>"	{
+			printUtil.print("BITOP", yytext, yylineno);
+			curSymbol = new SymbolInfo(yytext, "BITOP");
+ 			return BITOP;
+ 		}
 
 
 [_a-zA-Z][_a-zA-Z0-9]*	{

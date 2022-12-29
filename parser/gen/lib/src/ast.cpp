@@ -37,11 +37,11 @@ AST::~AST()
 
 std::ostream& AST::print(std::ostream &os, int tab){
     if(nodeType != NodeType::TOKEN){
-        os << std::string(tab, '\t') << getStringofNode(nodeType) << " : "<< info << "  <Line:" << startLine << "-" 
+        os << std::string(tab, ' ') << getStringofNode(nodeType) << " : "<< info << "  <Line:" << startLine << "-" 
             << endLine << ">" << std::endl;
     }
     else{
-        os << std::string(tab, '\t') << symbolInfo->getType() << " : " << symbolInfo->getName() << "  <Line:" << startLine << "-" 
+        os << std::string(tab, ' ') << symbolInfo->getType() << " : " << symbolInfo->getName() << "  <Line:" << startLine << "-" 
             << endLine << ">" << std::endl;
     }
     

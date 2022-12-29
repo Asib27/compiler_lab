@@ -1,16 +1,33 @@
 Line# 1: Token <INT> Lexeme int found
+type_specifier : INT
 Line# 1: Token <ID> Lexeme a found
 	'a' not found in any of the ScopeTables
 Line# 1: Token <LTHIRD> Lexeme [ found
-Line# 1: Token <CONST_INT> Lexeme 10 found
+Line# 1: Token <CONST_INT> Lexeme 2 found
 Line# 1: Token <RTHIRD> Lexeme ] found
-Line# 1: Token <COMMA> Lexeme , found
-Line# 1: Token <ID> Lexeme b found
-	'b' not found in any of the ScopeTables
+declaration_list : identifier LTHIRD CONST_INT RTHIRD
 Line# 1: Token <COMMA> Lexeme , found
 Line# 1: Token <ID> Lexeme c found
 	'c' not found in any of the ScopeTables
 Line# 1: Token <COMMA> Lexeme , found
-Line# 2: Token <ID> Lexeme d found
+declaration_list : declaration_list COMMA identifier
+Line# 1: Token <ID> Lexeme i found
+	'i' not found in any of the ScopeTables
+Line# 1: Token <COMMA> Lexeme , found
+declaration_list : declaration_list COMMA identifier
+Line# 1: Token <ID> Lexeme j found
+	'j' not found in any of the ScopeTables
+Line# 1: Token <SEMICOLON> Lexeme ; found
+declaration_list : declaration_list COMMA identifier
+var_declaration : type_specifier declaration_list SEMICOLON
+statement : var_declaration
+statements : statement
+Line# 1: Token <FLOAT> Lexeme float found
+type_specifier : FLOAT
+Line# 1: Token <ID> Lexeme d found
 	'd' not found in any of the ScopeTables
-Line# 2: Token <SEMICOLON> Lexeme ; found
+Line# 1: Token <SEMICOLON> Lexeme ; found
+declaration_list : identifier
+var_declaration : type_specifier declaration_list SEMICOLON
+statement : var_declaration
+statements : statements statement

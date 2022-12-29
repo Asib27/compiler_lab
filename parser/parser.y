@@ -58,6 +58,8 @@ SymbolInfo* getSymbol(string name, string type){
 %token ASSIGNOP NOT LPAREN RPAREN LTHIRD RTHIRD LCURL RCURL COMMA SEMICOLON
 %token ADDOP MULOP INCOP DECOP RELOP LOGICOP BITOP ID PRINTLN
 
+%start statements
+
 %%
 
 
@@ -102,8 +104,11 @@ var_declaration : type_specifier declaration_list SEMICOLON
 			$$ = new AST(NodeType::VAR_DECL, "type_specifier declaration_list SEMICOLON", yylineno);
 			$$->addChild($1);
 			$$->addChild($2);
-			$$->print(cout);
-			delete $$;
+
+			auto t = new AST(getSymbol(";", "SEMICOLON"), yylineno);
+			$$->addChild(t);
+
+			logout << "var_declaration : type_specifier declaration_list SEMICOLON" << endl;
 		}
  		 ;
  		 
@@ -113,6 +118,8 @@ type_specifier	: INT
 		auto t = new AST(s, yylineno);
 		$$ = new AST(NodeType::TYPE_SPECIFIER, "INT", yylineno);
 		$$->addChild(t);
+
+		logout << "type_specifier : INT" << endl;
 	}
  		| FLOAT 
 	{
@@ -120,13 +127,17 @@ type_specifier	: INT
 		auto t = new AST(s, yylineno);
 		$$ = new AST(NodeType::TYPE_SPECIFIER, "FLOAT", yylineno);
 		$$->addChild(t);
+
+		logout << "type_specifier : FLOAT" << endl;
 	}	
- 		| VOID {cout << "void found" << endl;}
+ 		| VOID
 	{
 		auto s = getSymbol("void", "VOID");
 		auto t = new AST(s, yylineno);
 		$$ = new AST(NodeType::TYPE_SPECIFIER, "VOID", yylineno);
 		$$->addChild(t);
+
+		logout << "type_specifier : VOID" << endl;
 	}
  		;
  		
@@ -137,6 +148,8 @@ declaration_list : declaration_list COMMA identifier
 
 				$$->addChild(new AST(getSymbol(",", "COMMA"), yylineno));
 				$$->addChild($3);
+
+				logout << "declaration_list : declaration_list COMMA identifier" << endl;
 			}
  		  | declaration_list COMMA identifier LTHIRD int_const RTHIRD
 		  {
@@ -149,11 +162,15 @@ declaration_list : declaration_list COMMA identifier
 			$$->addChild(new AST(getSymbol("[", "LTHIRD"), yylineno));
 			$$->addChild($5);
 			$$->addChild(new AST(getSymbol("]", "RTHIRD"), yylineno));
+
+ 		  	logout << "declaration_list : declaration_list COMMA identifier LTHIRD int_const RTHIRD" << endl;
 		  }
  		  | identifier 
 		  {
 			$$ = new AST(NodeType::DECL_LIST, "ID", yylineno);
 			$$->addChild($1);
+
+			logout << "declaration_list : identifier" << endl;
 		  }
  		  | identifier LTHIRD int_const RTHIRD 
 		  {
@@ -167,6 +184,8 @@ declaration_list : declaration_list COMMA identifier
 
 			t = new AST(getSymbol("]", "RTHIRD"), yylineno);
 			$$->addChild(t);
+
+			logout << "declaration_list : identifier LTHIRD CONST_INT RTHIRD" << endl;
 		  }
  		  ;
 
@@ -178,74 +197,367 @@ int_const : CONST_INT
 			
 		}		  
 
+float_const : CONST_FLOAT 
+		{
+			auto t = getSymbol(curSymbol->getName(), curSymbol->getType());
+			delete curSymbol;
+			$$ = new AST(t, yylineno);
+			
+		}		
+
+addop : ADDOP
+		{
+			auto t = getSymbol(curSymbol->getName(), curSymbol->getType());
+			delete curSymbol;
+			$$ = new AST(t, yylineno);	
+		}  
+logicop : LOGICOP
+		{
+			auto t = getSymbol(curSymbol->getName(), curSymbol->getType());
+			delete curSymbol;
+			$$ = new AST(t, yylineno);	
+		}  
+
+mulop : MULOP
+		{
+			auto t = getSymbol(curSymbol->getName(), curSymbol->getType());
+			delete curSymbol;
+			$$ = new AST(t, yylineno);	
+		}  
+
+relop : RELOP
+		{
+			auto t = getSymbol(curSymbol->getName(), curSymbol->getType());
+			delete curSymbol;
+			$$ = new AST(t, yylineno);	
+		}  
+
 identifier : ID
 		{
 			$$ = new AST(curSymbol, yylineno);
 		}
-// statements : statement
-// 	   | statements statement
-// 	   ;
-	   
-// statement : var_declaration
-// 	  | expression_statement
-// 	  | compound_statement
-// 	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
-// 	  | IF LPAREN expression RPAREN statement
-// 	  | IF LPAREN expression RPAREN statement ELSE statement
-// 	  | WHILE LPAREN expression RPAREN statement
-// 	  | PRINTLN LPAREN ID RPAREN SEMICOLON
-// 	  | RETURN expression SEMICOLON
-// 	  ;
-	  
-// expression_statement 	: SEMICOLON			
-// 			| expression SEMICOLON 
-// 			;
-	  
-// variable : ID 	{cout << "found id" << curSymbol << " " << *curSymbol << endl;}	
-// 	 | ID LTHIRD expression RTHIRD 
-// 	 ;
-	 
-// expression : logic_expression	
-// 	   | variable ASSIGNOP logic_expression 	
-// 	   ;
-			
-// logic_expression : rel_expression 	
-// 		 | rel_expression LOGICOP rel_expression 	
-// 		 ;
-			
-// rel_expression	: simple_expression 
-// 		| simple_expression RELOP simple_expression	
-// 		;
-				
-// simple_expression : term 
-// 		  | simple_expression ADDOP term 
-// 		  ;
-					
-// term :	unary_expression
-//      |  term MULOP unary_expression
-//      ;
+statements : statement
+		{
+			$$ = new AST(NodeType::STATEMENTS, "statement", yylineno);
+			$$->addChild($1);		
 
-// unary_expression : ADDOP unary_expression  
-// 		 | NOT unary_expression 
-// 		 | factor 
-// 		 ;
+			$$->print(cout);
+
+			logout << "statements : statement" << endl;
+		}
+	   | statements statement
+	   {
+			$$ = new AST(NodeType::STATEMENTS, "statements statement", yylineno);
+			$$->addChild($1);
+			$$->addChild($2);
+
+			$$->print(cout);
+
+			logout << "statements : statements statement" << endl;
+	   }
+	   ;
+	   
+statement : var_declaration
+		{
+			$$ = new AST(NodeType::STATEMENT, "var_declaration", yylineno);
+			$$->addChild($1);
+
+			logout << "statement : var_declaration" << endl;
+		}
+	  | expression_statement
+		{
+			$$ = new AST(NodeType::STATEMENT, "expression_statement", yylineno);
+			$$->addChild($1);
+
+			logout << "statement : expression_statement" << endl;
+		}
+	  ;
+	//   | compound_statement
+	//   | FOR LPAREN expression_statement expression_statement expression RPAREN statement
+	//   | IF LPAREN expression RPAREN statement
+	//   | IF LPAREN expression RPAREN statement ELSE statement
+	//   | WHILE LPAREN expression RPAREN statement
+	//   | PRINTLN LPAREN ID RPAREN SEMICOLON
+	//   | RETURN expression SEMICOLON
+	//   ;
+	  
+expression_statement 	: SEMICOLON	
+			{
+				$$ = new AST(NodeType::EXPR_STMNT, "SEMICOLON", yylineno);
+				
+				auto t = new AST(getSymbol(";", "SEMICOLON"), yylineno);
+				$$->addChild(t);
+
+				logout << "expression_statement : SEMICOLON" << endl;
+			}		
+			| expression SEMICOLON 
+			{
+				$$ = new AST(NodeType::EXPR_STMNT, "SEMICOLON", yylineno);
+
+				$$->addChild($1);
+				
+				auto t = new AST(getSymbol(";", "SEMICOLON"), yylineno);
+				$$->addChild(t);
+
+				logout << "expression_statement : expression SEMICOLON" << endl;
+			}
+			;
+	  
+variable : identifier 	
+		{
+			$$ = new AST(NodeType::VARIABLE, "ID", yylineno);
+			$$->addChild($1);
+
+			logout << "variable : identifier" << endl;
+		}	
+	 | identifier LTHIRD expression RTHIRD 
+		{
+			$$ = new AST(NodeType::VARIABLE, "identifier LTHIRD expression RTHIRD", yylineno);
+			$$->addChild($1);
+
+			auto t = new AST(getSymbol("[", "LTHIRD"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($3);
+
+			t = new AST(getSymbol("]", "RTHIRD"), yylineno);
+			$$->addChild(t);
+
+			logout << "variable : identifier LTHIRD expression RTHIRD" << endl;
+		}
+	 ;
+	 
+expression : logic_expression	
+		{
+			$$ = new AST(NodeType::EXP, "logic_expression", yylineno);
+			$$->addChild($1);
+
+			logout << "expression : logic_expression" << endl;
+		}
+	   | variable ASSIGNOP logic_expression 	
+	   {
+			$$ = new AST(NodeType::EXP, "variable ASSIGNOP logic_expression", yylineno);
+			$$->addChild($1);
+
+			auto t = new AST(getSymbol("=", "ASSIGNOP"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($3);
+
+			logout << "expression : variable ASSIGNOP logic_expression" << endl;
+	   }
+	   ;
+			
+logic_expression : rel_expression 	
+		{
+			$$ = new AST(NodeType::LOGIC_EXP, "rel_expression", yylineno);
+			$$->addChild($1);
+
+			logout << "logic_expression : rel_expression" << endl;
+		}
+		 | rel_expression logicop rel_expression
+		{
+			$$ = new AST(NodeType::LOGIC_EXP, "rel_expression LOGICOP rel_expression", yylineno);
+			$$->addChild($1);
+			$$->addChild($2);
+			$$->addChild($3);
+
+			logout << "logic_expression : rel_expression LOGICOP rel_expression" << endl;
+		}
+		 ;
+			
+rel_expression	: simple_expression 
+		{
+			$$ = new AST(NodeType::REL_EXP, "simple_expression", yylineno);
+			$$->addChild($1);
+
+			logout << "rel_expression : simple_expression" << endl;
+		}
+		| simple_expression relop simple_expression	
+		{
+			$$ = new AST(NodeType::REL_EXP, "simple_expression RELOP simple_expression", yylineno);
+			$$->addChild($1);
+			$$->addChild($2);
+			$$->addChild($3);
+
+			logout << "rel_expression : simple_expression RELOP simple_expression" << endl;
+		}
+		;
+				
+simple_expression : term 
+		{
+			$$ = new AST(NodeType::SIMPLE_EXP, "term", yylineno);
+			$$->addChild($1);
+
+			logout << "simple_expression : term" << endl;
+		}
+		  | simple_expression addop term 
+		{
+			$$ = new AST(NodeType::REL_EXP, "simple_expression ADDOP term", yylineno);
+			$$->addChild($1);
+			$$->addChild($2);
+			$$->addChild($3);
+			
+			logout << "simple_expression : simple_expression ADDOP term" << endl;
+		}
+
+		  ;
+					
+term :	unary_expression
+		{
+			$$ = new AST(NodeType::TERM, "unary_expression", yylineno);
+			$$->addChild($1);
+
+			logout << "term : unary_expression" << endl;
+		}
+     |  term mulop unary_expression
+		{
+			$$ = new AST(NodeType::TERM, "term MULOP unary_expression", yylineno);
+			$$->addChild($1);
+			$$->addChild($2);
+			$$->addChild($3);
+
+			logout << "term : term MULOP unary_expression" << endl;
+		}
+     ;
+
+unary_expression : addop unary_expression  
+		{
+			$$ = new AST(NodeType::UNARY_EXP, "ADDOP unary_expression", yylineno);
+			$$->addChild($1);
+			$$->addChild($2);
+
+			logout << "unary_expression : ADDOP unary_expression" << endl;
+		}
+		 | NOT unary_expression 
+		{
+			$$ = new AST(NodeType::UNARY_EXP, "NOT unary_expression", yylineno);
+
+			auto t = new AST(getSymbol("!", "NOT"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($2);
+
+			logout << "NOT unary_expression" << endl;
+		}
+		 | factor 
+		{
+			$$ = new AST(NodeType::UNARY_EXP, "factor", yylineno);
+			$$->addChild($1);
+
+			logout << "unary_expression : factor" << endl;
+		}
+		 ;
 	
-// factor	: variable 
-// 	| ID LPAREN argument_list RPAREN
-// 	| LPAREN expression RPAREN
-// 	| CONST_INT 
-// 	| CONST_FLOAT
-// 	| variable INCOP 
-// 	| variable DECOP
-// 	;
+factor	: variable 
+		{
+			$$ = new AST(NodeType::FACTOR, "variable", yylineno);
+			$$->addChild($1);
+
+			logout << "factor : variable" << endl;
+		}
+		
+	| identifier LPAREN argument_list RPAREN
+		{
+			$$ = new AST(NodeType::FACTOR, "ID LPAREN argument_list RPAREN", yylineno);
+			$$->addChild($1);
+
+			auto t = new AST(getSymbol("(", "LPAREN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($3);
+
+			t = new AST(getSymbol(")", "RPAREN"), yylineno);
+			$$->addChild(t);
+
+			logout << "factor : ID LPAREN expression RPAREN" << endl;
+		}
+	| LPAREN expression RPAREN
+		{
+			$$ = new AST(NodeType::FACTOR, "LPAREN expression RPAREN", yylineno);
+
+			auto t = new AST(getSymbol("(", "LPAREN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($2);
+
+			t = new AST(getSymbol(")", "RPAREN"), yylineno);
+			$$->addChild(t);
+
+			logout << "factor : LPAREN expression RPAREN" << endl;
+		}
+	| int_const
+		{
+			$$ = new AST(NodeType::FACTOR, "CONST_INT", yylineno);
+			$$->addChild($1);
+
+			logout << "factor : CONST_INT" << endl;
+		}
+	| float_const
+		{
+			$$ = new AST(NodeType::FACTOR, "CONST_FLOAT", yylineno);
+			$$->addChild($1);
+
+			logout << "factor : CONST_FLOAT" << endl;
+		}
+	| variable INCOP 
+		{
+			$$ = new AST(NodeType::FACTOR, "variable INCOP", yylineno);
+			$$->addChild($1);
+
+			auto t = new AST(getSymbol("++", "INCOP"), yylineno);
+			$$->addChild(t);
+
+			logout << "factor : variable INCOP" << endl;
+		}
+
+	| variable DECOP
+		{
+			$$ = new AST(NodeType::FACTOR, "variable DECOP", yylineno);
+			$$->addChild($1);
+
+			auto t = new AST(getSymbol("--", "DECOP"), yylineno);
+			$$->addChild(t);
+
+			logout << "factor : variable DECOP" << endl;
+		}
+	;
 	
-// argument_list : arguments
-// 			  |
-// 			  ;
+argument_list : arguments
+		{
+			$$ = new AST(NodeType::ARG_LIST, "arguments", yylineno);
+			$$->addChild($1);
+
+			logout << "argument_list : arguments" << endl;
+		}
+			| 
+		{
+			$$ = new AST(NodeType::ARG_LIST, "", yylineno);
+			logout << "argument_list : " << endl;
+		}
+			  ;
 	
-// arguments : arguments COMMA logic_expression
-// 	      | logic_expression
-// 	      ;
+arguments : arguments COMMA logic_expression
+		{
+			$$ = new AST(NodeType::ARGS, "arguments COMMA logic_expression", yylineno);
+			$$->addChild($1);
+
+
+			auto t = new AST(getSymbol(",", "COMMA"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($3);
+
+			logout << "arguments : arguments COMMA logic_expression" << endl;
+		}
+	      | logic_expression
+		{
+			$$ = new AST(NodeType::ARGS, "logic_expression", yylineno);
+			$$->addChild($1);
+
+			logout << "arguments : logic_expression" << endl;
+		}
+	      ;
  
 %%
 int main(int argc,char *argv[])
