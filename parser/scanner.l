@@ -102,12 +102,12 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 				}
 
 [=!(){}\[\],;]	{
-					if(yytext[0] == '{'){
-						symbolTable.enterScope();
-					}
-					if(yytext[0] == '}'){
-						symbolTable.exitScope();
-					}
+					// if(yytext[0] == '{'){
+					// 	symbolTable.enterScope();
+					// }
+					// if(yytext[0] == '}'){
+					// 	symbolTable.exitScope();
+					// }
 					return printUtil.printPunctuation(yytext, yylineno);
 				}
 

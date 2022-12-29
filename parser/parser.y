@@ -58,7 +58,7 @@ SymbolInfo* getSymbol(string name, string type){
 %token ASSIGNOP NOT LPAREN RPAREN LTHIRD RTHIRD LCURL RCURL COMMA SEMICOLON
 %token ADDOP MULOP INCOP DECOP RELOP LOGICOP BITOP ID PRINTLN
 
-%start statements
+%start compound_statement
 
 %%
 
@@ -95,9 +95,37 @@ SymbolInfo* getSymbol(string name, string type){
 //  		;
 
  		
-// compound_statement : LCURL statements RCURL
-//  		    | LCURL RCURL
-//  		    ;
+compound_statement : LCURL statements RCURL
+			{
+				$$ = new AST(NodeType::COMPOUND_STATEMENT, "LCURL statement RCURL", yylineno);
+
+				auto t = new AST(getSymbol("{", "LCURL"), yylineno);
+				$$->addChild(t);
+
+				$$->addChild($2);
+
+				t = new AST(getSymbol("}", "RCURL"), yylineno);
+				$$->addChild(t);
+
+				logout << "compound_statement: LCURL statements RCURL" << endl;
+
+				$$->print(cout);
+			}
+ 		    | LCURL RCURL
+			{
+				$$ = new AST(NodeType::COMPOUND_STATEMENT, "LCURL RCURL", yylineno);
+
+				auto t = new AST(getSymbol("{", "LCURL"), yylineno);
+				$$->addChild(t);
+
+				t = new AST(getSymbol("}", "RCURL"), yylineno);
+				$$->addChild(t);	
+
+				logout << "compound_statement : LCURL RCURL" << endl;	
+
+				$$->print(cout);
+			}
+ 		    ;
  		    
 var_declaration : type_specifier declaration_list SEMICOLON 
 		{	
@@ -241,8 +269,6 @@ statements : statement
 			$$ = new AST(NodeType::STATEMENTS, "statement", yylineno);
 			$$->addChild($1);		
 
-			$$->print(cout);
-
 			logout << "statements : statement" << endl;
 		}
 	   | statements statement
@@ -250,8 +276,6 @@ statements : statement
 			$$ = new AST(NodeType::STATEMENTS, "statements statement", yylineno);
 			$$->addChild($1);
 			$$->addChild($2);
-
-			$$->print(cout);
 
 			logout << "statements : statements statement" << endl;
 	   }
@@ -272,7 +296,14 @@ statement : var_declaration
 			logout << "statement : expression_statement" << endl;
 		}
 	  ;
-	//   | compound_statement
+	  | compound_statement
+	  {
+			$$ = new AST(NodeType::STATEMENT, "compound_statement", yylineno);
+			$$->addChild($1);
+
+			logout << "statement : compound_statement" << endl;
+
+	  }
 	//   | FOR LPAREN expression_statement expression_statement expression RPAREN statement
 	//   | IF LPAREN expression RPAREN statement
 	//   | IF LPAREN expression RPAREN statement ELSE statement

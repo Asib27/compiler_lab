@@ -1019,12 +1019,12 @@ case 27:
 YY_RULE_SETUP
 #line 104 "scanner.l"
 {
-					if(yytext[0] == '{'){
-						symbolTable.enterScope();
-					}
-					if(yytext[0] == '}'){
-						symbolTable.exitScope();
-					}
+					// if(yytext[0] == '{'){
+					// 	symbolTable.enterScope();
+					// }
+					// if(yytext[0] == '}'){
+					// 	symbolTable.exitScope();
+					// }
 					return printUtil.printPunctuation(yytext, yylineno);
 				}
 	YY_BREAK
