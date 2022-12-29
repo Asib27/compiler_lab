@@ -57,17 +57,19 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 "return"	|
 "case"		|
 "continue"	{
-				printUtil.printKeyword(yytext, yylineno);
+				return printUtil.printKeyword(yytext, yylineno);
 			}
 
 		
 {DIGIT}+ 	{
 				printUtil.print("CONST_INT", yytext, yylineno);
+				return CONST_INT;
 			}
 
 ({DIGITS}?\.{DIGITS}{EXP}?)	|
 {DIGITS}{EXP}	{
 					printUtil.print("CONST_FLOAT", yytext, yylineno);
+					return CONST_FLOAT;
 				}
 
 {DIGITS}?((\.)+{DIGITS}){2,}{EXP}?	|
@@ -81,6 +83,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 
 '([^'\\\n]|(\\{ESCAPES}))*'	{
 					printUtil.printChar(yytext, yylineno);
+					return CONST_CHAR;
 				}
 
 "'\\'"	|
@@ -102,34 +105,34 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 					if(yytext[0] == '}'){
 						symbolTable.exitScope();
 					}
-					printUtil.printPunctuation(yytext, yylineno);
+					return printUtil.printPunctuation(yytext, yylineno);
 				}
 
 "+"		|
-"-"		{printUtil.print("ADDOP", yytext, yylineno);}
+"-"		{printUtil.print("ADDOP", yytext, yylineno); return ADDOP;}
 
 "*"		|
 "/"		|
-"%"		{printUtil.print("MULOP", yytext, yylineno);}
+"%"		{printUtil.print("MULOP", yytext, yylineno); return MULOP;}
 
 "++"	|
-"--" 	{printUtil.print("INCOP", yytext, yylineno);}
+"--" 	{printUtil.print("INCOP", yytext, yylineno); return INCOP;}
 
 "<"		|
 ">"		|
 "<="	|
 ">="	|
 "=="	|
-"!="	{printUtil.print("RELOP", yytext, yylineno);}
+"!="	{printUtil.print("RELOP", yytext, yylineno); return RELOP;}
 
 "&&"	| 
-"||"	{printUtil.print("LOGIOP", yytext, yylineno);}
+"||"	{printUtil.print("LOGIOP", yytext, yylineno); return LOGICOP;}
 
 "&"		| 
 "|"		|
 "^"		|
 "<<"	|
-">>"	{printUtil.print("BITOP", yytext, yylineno);}
+">>"	{printUtil.print("BITOP", yytext, yylineno); return BITOP;}
 
 
 [_a-zA-Z][_a-zA-Z0-9]*	{

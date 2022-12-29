@@ -83,7 +83,17 @@ PrintUtil::PrintUtil(std::ostream &token, std::ostream &log)
 
 }
 
-void PrintUtil::printKeyword(std::string text, int lineNo){
+int PrintUtil::printKeyword(std::string text, int lineNo){
+    const int keysize = 15;
+    std::string keys[keysize] = {
+        "if","for","do","int","float","void","switch","default",
+        "else","while","break","char","double","return","case"
+    };
+    int values[] = {
+        IF, FOR, DO, INT, FLOAT, VOID, SWITCH, DEFAULT,
+        ELSE, WHILE, BREAK, CHAR, DOUBLE, RETURN, CASE
+    };
+
     std::string upper = "";
     for(auto i: text){
         if(i >= 'a' && i <= 'z')
@@ -92,25 +102,35 @@ void PrintUtil::printKeyword(std::string text, int lineNo){
     }
 
     printHelper(upper, text, lineNo);
+
+    for(int i = 0; i < keysize; i++){
+        if(keys[i] == text) return values[i];
+    }
+    return IF;
 }
 
 void PrintUtil::print(std::string token, std::string text, int lineNo){
     printHelper(token, text, lineNo);
 }
 
-void PrintUtil::printPunctuation(std::string text, int lineNo){
+int PrintUtil::printPunctuation(std::string text, int lineNo){
     char c = text[0];
 
     std::string keys = "=!(){}[],;";
     std::string values[] = {"ASSIGNOP", "NOT", "LPAREN", "RPAREN", "LCURL", "RCURL",
         "LSQUARE", "RSQUARE", "COMMA", "SEMICOLON"
     };
+    int value_const[] = {ASSIGNOP,NOT,LPAREN,RPAREN,LTHIRD,RTHIRD,
+    LCURL,RCURL,COMMA,SEMICOLON};
 
     for(int i = 0; i < keys.length(); i++){
         if(c == keys[i]){
             printHelper(values[i], std::string(1, c), lineNo);
+            return value_const[i];
         }
     }
+
+    return SEMICOLON;
 }
 
 void PrintUtil::printChar(std::string text, int lineNo){

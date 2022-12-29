@@ -25,9 +25,9 @@ class PrintUtil{
 	int newLineCount(std::string text);
 public:
 	PrintUtil(std::ostream &token, std::ostream &log);
-	void printKeyword(std::string text, int lineNo);
+	int printKeyword(std::string text, int lineNo);
 	void print(std::string token, std::string text, int lineNo);
-	void printPunctuation(std::string text, int lineNo);
+	int printPunctuation(std::string text, int lineNo);
 	void printChar(std::string text, int lineNo);
 	int printString(std::string text, int lineNo);
 	void printComment(std::string text, int lineNo);
