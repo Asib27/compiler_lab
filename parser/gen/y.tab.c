@@ -88,8 +88,8 @@ extern int yylineno;
 
 ofstream logout("log.txt"), tokenout("token.txt");
 // PrintUtil printUtil(tokenout, logout);
-Printer printer(logout, true);
-SymbolTable symbolTable(10, &printer);
+Printer printer(logout, true), noPrint(cout, false);
+SymbolTable symbolTable(10, &printer), constTable(10, &noPrint);
 SymbolInfo *curSymbol = nullptr;
 
 
@@ -98,9 +98,24 @@ void yyerror(char *s)
 	//write your code
 }
 
+SymbolInfo int_symbol("int", "INT"), float_symbol("float", "FLOAT"),
+		   void_symbol("void", "VOID"), lthird_symbol("[", "LTHIRD"),
+		   rthird_symbol("]", "RTHIRD")
+;
+
+SymbolInfo* getSymbol(string name, string type){
+	auto t = constTable.lookup(name);
+	if(t == nullptr){
+		SymbolInfo s(name, type);
+		t = constTable.insert(s);
+	}
+
+	return t;
+}
 
 
-#line 104 "y.tab.c"
+
+#line 119 "y.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -546,18 +561,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  6
+#define YYFINAL  7
 /* YYLAST -- Last index in YYTABLE.  */
 #define YYLAST   13
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  42
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  4
+#define YYNNTS  7
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  9
+#define YYNRULES  12
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  18
+#define YYNSTATES  21
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   296
@@ -606,9 +621,10 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    85,    85,    92,    93,    94,    97,    98,    99,   104
+       0,   100,   100,   109,   116,   123,   123,   132,   133,   134,
+     139,   154,   159
 };
 #endif
 
@@ -623,7 +639,8 @@ static const char *const yytname[] =
   "CONST_CHAR", "ASSIGNOP", "NOT", "LPAREN", "RPAREN", "LTHIRD", "RTHIRD",
   "LCURL", "RCURL", "COMMA", "SEMICOLON", "ADDOP", "MULOP", "INCOP",
   "DECOP", "RELOP", "LOGICOP", "BITOP", "ID", "PRINTLN", "$accept",
-  "var_declaration", "type_specifier", "declaration_list", YY_NULLPTR
+  "var_declaration", "type_specifier", "$@1", "declaration_list",
+  "int_const", "identifier", YY_NULLPTR
 };
 #endif
 
@@ -654,8 +671,9 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -6,   -35,   -35,   -35,     5,   -34,   -35,   -20,   -28,   -12,
-     -31,   -35,   -18,   -16,   -35,    -8,   -15,   -35
+      -6,   -35,   -35,   -35,     5,   -34,   -35,   -35,   -35,   -28,
+     -20,   -34,   -35,   -12,   -18,   -35,   -17,   -12,   -35,   -16,
+     -35
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -663,20 +681,21 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,     3,     4,     5,     0,     0,     1,     8,     0,     0,
-       0,     2,     0,     6,     9,     0,     0,     7
+       0,     3,     4,     5,     0,     0,     6,     1,    12,     0,
+       9,     0,     2,     0,     7,    11,     0,     0,    10,     0,
+       8
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -35,   -35,   -35,   -35
+     -35,   -35,   -35,   -35,   -35,    -7,     2
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     4,     5,     8
+      -1,     4,     5,     6,     9,    16,    10
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -684,34 +703,37 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       1,     2,     3,    10,    11,     6,     7,     9,    12,    13,
-      14,    15,    16,    17
+       1,     2,     3,    11,    12,     7,     8,    13,    15,    17,
+      19,    18,    20,    14
 };
 
 static const yytype_int8 yycheck[] =
 {
-       6,     7,     8,    31,    32,     0,    40,    27,    20,    40,
-      28,    27,    20,    28
+       6,     7,     8,    31,    32,     0,    40,    27,    20,    27,
+      17,    28,    28,    11
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     6,     7,     8,    43,    44,     0,    40,    45,    27,
-      31,    32,    20,    40,    28,    27,    20,    28
+       0,     6,     7,     8,    43,    44,    45,     0,    40,    46,
+      48,    31,    32,    27,    48,    20,    47,    27,    28,    47,
+      28
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    42,    43,    44,    44,    44,    45,    45,    45,    45
+       0,    42,    43,    44,    44,    45,    44,    46,    46,    46,
+      46,    47,    48
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     3,     1,     1,     1,     3,     6,     1,     4
+       0,     2,     3,     1,     1,     0,     2,     3,     6,     1,
+       4,     1,     1
 };
 
 
@@ -1407,49 +1429,99 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 86 "parser.y"
+#line 101 "parser.y"
                 {	
-			cout << "var_declaration found" << endl;
-			yyvsp[-1]->print(cout);
+			yyval = new AST(NodeType::VAR_DECL, "type_specifier declaration_list SEMICOLON", yylineno);
+			yyval->addChild(yyvsp[-2]);
+			yyval->addChild(yyvsp[-1]);
+			yyval->print(cout);
 		}
-#line 1416 "y.tab.c"
+#line 1440 "y.tab.c"
     break;
 
   case 3:
-#line 92 "parser.y"
-                      {cout << "int found" << endl;}
-#line 1422 "y.tab.c"
+#line 110 "parser.y"
+        {
+		auto s = getSymbol("int", "INT");
+		auto t = new AST(s, yylineno);
+		yyval = new AST(NodeType::TYPE_SPECIFIER, "INT", yylineno);
+		yyval->addChild(t);
+	}
+#line 1451 "y.tab.c"
     break;
 
   case 4:
-#line 93 "parser.y"
-                        {cout << "float found" << endl;}
-#line 1428 "y.tab.c"
+#line 117 "parser.y"
+        {
+		auto s = getSymbol("float", "FLOAT");
+		auto t = new AST(s, yylineno);
+		yyval = new AST(NodeType::TYPE_SPECIFIER, "FLOAT", yylineno);
+		yyval->addChild(t);
+	}
+#line 1462 "y.tab.c"
     break;
 
   case 5:
-#line 94 "parser.y"
+#line 123 "parser.y"
                        {cout << "void found" << endl;}
-#line 1434 "y.tab.c"
+#line 1468 "y.tab.c"
     break;
 
-  case 8:
-#line 100 "parser.y"
-                  {
-			cout << "id: " << *curSymbol << " found" << endl;
-		  	yyval = new AST(NodeType::VARIABLE,curSymbol,yylineno);
-		  }
-#line 1443 "y.tab.c"
+  case 6:
+#line 124 "parser.y"
+        {
+		auto s = getSymbol("void", "VOID");
+		auto t = new AST(s, yylineno);
+		yyval = new AST(NodeType::TYPE_SPECIFIER, "VOID", yylineno);
+		yyval->addChild(t);
+	}
+#line 1479 "y.tab.c"
     break;
 
   case 9:
-#line 104 "parser.y"
-                                               {cout << "array declaration" << endl;}
-#line 1449 "y.tab.c"
+#line 135 "parser.y"
+                  {
+			yyval = new AST(NodeType::DECL_LIST, "ID", yylineno);
+			yyval->addChild(yyvsp[0]);
+		  }
+#line 1488 "y.tab.c"
+    break;
+
+  case 10:
+#line 140 "parser.y"
+                  {
+			yyval = new AST(NodeType::DECL_LIST, "ID LTHIRD CONST_INT RTHIRD", yylineno);
+			yyval->addChild(yyvsp[-3]);
+
+			auto t = new AST(getSymbol("[", "LTHIRD"), yylineno);
+			yyval->addChild(t);
+
+			yyval->addChild(yyvsp[-1]);
+
+			t = new AST(getSymbol("]", "RTHIRD"), yylineno);
+			yyval->addChild(t);
+		  }
+#line 1505 "y.tab.c"
+    break;
+
+  case 11:
+#line 155 "parser.y"
+                {
+			yyval = new AST(curSymbol, yylineno);
+		}
+#line 1513 "y.tab.c"
+    break;
+
+  case 12:
+#line 160 "parser.y"
+                {
+			yyval = new AST(curSymbol, yylineno);
+		}
+#line 1521 "y.tab.c"
     break;
 
 
-#line 1453 "y.tab.c"
+#line 1525 "y.tab.c"
 
       default: break;
     }
@@ -1681,7 +1753,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 172 "parser.y"
+#line 228 "parser.y"
 
 int main(int argc,char *argv[])
 {

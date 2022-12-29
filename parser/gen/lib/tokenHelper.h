@@ -6,8 +6,8 @@
 
 enum class NodeType{
     VARIABLE, EXP, LOGIC_EXP, REL_EXP, SIMPLE_EXP,
-    TERM, UNARY_EXP, FACTOR, ARG_LIST, ARGS
-
+    TERM, UNARY_EXP, FACTOR, ARG_LIST, ARGS, TOKEN,
+    VAR_DECL, TYPE_SPECIFIER, DECL_LIST
 };
 
 std::string getStringofNode(NodeType n);

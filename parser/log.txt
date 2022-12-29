@@ -1,4 +1,7 @@
 Line# 1: Token <INT> Lexeme int found
 Line# 1: Token <ID> Lexeme abc found
 	'abc' not found in any of the ScopeTables
+Line# 1: Token <LTHIRD> Lexeme [ found
+Line# 1: Token <CONST_INT> Lexeme 10 found
+Line# 1: Token <RTHIRD> Lexeme ] found
 Line# 1: Token <SEMICOLON> Lexeme ; found

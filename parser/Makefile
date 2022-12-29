@@ -49,3 +49,4 @@ clean:
 	rm ${gen}/lex.yy.c ${gen}/y.tab.c 
 	rm ${gen}/lex.yy.o ${gen}/lexer.o ${gen}/parser.o
 	rm parser.out
+	rm gen/lib/bin/*.o

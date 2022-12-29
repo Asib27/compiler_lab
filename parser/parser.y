@@ -19,14 +19,29 @@ extern int yylineno;
 
 ofstream logout("log.txt"), tokenout("token.txt");
 // PrintUtil printUtil(tokenout, logout);
-Printer printer(logout, true);
-SymbolTable symbolTable(10, &printer);
+Printer printer(logout, true), noPrint(cout, false);
+SymbolTable symbolTable(10, &printer), constTable(10, &noPrint);
 SymbolInfo *curSymbol = nullptr;
 
 
 void yyerror(char *s)
 {
 	//write your code
+}
+
+SymbolInfo int_symbol("int", "INT"), float_symbol("float", "FLOAT"),
+		   void_symbol("void", "VOID"), lthird_symbol("[", "LTHIRD"),
+		   rthird_symbol("]", "RTHIRD")
+;
+
+SymbolInfo* getSymbol(string name, string type){
+	auto t = constTable.lookup(name);
+	if(t == nullptr){
+		SymbolInfo s(name, type);
+		t = constTable.insert(s);
+	}
+
+	return t;
 }
 
 
@@ -84,26 +99,67 @@ void yyerror(char *s)
  		    
 var_declaration : type_specifier declaration_list SEMICOLON 
 		{	
-			cout << "var_declaration found" << endl;
-			$2->print(cout);
+			$$ = new AST(NodeType::VAR_DECL, "type_specifier declaration_list SEMICOLON", yylineno);
+			$$->addChild($1);
+			$$->addChild($2);
+			$$->print(cout);
 		}
  		 ;
  		 
-type_specifier	: INT {cout << "int found" << endl;}
- 		| FLOAT {cout << "float found" << endl;}
+type_specifier	: INT 
+	{
+		auto s = getSymbol("int", "INT");
+		auto t = new AST(s, yylineno);
+		$$ = new AST(NodeType::TYPE_SPECIFIER, "INT", yylineno);
+		$$->addChild(t);
+	}
+ 		| FLOAT 
+	{
+		auto s = getSymbol("float", "FLOAT");
+		auto t = new AST(s, yylineno);
+		$$ = new AST(NodeType::TYPE_SPECIFIER, "FLOAT", yylineno);
+		$$->addChild(t);
+	}	
  		| VOID {cout << "void found" << endl;}
+	{
+		auto s = getSymbol("void", "VOID");
+		auto t = new AST(s, yylineno);
+		$$ = new AST(NodeType::TYPE_SPECIFIER, "VOID", yylineno);
+		$$->addChild(t);
+	}
  		;
  		
-declaration_list : declaration_list COMMA ID
- 		  | declaration_list COMMA ID LTHIRD CONST_INT RTHIRD
- 		  | ID 
+declaration_list : declaration_list COMMA identifier
+ 		  | declaration_list COMMA identifier LTHIRD int_const RTHIRD
+ 		  | identifier 
 		  {
-			cout << "id: " << *curSymbol << " found" << endl;
-		  	$$ = new AST(NodeType::VARIABLE,curSymbol,yylineno);
+			$$ = new AST(NodeType::DECL_LIST, "ID", yylineno);
+			$$->addChild($1);
 		  }
- 		  | ID LTHIRD CONST_INT RTHIRD {cout << "array declaration" << endl;}
+ 		  | identifier LTHIRD int_const RTHIRD 
+		  {
+			$$ = new AST(NodeType::DECL_LIST, "ID LTHIRD CONST_INT RTHIRD", yylineno);
+			$$->addChild($1);
+
+			auto t = new AST(getSymbol("[", "LTHIRD"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($3);
+
+			t = new AST(getSymbol("]", "RTHIRD"), yylineno);
+			$$->addChild(t);
+		  }
  		  ;
- 		  
+
+int_const : CONST_INT 
+		{
+			$$ = new AST(curSymbol, yylineno);
+		}		  
+
+identifier : ID
+		{
+			$$ = new AST(curSymbol, yylineno);
+		}
 // statements : statement
 // 	   | statements statement
 // 	   ;

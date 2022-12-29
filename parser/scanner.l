@@ -64,6 +64,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 		
 {DIGIT}+ 	{
 				printUtil.print("CONST_INT", yytext, yylineno);
+				curSymbol =  new SymbolInfo(yytext, "CONST_INT");
 				return CONST_INT;
 			}
 

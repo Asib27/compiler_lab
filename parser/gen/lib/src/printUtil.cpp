@@ -118,10 +118,10 @@ int PrintUtil::printPunctuation(std::string text, int lineNo){
 
     std::string keys = "=!(){}[],;";
     std::string values[] = {"ASSIGNOP", "NOT", "LPAREN", "RPAREN", "LCURL", "RCURL",
-        "LSQUARE", "RSQUARE", "COMMA", "SEMICOLON"
+        "LTHIRD", "RTHIRD", "COMMA", "SEMICOLON"
     };
-    int value_const[] = {ASSIGNOP,NOT,LPAREN,RPAREN,LTHIRD,RTHIRD,
-    LCURL,RCURL,COMMA,SEMICOLON};
+    int value_const[] = {ASSIGNOP,NOT,LPAREN,RPAREN,LCURL,RCURL,
+    LTHIRD,RTHIRD,COMMA,SEMICOLON};
 
     for(int i = 0; i < keys.length(); i++){
         if(c == keys[i]){
