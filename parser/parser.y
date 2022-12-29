@@ -295,7 +295,6 @@ statement : var_declaration
 
 			logout << "statement : expression_statement" << endl;
 		}
-	  ;
 	  | compound_statement
 	  {
 			$$ = new AST(NodeType::STATEMENT, "compound_statement", yylineno);
@@ -304,7 +303,28 @@ statement : var_declaration
 			logout << "statement : compound_statement" << endl;
 
 	  }
-	//   | FOR LPAREN expression_statement expression_statement expression RPAREN statement
+	  | FOR LPAREN expression_statement expression_statement expression RPAREN statement
+	  	{
+			$$ = new AST(NodeType::STATEMENT, "FOR LPAREN expression_statement expression_statement expression RPAREN statement", yylineno);
+
+			auto t = new AST(getSymbol("for", "FOR"), yylineno);
+			$$->addChild(t);
+
+			t = new AST(getSymbol("(", "LPAREN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($3);
+			$$->addChild($4);
+			$$->addChild($5);
+
+
+			t = new AST(getSymbol(")", "RPAREN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($7);
+
+			logout << "statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement" << endl;
+		}
 	//   | IF LPAREN expression RPAREN statement
 	//   | IF LPAREN expression RPAREN statement ELSE statement
 	//   | WHILE LPAREN expression RPAREN statement
