@@ -58,7 +58,7 @@ SymbolInfo* getSymbol(string name, string type){
 %token ASSIGNOP NOT LPAREN RPAREN LTHIRD RTHIRD LCURL RCURL COMMA SEMICOLON
 %token ADDOP MULOP INCOP DECOP RELOP LOGICOP BITOP ID PRINTLN
 
-%start compound_statement
+%start func_definition
 
 %%
 
@@ -79,20 +79,128 @@ SymbolInfo* getSymbol(string name, string type){
 //      | func_definition
 //      ;
      
-// func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
-// 		| type_specifier ID LPAREN RPAREN SEMICOLON
-// 		;
+func_declaration : type_specifier identifier LPAREN parameter_list RPAREN SEMICOLON
+			{
+				$$ = new AST(NodeType::FUNC_DECL, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
+
+				$$->addChild($1);
+				$$->addChild($2);
+
+				auto t = new AST(getSymbol("(", "LPAREN"), yylineno);
+				$$->addChild(t);
+
+				$$->addChild($4);
+
+				t = new AST(getSymbol(")", "RPAREN"), yylineno);
+				$$->addChild(t);
+
+				t = new AST(getSymbol(";", "SEMICOLON"), yylineno);
+				$$->addChild(t);
+
+				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
+			}
+		| type_specifier identifier LPAREN RPAREN SEMICOLON
+			{
+				$$ = new AST(NodeType::FUNC_DECL, "type_specifier ID LPAREN RPAREN SEMICOLON", yylineno);
+
+				$$->addChild($1);
+				$$->addChild($2);
+
+				auto t = new AST(getSymbol("(", "LPAREN"), yylineno);
+				$$->addChild(t);
+
+				t = new AST(getSymbol(")", "RPAREN"), yylineno);
+				$$->addChild(t);
+
+				t = new AST(getSymbol(";", "SEMICOLON"), yylineno);
+				$$->addChild(t);
+
+				logout << "func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON" << endl;
+			}
+		;
 		 
-// func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
-// 		| type_specifier ID LPAREN RPAREN compound_statement
-//  		;				
+func_definition : type_specifier identifier LPAREN parameter_list RPAREN compound_statement
+			{
+				$$ = new AST(NodeType::FUNC_DEF, "type_specifier ID LPAREN parameter_list RPAREN compound_statement", yylineno);
+
+				$$->addChild($1);
+				$$->addChild($2);
+
+				auto t = new AST(getSymbol("(", "LPAREN"), yylineno);
+				$$->addChild(t);
+
+				$$->addChild($4);
+
+				t = new AST(getSymbol(")", "RPAREN"), yylineno);
+				$$->addChild(t);
+
+				$$->addChild($6);				
+
+				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
+			}
+		| type_specifier identifier LPAREN RPAREN compound_statement
+			{
+				$$ = new AST(NodeType::FUNC_DEF, "type_specifier ID LPAREN RPAREN SEMICOLON", yylineno);
+
+				$$->addChild($1);
+				$$->addChild($2);
+
+				auto t = new AST(getSymbol("(", "LPAREN"), yylineno);
+				$$->addChild(t);
+
+				t = new AST(getSymbol(")", "RPAREN"), yylineno);
+				$$->addChild(t);
+
+				$$->addChild($5);
+
+				logout << "func_definition: type_specifier ID LPAREN RPAREN compound_statement" << endl;
+			}
+ 		;				
 
 
-// parameter_list  : parameter_list COMMA type_specifier ID
-// 		| parameter_list COMMA type_specifier
-//  		| type_specifier ID
-// 		| type_specifier
-//  		;
+parameter_list  : parameter_list COMMA type_specifier identifier
+			{
+				$$ = new AST(NodeType::PARAM_LIST, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
+
+				$$->addChild($1);
+
+				auto t = new AST(getSymbol(",", "COMMA"), yylineno);
+				$$->addChild(t);
+
+				$$->addChild($3);
+				$$->addChild($4);
+
+				logout << "parameter_list : parameter_list COMMA type_specifier ID" << endl;
+			}
+		| parameter_list COMMA type_specifier
+			{
+				$$ = new AST(NodeType::PARAM_LIST, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
+
+				$$->addChild($1);
+
+				auto t = new AST(getSymbol(",", "COMMA"), yylineno);
+				$$->addChild(t);
+
+				$$->addChild($3);
+
+				logout << "parameter_list: parameter_list COMMA type_specifier" << endl;
+			}
+ 		| type_specifier identifier
+			{
+				$$ = new AST(NodeType::PARAM_LIST, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
+				$$->addChild($1);
+				$$->addChild($2);
+
+				logout << "parameter_list : type_specifier ID" << endl;
+			}
+		| type_specifier
+			{
+				$$ = new AST(NodeType::PARAM_LIST, "type_specifier", yylineno);
+				$$->addChild($1);
+
+				logout << "parameter_list : type_specifier" << endl;
+			}
+ 		;
 
  		
 compound_statement : LCURL statements RCURL
@@ -109,7 +217,6 @@ compound_statement : LCURL statements RCURL
 
 				logout << "compound_statement: LCURL statements RCURL" << endl;
 
-				$$->print(cout);
 			}
  		    | LCURL RCURL
 			{
@@ -123,7 +230,6 @@ compound_statement : LCURL statements RCURL
 
 				logout << "compound_statement : LCURL RCURL" << endl;	
 
-				$$->print(cout);
 			}
  		    ;
  		    
