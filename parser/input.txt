@@ -1,13 +1,11 @@
-int a, b, c;
-
-int abc();
-
-int cdf(int, int);
-
-int abc(int a){
-    a = 10 + 5;
-}
-
-int cdf(int a){
-    a[2] = 5;
+int main(){
+    if(a == 10){
+        a = 5;
+    }
+    
+    if(a == 10){
+        a = 5;
+    }else{
+        a = 9;
+    }
 }

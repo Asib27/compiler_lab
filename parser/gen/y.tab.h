@@ -87,7 +87,8 @@ extern int yydebug;
     LOGICOP = 293,
     BITOP = 294,
     ID = 295,
-    PRINTLN = 296
+    PRINTLN = 296,
+    LOWER_THAN_ELSE = 297
   };
 #endif
 /* Tokens.  */
@@ -130,6 +131,7 @@ extern int yydebug;
 #define BITOP 294
 #define ID 295
 #define PRINTLN 296
+#define LOWER_THAN_ELSE 297
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED

@@ -58,6 +58,9 @@ SymbolInfo* getSymbol(string name, string type){
 %token ASSIGNOP NOT LPAREN RPAREN LTHIRD RTHIRD LCURL RCURL COMMA SEMICOLON
 %token ADDOP MULOP INCOP DECOP RELOP LOGICOP BITOP ID PRINTLN
 
+%nonassoc LOWER_THAN_ELSE
+%nonassoc ELSE
+
 %start start
 
 %%
@@ -464,14 +467,50 @@ statement : var_declaration
 
 			logout << "statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement" << endl;
 		}
-	//   | IF LPAREN expression RPAREN statement
-	//   {
-	// 	$$ = $3;
-	//   }
-	//   | IF LPAREN expression RPAREN statement ELSE statement
-	//   {
-	// 	$1 = $3;
-	//   }
+	  | IF LPAREN expression RPAREN statement	%prec LOWER_THAN_ELSE 
+		{
+			$$ = new AST(NodeType::STATEMENT, "IF LPAREN expression RPAREN statement", yylineno);
+
+			auto t = new AST(getSymbol("if", "IF"), yylineno);
+			$$->addChild(t);
+
+			t = new AST(getSymbol("(", "LPAREN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($3);
+
+			t = new AST(getSymbol(")", "RPAREN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($5);
+
+			logout << "statement : IF LPAREN expression RPAREN statement" << endl;
+		}
+	  | IF LPAREN expression RPAREN statement ELSE statement
+	  	{
+			$$ = new AST(NodeType::STATEMENT, "IF LPAREN expression RPAREN statement ELSE statement", yylineno);
+
+			auto t = new AST(getSymbol("if", "IF"), yylineno);
+			$$->addChild(t);
+
+			t = new AST(getSymbol("(", "LPAREN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($3);
+
+			t = new AST(getSymbol(")", "RPAREN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($5);
+
+			t = new AST(getSymbol("else", "ELSE"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($7);
+
+			logout << "statement : IF LPAREN expression RPAREN statement ELSE statement" << endl;
+		}
+	  ;
 	//   | WHILE LPAREN expression RPAREN statement
 	//   | PRINTLN LPAREN ID RPAREN SEMICOLON
 	//   | RETURN expression SEMICOLON
@@ -519,7 +558,7 @@ variable : identifier
 			t = new AST(getSymbol("]", "RTHIRD"), yylineno);
 			$$->addChild(t);
 
-			logout << "variable : identifier LTHIRD expression RTHIRD" << endl;
+			logout << "variable : ID LTHIRD expression RTHIRD" << endl;
 		}
 	 ;
 	 
