@@ -1,3 +1,13 @@
-int acb(){
-a = b + c;
+int a, b, c;
+
+int abc();
+
+int cdf(int, int);
+
+int abc(int a){
+    a = 10 + 5;
+}
+
+int cdf(int a){
+    a[2] = 5;
 }

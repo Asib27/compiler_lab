@@ -58,26 +58,59 @@ SymbolInfo* getSymbol(string name, string type){
 %token ASSIGNOP NOT LPAREN RPAREN LTHIRD RTHIRD LCURL RCURL COMMA SEMICOLON
 %token ADDOP MULOP INCOP DECOP RELOP LOGICOP BITOP ID PRINTLN
 
-%start func_definition
+%start start
 
 %%
 
 
-// start : arguments
-// 	{
-// 		//write your code in this block in all the similar blocks below
-// 	}
-// 		: program
-// 	;
+start : program
+	{
+		$$ = new AST(NodeType::UNIT, "var_declaration", yylineno);
+		$$->addChild($1); 
 
-// program : program unit 
-// 	| unit
-// 	;
+		logout << "start : program" << endl;
+	}
+	;
+
+program : program unit 
+		{
+			$$ func_declaration= new AST(NodeType::PROGRAM, "program unit", yylineno);
+			$$->addChild($1);
+			$$->addChild($2);
+
+			logout << "program : program unit" << endl;
+		}
+	| unit
+		{
+			$$ = new AST(NodeType::PROGRAM, "unit", yylineno);
+			$$->addChild($1);
+
+			logout << "program : unit" << endl;
+		}
+	;
 	
-// unit : var_declaration
-//      | func_declaration
-//      | func_definition
-//      ;
+unit : var_declaration
+	{
+        $$ = new AST(NodeType::UNIT, "var_declaration", yylineno);
+		$$->addChild($1);
+
+		logout << "unit : var_declaration" << endl;
+	}
+     | func_declaration
+	{
+        $$ = new AST(NodeType::UNIT, "func_declaration", yylineno);
+		$$->addChild($1);
+		
+		logout << "unit : func_declaration" << endl;
+	}
+     | func_definition
+	{
+        $$ = new AST(NodeType::UNIT, "func_definition", yylineno);
+		$$->addChild($1);
+		
+		logout << "unit : func_definition" << endl;
+	}
+     ;
      
 func_declaration : type_specifier identifier LPAREN parameter_list RPAREN SEMICOLON
 			{
@@ -136,7 +169,7 @@ func_definition : type_specifier identifier LPAREN parameter_list RPAREN compoun
 
 				$$->addChild($6);				
 
-				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
+				logout << "func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
 			}
 		| type_specifier identifier LPAREN RPAREN compound_statement
 			{
