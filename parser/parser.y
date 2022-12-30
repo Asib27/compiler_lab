@@ -7,8 +7,6 @@
 #include"lib/symbolTable.h"
 #include "lib/symbolInfo.h"
 #include "lib/ast.h"
-// #define YYSTYPE AST*
-#include "y.tab.h"
 
 using namespace std;
 
@@ -77,6 +75,7 @@ start : program
 		$$->addChild($1); 
 
 		logout << "start : program" << endl;
+		$$->print(cout);
 	}
 	;
 
@@ -289,10 +288,8 @@ var_declaration : type_specifier declaration_list SEMICOLON
  		 
 type_specifier	: INT 
 	{
-		auto s = getSymbol("int", "INT");
-		auto t = new SymbolAST(s, yylineno);
 		$$ = new TokenAST(NodeType::TYPE_SPECIFIER, "INT", yylineno);
-		$$->addChild(t);
+		$$->addChild($1);
 
 		logout << "type_specifier : INT" << endl;
 	}

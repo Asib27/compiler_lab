@@ -1,5 +1,6 @@
 lib_path := gen/lib/bin
 lib_src := gen/lib/src
+header_path := gen/lib
 gen := gen
 lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o ${lib_path}/symbolTable.o ${lib_path}/printUtil.o ${lib_path}/tokenHelper.o ${lib_path}/ast.o
 
@@ -9,7 +10,7 @@ parser.out:	${gen}/parser.o ${gen}/lexer.o ${lib}
 ${gen}/parser.o: parser.y
 	bison -d parser.y
 	mv parser.tab.c parser.tab.h ${gen}
-	g++ -ggdb3 -c ${gen}/y.tab.c -o ${gen}/parser.o
+	g++ -ggdb3 -c ${gen}/parser.tab.c -o ${gen}/parser.o
 
 ${gen}/lexer.o: scanner.l ${gen}/parser.tab.h
 	flex scanner.l
@@ -41,7 +42,7 @@ ${lib_path}/tokenHelper.o:	${lib_src}/tokenHelper.cpp
 	g++ -c ${lib_src}/tokenHelper.cpp
 	mv tokenHelper.o ${lib_path}
 
-${lib_path}/ast.o:	${lib_src}/ast.cpp
+${lib_path}/ast.o:	${lib_src}/ast.cpp ${header_path}/ast.h
 	g++ -c ${lib_src}/ast.cpp
 	mv ast.o ${lib_path}
 

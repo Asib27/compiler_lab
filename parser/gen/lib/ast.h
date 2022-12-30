@@ -12,7 +12,7 @@ public:
     AST() = default;
     virtual void addChild(AST * child) = 0;
     virtual void addChild(std::vector<AST *> childs);
-    virtual std::ostream& print(std::ostream &os, int tab) = 0;
+    virtual std::ostream& print(std::ostream &os, int tab=0) = 0;
     virtual int getBeginLine() = 0;
     virtual int getEndLine() = 0;
     virtual ~AST();
