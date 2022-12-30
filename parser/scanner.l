@@ -23,8 +23,6 @@ using namespace std;
 
 extern ofstream logout, tokenout;
 PrintUtil printUtil(tokenout, logout);
-extern SymbolTable symbolTable;
-extern SymbolInfo *curSymbol;
 
 int error_count = 0;
 string multilineComment = "";
@@ -57,6 +55,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 "char"		|
 "double"	|
 "return"	|
+"println"	|
 "case"		|
 "continue"	{
 				auto t = printUtil.printKeyword(yytext, yylineno);
@@ -67,14 +66,16 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 		
 {DIGIT}+ 	{
 				printUtil.print("CONST_INT", yytext, yylineno);
-				curSymbol =  new SymbolInfo(yytext, "CONST_INT");
+				auto curSymbol =  new SymbolInfo(yytext, "CONST_INT");
+				yylval = new SymbolAST(curSymbol, yylineno);
 				return CONST_INT;
 			}
 
 ({DIGITS}?\.{DIGITS}{EXP}?)	|
 {DIGITS}{EXP}	{
 					printUtil.print("CONST_FLOAT", yytext, yylineno);
-					curSymbol =  new SymbolInfo(yytext, "CONST_FLOAT");
+					auto curSymbol =  new SymbolInfo(yytext, "CONST_FLOAT");
+					yylval = new SymbolAST(curSymbol, yylineno);
 					return CONST_FLOAT;
 				}
 
@@ -100,7 +101,9 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 					text = text.substr(0, text.length()-1);
 					printUtil.printError("UNFINISHED_CONST_CHAR", text, yylineno - isNewLine);
 					if(!isNewLine){ 
-						printUtil.printPunctuation(";", yylineno);
+						auto t = printUtil.printPunctuation(";", yylineno);
+						yylval = new SymbolAST(new SymbolInfo(yytext, t.second), yylineno);
+						return t.first;
 					}
 				}
 
@@ -120,7 +123,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 "+"		|
 "-"		{
 			printUtil.print("ADDOP", yytext, yylineno); 
-			curSymbol = new SymbolInfo(yytext, "ADDOP");
+			auto curSymbol = new SymbolInfo(yytext, "ADDOP");
 			yylval = new SymbolAST(curSymbol, yylineno);
 			return ADDOP;
 		}
@@ -129,7 +132,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 "/"		|
 "%"		{
 			printUtil.print("MULOP", yytext, yylineno); 
-			curSymbol = new SymbolInfo(yytext, "MULOP");
+			auto curSymbol = new SymbolInfo(yytext, "MULOP");
 			yylval = new SymbolAST(curSymbol, yylineno);
 			return MULOP;
 		}
@@ -152,7 +155,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 "=="	|
 "!="	{
 			printUtil.print("RELOP", yytext, yylineno); 
-			curSymbol = new SymbolInfo(yytext, "RELOP");
+			auto curSymbol = new SymbolInfo(yytext, "RELOP");
 			yylval = new SymbolAST(curSymbol, yylineno);
 			return RELOP;
 		}
@@ -160,7 +163,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 "&&"	| 
 "||"	{
 			printUtil.print("LOGIOP", yytext, yylineno); 
-			curSymbol = new SymbolInfo(yytext, "LOGICOP");
+			auto curSymbol = new SymbolInfo(yytext, "LOGICOP");
 			yylval = new SymbolAST(curSymbol, yylineno);
 			return LOGICOP;
 		}
@@ -171,25 +174,18 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 "<<"	|
 ">>"	{
 			printUtil.print("BITOP", yytext, yylineno);
-			curSymbol = new SymbolInfo(yytext, "BITOP");
+			auto curSymbol = new SymbolInfo(yytext, "BITOP");
 			yylval = new SymbolAST(curSymbol, yylineno);
  			return BITOP;
  		}
 
 
 [_a-zA-Z][_a-zA-Z0-9]*	{
+							/* IDENTIFIER */
 							printUtil.print("ID", yytext, yylineno);
 
-							SymbolInfo *s = symbolTable.lookup(yytext);
-							if(s==nullptr){
-								SymbolInfo symbolInfo(yytext, "ID");
-								s = symbolTable.insert(symbolInfo);
-							}
-
-							//yylval = (YYSTYPE)s;
-							
-							curSymbol = s;
-							yylval = new SymbolAST(curSymbol, yylineno);
+							SymbolInfo *s = new SymbolInfo(yytext, "ID");
+							yylval = new SymbolAST(s, yylineno);
 							return ID;
 						}	
 

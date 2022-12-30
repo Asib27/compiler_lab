@@ -57,6 +57,10 @@ public:
     }
     int getBeginLine() override{ return lineNo; }
     int getEndLine() override{ return lineNo; }
+
+    ~SymbolAST(){
+        delete symbolInfo;
+    }
 };
 
 #endif

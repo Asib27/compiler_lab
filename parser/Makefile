@@ -7,12 +7,12 @@ lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o $
 parser.out:	${gen}/parser.o ${gen}/lexer.o ${lib}
 	g++ -ggdb3 ${gen}/parser.o ${gen}/lexer.o ${lib} -o parser.out
 
-${gen}/parser.o: parser.y
+${gen}/parser.o: parser.y ${header_path}/ast.h
 	bison -d parser.y
 	mv parser.tab.c parser.tab.h ${gen}
 	g++ -ggdb3 -c ${gen}/parser.tab.c -o ${gen}/parser.o
 
-${gen}/lexer.o: scanner.l ${gen}/parser.tab.h
+${gen}/lexer.o: scanner.l ${gen}/parser.tab.h ${header_path}/ast.h
 	flex scanner.l
 	mv lex.yy.c ${gen} 
 	g++ -ggdb3 -c ${gen}/lex.yy.c -o ${gen}/lexer.o
@@ -48,6 +48,6 @@ ${lib_path}/ast.o:	${lib_src}/ast.cpp ${header_path}/ast.h
 
 clean:
 	rm ${gen}/lex.yy.c ${gen}/parser.tab.c 
-	rm ${gen}/lex.yy.o ${gen}/lexer.o ${gen}/parser.o
+	rm ${gen}/lexer.o ${gen}/parser.o
 	rm parser.out
 	rm gen/lib/bin/*.o
