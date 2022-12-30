@@ -626,10 +626,10 @@ static const yytype_int16 yyrline[] =
        0,    66,    66,    75,    83,    92,    99,   106,   115,   135,
      155,   174,   194,   208,   221,   229,   239,   254,   269,   282,
      291,   300,   311,   321,   335,   342,   359,   367,   375,   381,
-     388,   395,   402,   406,   413,   423,   430,   437,   445,   474,
-     483,   496,   503,   520,   527,   541,   548,   559,   566,   577,
-     584,   596,   603,   614,   622,   633,   642,   650,   665,   679,
-     686,   693,   704,   716,   724,   730,   743
+     388,   395,   402,   406,   413,   423,   430,   437,   445,   480,
+     489,   502,   509,   526,   533,   547,   554,   565,   572,   583,
+     590,   602,   609,   620,   628,   639,   648,   656,   671,   685,
+     692,   699,   710,   722,   730,   736,   749
 };
 #endif
 
@@ -2027,7 +2027,7 @@ yyreduce:
     break;
 
   case 39:
-#line 475 "parser.y"
+#line 481 "parser.y"
                         {
 				yyval = new AST(NodeType::EXPR_STMNT, "SEMICOLON", yylineno);
 				
@@ -2040,7 +2040,7 @@ yyreduce:
     break;
 
   case 40:
-#line 484 "parser.y"
+#line 490 "parser.y"
                         {
 				yyval = new AST(NodeType::EXPR_STMNT, "SEMICOLON", yylineno);
 
@@ -2055,7 +2055,7 @@ yyreduce:
     break;
 
   case 41:
-#line 497 "parser.y"
+#line 503 "parser.y"
                 {
 			yyval = new AST(NodeType::VARIABLE, "ID", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2066,7 +2066,7 @@ yyreduce:
     break;
 
   case 42:
-#line 504 "parser.y"
+#line 510 "parser.y"
                 {
 			yyval = new AST(NodeType::VARIABLE, "identifier LTHIRD expression RTHIRD", yylineno);
 			yyval->addChild(yyvsp[-3]);
@@ -2085,7 +2085,7 @@ yyreduce:
     break;
 
   case 43:
-#line 521 "parser.y"
+#line 527 "parser.y"
                 {
 			yyval = new AST(NodeType::EXP, "logic_expression", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2096,7 +2096,7 @@ yyreduce:
     break;
 
   case 44:
-#line 528 "parser.y"
+#line 534 "parser.y"
            {
 			yyval = new AST(NodeType::EXP, "variable ASSIGNOP logic_expression", yylineno);
 			yyval->addChild(yyvsp[-2]);
@@ -2112,7 +2112,7 @@ yyreduce:
     break;
 
   case 45:
-#line 542 "parser.y"
+#line 548 "parser.y"
                 {
 			yyval = new AST(NodeType::LOGIC_EXP, "rel_expression", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2123,7 +2123,7 @@ yyreduce:
     break;
 
   case 46:
-#line 549 "parser.y"
+#line 555 "parser.y"
                 {
 			yyval = new AST(NodeType::LOGIC_EXP, "rel_expression LOGICOP rel_expression", yylineno);
 			yyval->addChild(yyvsp[-2]);
@@ -2136,7 +2136,7 @@ yyreduce:
     break;
 
   case 47:
-#line 560 "parser.y"
+#line 566 "parser.y"
                 {
 			yyval = new AST(NodeType::REL_EXP, "simple_expression", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2147,7 +2147,7 @@ yyreduce:
     break;
 
   case 48:
-#line 567 "parser.y"
+#line 573 "parser.y"
                 {
 			yyval = new AST(NodeType::REL_EXP, "simple_expression RELOP simple_expression", yylineno);
 			yyval->addChild(yyvsp[-2]);
@@ -2160,7 +2160,7 @@ yyreduce:
     break;
 
   case 49:
-#line 578 "parser.y"
+#line 584 "parser.y"
                 {
 			yyval = new AST(NodeType::SIMPLE_EXP, "term", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2171,7 +2171,7 @@ yyreduce:
     break;
 
   case 50:
-#line 585 "parser.y"
+#line 591 "parser.y"
                 {
 			yyval = new AST(NodeType::REL_EXP, "simple_expression ADDOP term", yylineno);
 			yyval->addChild(yyvsp[-2]);
@@ -2184,7 +2184,7 @@ yyreduce:
     break;
 
   case 51:
-#line 597 "parser.y"
+#line 603 "parser.y"
                 {
 			yyval = new AST(NodeType::TERM, "unary_expression", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2195,7 +2195,7 @@ yyreduce:
     break;
 
   case 52:
-#line 604 "parser.y"
+#line 610 "parser.y"
                 {
 			yyval = new AST(NodeType::TERM, "term MULOP unary_expression", yylineno);
 			yyval->addChild(yyvsp[-2]);
@@ -2208,7 +2208,7 @@ yyreduce:
     break;
 
   case 53:
-#line 615 "parser.y"
+#line 621 "parser.y"
                 {
 			yyval = new AST(NodeType::UNARY_EXP, "ADDOP unary_expression", yylineno);
 			yyval->addChild(yyvsp[-1]);
@@ -2220,7 +2220,7 @@ yyreduce:
     break;
 
   case 54:
-#line 623 "parser.y"
+#line 629 "parser.y"
                 {
 			yyval = new AST(NodeType::UNARY_EXP, "NOT unary_expression", yylineno);
 
@@ -2235,7 +2235,7 @@ yyreduce:
     break;
 
   case 55:
-#line 634 "parser.y"
+#line 640 "parser.y"
                 {
 			yyval = new AST(NodeType::UNARY_EXP, "factor", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2246,7 +2246,7 @@ yyreduce:
     break;
 
   case 56:
-#line 643 "parser.y"
+#line 649 "parser.y"
                 {
 			yyval = new AST(NodeType::FACTOR, "variable", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2257,7 +2257,7 @@ yyreduce:
     break;
 
   case 57:
-#line 651 "parser.y"
+#line 657 "parser.y"
                 {
 			yyval = new AST(NodeType::FACTOR, "ID LPAREN argument_list RPAREN", yylineno);
 			yyval->addChild(yyvsp[-3]);
@@ -2276,7 +2276,7 @@ yyreduce:
     break;
 
   case 58:
-#line 666 "parser.y"
+#line 672 "parser.y"
                 {
 			yyval = new AST(NodeType::FACTOR, "LPAREN expression RPAREN", yylineno);
 
@@ -2294,7 +2294,7 @@ yyreduce:
     break;
 
   case 59:
-#line 680 "parser.y"
+#line 686 "parser.y"
                 {
 			yyval = new AST(NodeType::FACTOR, "CONST_INT", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2305,7 +2305,7 @@ yyreduce:
     break;
 
   case 60:
-#line 687 "parser.y"
+#line 693 "parser.y"
                 {
 			yyval = new AST(NodeType::FACTOR, "CONST_FLOAT", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2316,7 +2316,7 @@ yyreduce:
     break;
 
   case 61:
-#line 694 "parser.y"
+#line 700 "parser.y"
                 {
 			yyval = new AST(NodeType::FACTOR, "variable INCOP", yylineno);
 			yyval->addChild(yyvsp[-1]);
@@ -2330,7 +2330,7 @@ yyreduce:
     break;
 
   case 62:
-#line 705 "parser.y"
+#line 711 "parser.y"
                 {
 			yyval = new AST(NodeType::FACTOR, "variable DECOP", yylineno);
 			yyval->addChild(yyvsp[-1]);
@@ -2344,7 +2344,7 @@ yyreduce:
     break;
 
   case 63:
-#line 717 "parser.y"
+#line 723 "parser.y"
                 {
 			yyval = new AST(NodeType::ARG_LIST, "arguments", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2355,7 +2355,7 @@ yyreduce:
     break;
 
   case 64:
-#line 724 "parser.y"
+#line 730 "parser.y"
                 {
 			yyval = new AST(NodeType::ARG_LIST, "", yylineno);
 			logout << "argument_list : " << endl;
@@ -2364,7 +2364,7 @@ yyreduce:
     break;
 
   case 65:
-#line 731 "parser.y"
+#line 737 "parser.y"
                 {
 			yyval = new AST(NodeType::ARGS, "arguments COMMA logic_expression", yylineno);
 			yyval->addChild(yyvsp[-2]);
@@ -2381,7 +2381,7 @@ yyreduce:
     break;
 
   case 66:
-#line 744 "parser.y"
+#line 750 "parser.y"
                 {
 			yyval = new AST(NodeType::ARGS, "logic_expression", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -2624,7 +2624,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 752 "parser.y"
+#line 758 "parser.y"
 
 int main(int argc,char *argv[])
 {

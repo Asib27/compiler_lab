@@ -74,7 +74,7 @@ start : program
 
 program : program unit 
 		{
-			$$ func_declaration= new AST(NodeType::PROGRAM, "program unit", yylineno);
+			$$ = new AST(NodeType::PROGRAM, "program unit", yylineno);
 			$$->addChild($1);
 			$$->addChild($2);
 
@@ -465,7 +465,13 @@ statement : var_declaration
 			logout << "statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement" << endl;
 		}
 	//   | IF LPAREN expression RPAREN statement
+	//   {
+	// 	$$ = $3;
+	//   }
 	//   | IF LPAREN expression RPAREN statement ELSE statement
+	//   {
+	// 	$1 = $3;
+	//   }
 	//   | WHILE LPAREN expression RPAREN statement
 	//   | PRINTLN LPAREN ID RPAREN SEMICOLON
 	//   | RETURN expression SEMICOLON
