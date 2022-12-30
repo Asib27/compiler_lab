@@ -9,20 +9,21 @@
 #include<fstream>
 #include<string>
 #include<vector>
+#include<utility>
 
 #include"lib/symbolTable.h"
 #include"lib/symbolInfo.h"
 #include"lib/printer.h"
 #include"lib/printUtil.h"
 #include"lib/ast.h"
-#include"y.tab.h"
+#define YYSTYPE AST*
+#include"parser.tab.h"
 
 using namespace std;
 
 extern ofstream logout, tokenout;
 PrintUtil printUtil(tokenout, logout);
 extern SymbolTable symbolTable;
-extern YYSTYPE yylval;
 extern SymbolInfo *curSymbol;
 
 int error_count = 0;
@@ -58,7 +59,9 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 "return"	|
 "case"		|
 "continue"	{
-				return printUtil.printKeyword(yytext, yylineno);
+				auto t = printUtil.printKeyword(yytext, yylineno);
+				yylval = new SymbolAST(new SymbolInfo(yytext, t.second), yylineno);
+				return t.first;
 			}
 
 		
@@ -108,13 +111,17 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 					// if(yytext[0] == '}'){
 					// 	symbolTable.exitScope();
 					// }
-					return printUtil.printPunctuation(yytext, yylineno);
+					auto t = printUtil.printPunctuation(yytext, yylineno);
+
+					yylval = new SymbolAST(new SymbolInfo(yytext, t.second), yylineno);
+					return t.first;
 				}
 
 "+"		|
 "-"		{
 			printUtil.print("ADDOP", yytext, yylineno); 
 			curSymbol = new SymbolInfo(yytext, "ADDOP");
+			yylval = new SymbolAST(curSymbol, yylineno);
 			return ADDOP;
 		}
 
@@ -123,6 +130,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 "%"		{
 			printUtil.print("MULOP", yytext, yylineno); 
 			curSymbol = new SymbolInfo(yytext, "MULOP");
+			yylval = new SymbolAST(curSymbol, yylineno);
 			return MULOP;
 		}
 
@@ -137,6 +145,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 "!="	{
 			printUtil.print("RELOP", yytext, yylineno); 
 			curSymbol = new SymbolInfo(yytext, "RELOP");
+			yylval = new SymbolAST(curSymbol, yylineno);
 			return RELOP;
 		}
 
@@ -144,6 +153,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 "||"	{
 			printUtil.print("LOGIOP", yytext, yylineno); 
 			curSymbol = new SymbolInfo(yytext, "LOGICOP");
+			yylval = new SymbolAST(curSymbol, yylineno);
 			return LOGICOP;
 		}
 
@@ -154,6 +164,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 ">>"	{
 			printUtil.print("BITOP", yytext, yylineno);
 			curSymbol = new SymbolInfo(yytext, "BITOP");
+			yylval = new SymbolAST(curSymbol, yylineno);
  			return BITOP;
  		}
 
@@ -170,6 +181,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 							//yylval = (YYSTYPE)s;
 							
 							curSymbol = s;
+							yylval = new SymbolAST(curSymbol, yylineno);
 							return ID;
 						}	
 

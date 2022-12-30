@@ -83,15 +83,17 @@ PrintUtil::PrintUtil(std::ostream &token, std::ostream &log)
 
 }
 
-int PrintUtil::printKeyword(std::string text, int lineNo){
-    const int keysize = 15;
+std::pair<int, std::string> PrintUtil::printKeyword(std::string text, int lineNo){
+    const int keysize = 16;
     std::string keys[keysize] = {
         "if","for","do","int","float","void","switch","default",
-        "else","while","break","char","double","return","case"
+        "else","while","break","char","double","return","case",
+        "println"
     };
     int values[] = {
         IF, FOR, DO, INT, FLOAT, VOID, SWITCH, DEFAULT,
-        ELSE, WHILE, BREAK, CHAR, DOUBLE, RETURN, CASE
+        ELSE, WHILE, BREAK, CHAR, DOUBLE, RETURN, CASE,
+        PRINTLN
     };
 
     std::string upper = "";
@@ -104,16 +106,16 @@ int PrintUtil::printKeyword(std::string text, int lineNo){
     printHelper(upper, text, lineNo);
 
     for(int i = 0; i < keysize; i++){
-        if(keys[i] == text) return values[i];
+        if(keys[i] == text) return {values[i], upper};
     }
-    return IF;
+    return {IF, upper};
 }
 
 void PrintUtil::print(std::string token, std::string text, int lineNo){
     printHelper(token, text, lineNo);
 }
 
-int PrintUtil::printPunctuation(std::string text, int lineNo){
+std::pair<int, std::string> PrintUtil::printPunctuation(std::string text, int lineNo){
     char c = text[0];
 
     std::string keys = "=!(){}[],;";
@@ -126,11 +128,11 @@ int PrintUtil::printPunctuation(std::string text, int lineNo){
     for(int i = 0; i < keys.length(); i++){
         if(c == keys[i]){
             printHelper(values[i], std::string(1, c), lineNo);
-            return value_const[i];
+            return {value_const[i], values[i]};
         }
     }
 
-    return SEMICOLON;
+    return {SEMICOLON, values[keys.length()-1]};
 }
 
 void PrintUtil::printChar(std::string text, int lineNo){

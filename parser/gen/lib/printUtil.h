@@ -3,7 +3,8 @@
 
 #include<iostream>
 #include<string>
-#include"../y.tab.h"
+#include<utility>
+#include"../parser.tab.h"
 
 class PrintUtil{
 	std::ostream& logos;
@@ -25,9 +26,9 @@ class PrintUtil{
 	int newLineCount(std::string text);
 public:
 	PrintUtil(std::ostream &token, std::ostream &log);
-	int printKeyword(std::string text, int lineNo);
+	std::pair<int, std::string> printKeyword(std::string text, int lineNo);
 	void print(std::string token, std::string text, int lineNo);
-	int printPunctuation(std::string text, int lineNo);
+	std::pair<int, std::string> printPunctuation(std::string text, int lineNo);
 	void printChar(std::string text, int lineNo);
 	int printString(std::string text, int lineNo);
 	void printComment(std::string text, int lineNo);

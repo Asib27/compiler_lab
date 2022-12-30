@@ -34,8 +34,8 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
+#ifndef YY_YY_PARSER_TAB_H_INCLUDED
+# define YY_YY_PARSER_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
 # define YYDEBUG 0
@@ -43,6 +43,12 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+#line 55 "parser.y"
+
+	#include "lib/ast.h"
+
+#line 52 "parser.tab.h"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -91,51 +97,10 @@ extern int yydebug;
     LOWER_THAN_ELSE = 297
   };
 #endif
-/* Tokens.  */
-#define IF 258
-#define FOR 259
-#define DO 260
-#define INT 261
-#define FLOAT 262
-#define VOID 263
-#define SWITCH 264
-#define DEFAULT 265
-#define ELSE 266
-#define WHILE 267
-#define BREAK 268
-#define CHAR 269
-#define DOUBLE 270
-#define RETURN 271
-#define CASE 272
-#define CONTINUE 273
-#define MAIN 274
-#define CONST_INT 275
-#define CONST_FLOAT 276
-#define CONST_CHAR 277
-#define ASSIGNOP 278
-#define NOT 279
-#define LPAREN 280
-#define RPAREN 281
-#define LTHIRD 282
-#define RTHIRD 283
-#define LCURL 284
-#define RCURL 285
-#define COMMA 286
-#define SEMICOLON 287
-#define ADDOP 288
-#define MULOP 289
-#define INCOP 290
-#define DECOP 291
-#define RELOP 292
-#define LOGICOP 293
-#define BITOP 294
-#define ID 295
-#define PRINTLN 296
-#define LOWER_THAN_ELSE 297
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef  AST*  YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -145,4 +110,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+#endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
