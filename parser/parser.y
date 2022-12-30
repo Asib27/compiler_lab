@@ -511,10 +511,58 @@ statement : var_declaration
 			logout << "statement : IF LPAREN expression RPAREN statement ELSE statement" << endl;
 		}
 	  ;
-	//   | WHILE LPAREN expression RPAREN statement
-	//   | PRINTLN LPAREN ID RPAREN SEMICOLON
-	//   | RETURN expression SEMICOLON
-	//   ;
+	  | WHILE LPAREN expression RPAREN statement
+	  	{
+			$$ = new AST(NodeType::STATEMENT, "WHILE LPAREN expression RPAREN statement", yylineno);
+
+			auto t = new AST(getSymbol("while", "WHILE"), yylineno);
+			$$->addChild(t);
+
+			t = new AST(getSymbol("(", "LPAREN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($3);
+
+			t = new AST(getSymbol(")", "RPAREN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($5);
+
+			logout << "statement : WHILE LPAREN expression RPAREN statement" << endl;
+		}
+	  | PRINTLN LPAREN identifier RPAREN SEMICOLON
+	  	{
+			$$ = new AST(NodeType::STATEMENT, "PRINTLN LPAREN ID RPAREN SEMICOLON", yylineno);
+
+			auto t = new AST(getSymbol("while", "WHILE"), yylineno);
+			$$->addChild(t);
+
+			t = new AST(getSymbol("(", "LPAREN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($3);
+			
+			t = new AST(getSymbol(")", "RPAREN"), yylineno);
+			$$->addChild(t);
+			
+			t = new AST(getSymbol(";", "SEMICOLON"), yylineno);
+			$$->addChild(t);
+		}
+	  | RETURN expression SEMICOLON
+		{
+			$$ = new AST(NodeType::STATEMENT, "RETURN expression SEMICOLON", yylineno);
+
+			auto t = new AST(getSymbol("return", "RETURN"), yylineno);
+			$$->addChild(t);
+
+			$$->addChild($2);
+
+			t = new AST(getSymbol(";", "SEMICOLON"), yylineno);
+			$$->addChild(t);
+
+			
+		}
+	  ;
 	  
 expression_statement 	: SEMICOLON	
 			{

@@ -1,11 +1,7 @@
 int main(){
-    if(a == 10){
-        a = 5;
+    while(a<10){
+        a ++ ;
     }
-    
-    if(a == 10){
-        a = 5;
-    }else{
-        a = 9;
-    }
+
+    return 0;
 }
