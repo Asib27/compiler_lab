@@ -31,7 +31,7 @@ TokenAST::~TokenAST()
 }
 
 std::ostream& TokenAST::print(std::ostream &os, int tab){
-    os << std::string(tab, ' ') << getStringofNode(nodeType) << " : "<< info << "  <Line:" << startLine << "-" 
+    os << std::string(tab, ' ') << getStringofNode(nodeType) << " : "<< info << "\t<Line:" << startLine << "-" 
         << endLine << ">" << std::endl;
         
     for(auto i: childs){

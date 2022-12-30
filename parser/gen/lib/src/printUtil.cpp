@@ -120,7 +120,7 @@ std::pair<int, std::string> PrintUtil::printPunctuation(std::string text, int li
 
     std::string keys = "=!(){}[],;";
     std::string values[] = {"ASSIGNOP", "NOT", "LPAREN", "RPAREN", "LCURL", "RCURL",
-        "LTHIRD", "RTHIRD", "COMMA", "SEMICOLON"
+        "LSQUARE", "RSQUARE", "COMMA", "SEMICOLON"
     };
     int value_const[] = {ASSIGNOP,NOT,LPAREN,RPAREN,LCURL,RCURL,
     LTHIRD,RTHIRD,COMMA,SEMICOLON};

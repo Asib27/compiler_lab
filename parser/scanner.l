@@ -134,8 +134,16 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 			return MULOP;
 		}
 
-"++"	{printUtil.print("INCOP", yytext, yylineno); return INCOP;}
-"--"	{printUtil.print("DECOP", yytext, yylineno); return DECOP;}
+"++"	{
+			printUtil.print("INCOP", yytext, yylineno); 
+			yylval = new SymbolAST(new SymbolInfo(yytext, "INCOP"), yylineno); 
+			return INCOP;
+		}
+"--"	{
+			printUtil.print("DECOP", yytext, yylineno); 
+			yylval = new SymbolAST(new SymbolInfo(yytext, "DECOP"), yylineno); 
+			return DECOP;
+		}
 
 "<"		|
 ">"		|

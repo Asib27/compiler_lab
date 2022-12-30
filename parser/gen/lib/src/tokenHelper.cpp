@@ -3,7 +3,7 @@
 std::string NodeTypeToString[] = {
     "variable", "expression", "logic_expression", "rel_expression",
     "simple_expression", "term", "unary_expression", "factor",
-    "arg_list", "args", "", "variable_declaration", "type_specifier", "declaration_list",
+    "argument_list", "arguments", "", "var_declaration", "type_specifier", "declaration_list",
     "statements", "statement", "expression_statement", "compound_statement", 
     "func_declaration", "func_defination", "start", "program", "unit", "parameter_list"
 };
