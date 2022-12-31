@@ -2,7 +2,7 @@ lib_path := gen/lib/bin
 lib_src := gen/lib/src
 header_path := gen/lib
 gen := gen
-lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o ${lib_path}/symbolTable.o ${lib_path}/printUtil.o ${lib_path}/tokenHelper.o ${lib_path}/ast.o ${lib_path}/functionSymbolInfo.o
+lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o ${lib_path}/symbolTable.o ${lib_path}/printUtil.o ${lib_path}/tokenHelper.o ${lib_path}/ast.o ${lib_path}/functionSymbolInfo.o ${lib_path}/treeWalker.o
 
 parser.out:	${gen}/parser.o ${gen}/lexer.o ${lib}
 	g++ -ggdb3 ${gen}/parser.o ${gen}/lexer.o ${lib} -o parser.out
@@ -49,6 +49,11 @@ ${lib_path}/ast.o:	${lib_src}/ast.cpp ${header_path}/ast.h
 ${lib_path}/functionSymbolInfo.o:	${lib_src}/functionSymbolInfo.cpp ${header_path}/symbolInfo.h ${header_path}/functionSymbolInfo.h
 	g++ -c ${lib_src}/functionSymbolInfo.cpp
 	mv functionSymbolInfo.o ${lib_path}
+
+
+${lib_path}/treeWalker.o:	${lib_src}/treeWalker.cpp ${header_path}/treeWalker.h
+	g++ -ggdb3 -c ${lib_src}/treeWalker.cpp
+	mv treeWalker.o ${lib_path}
 
 clean:
 	rm ${gen}/lex.yy.c ${gen}/parser.tab.c 

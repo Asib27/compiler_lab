@@ -7,6 +7,7 @@
 #include"lib/symbolTable.h"
 #include "lib/symbolInfo.h"
 #include "lib/ast.h"
+#include "lib/treeWalker.h"
 
 using namespace std;
 
@@ -18,30 +19,15 @@ extern int yylineno;
 
 ofstream logout("log.txt"), tokenout("token.txt");
 // PrintUtil printUtil(tokenout, logout);
-Printer printer(logout, true), noPrint(cout, false);
-SymbolTable symbolTable(10, &printer), constTable(10, &noPrint);
+Printer printer(logout, true);
+SymbolTable symbolTable(10, &printer);
+TreeWalker treeWalker;
 
 
 void yyerror(char *s)
 {
 	//write your code
 }
-
-SymbolInfo int_symbol("int", "INT"), float_symbol("float", "FLOAT"),
-		   void_symbol("void", "VOID"), lthird_symbol("[", "LTHIRD"),
-		   rthird_symbol("]", "RTHIRD")
-;
-
-SymbolInfo* getSymbol(string name, string type){
-	auto t = constTable.lookup(name);
-	// if(t == nullptr){
-	// 	SymbolInfo s(name, type);
-	// 	t = constTable.insert(s);
-	// }
-
-	return t;
-}
-
 
 %}
 
@@ -204,6 +190,16 @@ var_declaration : type_specifier declaration_list SEMICOLON
 		{	
 			$$ = new TokenAST(NodeType::VAR_DECL, "type_specifier declaration_list SEMICOLON", yylineno);
 			$$->addChild({$1, $2, $3});
+
+			auto symbols = treeWalker.walkDeclarationList($2);
+			auto type = treeWalker.walkTypeSpecifier($1);
+
+			for(auto i: symbols){
+        		i->setType(type + i->getType());
+				symbolTable.insert(i);
+			}
+
+			cout << symbolTable << endl;
 
 			logout << "var_declaration : type_specifier declaration_list SEMICOLON" << endl;
 		}

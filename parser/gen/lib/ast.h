@@ -62,6 +62,7 @@ public:
     int getBeginLine() override{ return lineNo; }
     int getEndLine() override{ return lineNo; }
     std::string getTokenType() override {return "symbol";}
+    SymbolInfo* getSymbol(){ return symbolInfo;}
 
     ~SymbolAST(){
         delete symbolInfo;
