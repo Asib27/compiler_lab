@@ -22,9 +22,8 @@ void SymbolInfo::setNext(SymbolInfo* next){
     _next = next;
 }
 
-std::ostream& operator<<(std::ostream &os, SymbolInfo s){
-    os << "<" << s._name << "," << s._type << ">";
-
+std::ostream& operator<<(std::ostream &os, SymbolInfo &s){
+    s.printHelper(os);
     return os;
 }
 
@@ -41,6 +40,6 @@ bool SymbolInfo::operator==(const std::string &s){
     return _name == s;
 }
 
-bool SymbolInfo::operator!=(const std::string s){
+bool SymbolInfo::operator!=(const std::string &s){
     return !( *this == s);
 }

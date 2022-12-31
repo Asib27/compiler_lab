@@ -9,6 +9,10 @@ class SymbolInfo
 	std::string _name;
 	std::string _type;
 	SymbolInfo* _next;
+
+	virtual void printHelper(std::ostream &os){
+		os << "<" << _name << "," << _type << ">";
+	}
 public:
 	SymbolInfo();
 	SymbolInfo(std::string name, std::string type, SymbolInfo* next=nullptr);
@@ -21,11 +25,13 @@ public:
 	void setType(std::string type);
 	void setNext(SymbolInfo* next);
 
-    friend std::ostream& operator<<(std::ostream &os, SymbolInfo s);
+    friend std::ostream& operator<<(std::ostream &os, SymbolInfo& s);
     bool operator==(const SymbolInfo &s);
     bool operator!=(const SymbolInfo &s);
     bool operator==(const std::string &s);
-    bool operator!=(const std::string s);
+    bool operator!=(const std::string &s);
+
+	virtual ~SymbolInfo() {}
 };
 
 #endif
