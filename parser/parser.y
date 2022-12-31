@@ -115,11 +115,17 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 
 				for(auto symbol: symbols){
 					auto i = symbol->getSymbol();
-					auto isInserted = symbolTable.insert(i);
 
-					if(!isInserted){
-						printUtil.printError("redefination of parameter \'" + i->getName() + "\'", "", symbol->getBeginLine());
+					if(i->getName() == ""){
 						delete i;
+					}
+					else{
+						auto isInserted = symbolTable.insert(i);
+
+						if(!isInserted){
+							printUtil.printError("redefination of parameter \'" + i->getName() + "\'", "", symbol->getBeginLine());
+							delete i;
+						}
 					}
 
 					symbol->setSymbol(nullptr);
