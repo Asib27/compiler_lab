@@ -11,12 +11,12 @@
 class TreeWalker
 {
 private:
-    SymbolInfo* createDeclarationChild(AST* child, bool flag);
-    SymbolInfo* declarationListChild(std::vector<AST*> childs, AST** rootptr);
+    SymbolAST* createDeclarationChild(AST* child, bool flag);
+    SymbolAST* declarationListChild(std::vector<AST*> childs, AST** rootptr);
 public:
     TreeWalker();
 
-    std::vector<SymbolInfo *> walkDeclarationList(AST* root);
+    std::vector<SymbolAST *> walkDeclarationList(AST* root);
     std::string walkTypeSpecifier(AST* root);
 
     ~TreeWalker();

@@ -8,6 +8,7 @@
 #include "lib/symbolInfo.h"
 #include "lib/ast.h"
 #include "lib/treeWalker.h"
+#include "lib/printUtil.h"
 
 using namespace std;
 
@@ -18,7 +19,7 @@ extern FILE *yyin;
 extern int yylineno;
 
 ofstream logout("log.txt"), tokenout("token.txt");
-// PrintUtil printUtil(tokenout, logout);
+PrintUtil printUtil(tokenout, logout);
 Printer printer(logout, true);
 SymbolTable symbolTable(10, &printer);
 TreeWalker treeWalker;
@@ -194,9 +195,18 @@ var_declaration : type_specifier declaration_list SEMICOLON
 			auto symbols = treeWalker.walkDeclarationList($2);
 			auto type = treeWalker.walkTypeSpecifier($1);
 
-			for(auto i: symbols){
+			for(auto symbol: symbols){
+				auto i = symbol->getSymbol();
         		i->setType(type + i->getType());
-				symbolTable.insert(i);
+				auto isInserted = symbolTable.insert(i);
+
+				if(!isInserted){
+					printUtil.printError("redefination of parameter \'" + i->getName() + "\'", "", symbol->getBeginLine());
+					delete i;
+				}
+
+				symbol->setSymbol(nullptr);
+				delete symbol;
 			}
 
 			cout << symbolTable << endl;

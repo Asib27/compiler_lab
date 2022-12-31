@@ -11,18 +11,13 @@
 #include<vector>
 #include<utility>
 
-#include"lib/symbolTable.h"
 #include"lib/symbolInfo.h"
-#include"lib/printer.h"
 #include"lib/printUtil.h"
-#include"lib/ast.h"
-#define YYSTYPE AST*
 #include"parser.tab.h"
 
 using namespace std;
 
-extern ofstream logout, tokenout;
-PrintUtil printUtil(tokenout, logout);
+extern PrintUtil printUtil;
 
 int error_count = 0;
 string multilineComment = "";

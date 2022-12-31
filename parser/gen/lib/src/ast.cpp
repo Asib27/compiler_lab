@@ -45,6 +45,27 @@ std::ostream& TokenAST::print(std::ostream &os, int tab){
     return os;
 }
 
+
+
+SymbolAST::SymbolAST(SymbolInfo *symbolInfo, int lineNo)
+    : symbolInfo(symbolInfo), lineNo(lineNo)
+{
+
+}
+
+std::ostream& SymbolAST::print(std::ostream &os, int tab){
+    os << std::string(tab, ' ') << symbolInfo->getType() << " : " << symbolInfo->getName() 
+    << "  <Line:" << lineNo << ">" << std::endl;
+
+    return os;
+}
+
+
+SymbolAST::~SymbolAST(){
+    if(symbolInfo != nullptr)
+        delete symbolInfo;
+}
+
 // int main(){
 //     TokenAST ast1(NodeType::EXP, "EXP", 1);
 //     AST* ast2= new TokenAST(NodeType::VARIABLE, "VAR", 1);

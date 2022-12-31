@@ -30,6 +30,7 @@ Line# 2: Token <ID> Lexeme a found
 Line# 2: Token <SEMICOLON> Lexeme ; found
 declaration_list : declaration_list COMMA ID
 	a already exists in the current ScopeTable
+Error at line# 2: redefination of parameter 'a' 
 var_declaration : type_specifier declaration_list SEMICOLON
 unit : var_declaration
 program : program unit

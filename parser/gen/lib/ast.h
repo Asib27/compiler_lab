@@ -45,28 +45,21 @@ class SymbolAST : public AST
     SymbolInfo *symbolInfo;
     int lineNo;
 public:
-    SymbolAST(SymbolInfo *symbolInfo, int lineNo)
-        : symbolInfo(symbolInfo), lineNo(lineNo)
-    {
-
-    }
+    SymbolAST(SymbolInfo *symbolInfo, int lineNo);
 
     void addChild(AST * child) override{}
     std::vector<AST *> getChilds() override { return std::vector<AST *> ();}
-    std::ostream& print(std::ostream &os, int tab=0) override{
-        os << std::string(tab, ' ') << symbolInfo->getType() << " : " << symbolInfo->getName() 
-        << "  <Line:" << lineNo << ">" << std::endl;
 
-        return os;
-    }
+    std::ostream& print(std::ostream &os, int tab=0) override;
+
     int getBeginLine() override{ return lineNo; }
     int getEndLine() override{ return lineNo; }
     std::string getTokenType() override {return "symbol";}
-    SymbolInfo* getSymbol(){ return symbolInfo;}
 
-    ~SymbolAST(){
-        delete symbolInfo;
-    }
+    SymbolInfo* getSymbol(){ return symbolInfo;}
+    void setSymbol(SymbolInfo *symbolInfo){ this->symbolInfo = symbolInfo;}
+
+    ~SymbolAST();
 };
 
 #endif

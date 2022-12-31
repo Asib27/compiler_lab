@@ -1,18 +1,21 @@
 #include"../treeWalker.h"
 
-SymbolInfo* TreeWalker::createDeclarationChild(AST* child, bool flag){
+SymbolAST* TreeWalker::createDeclarationChild(AST* child, bool flag){
     auto symbolAst = dynamic_cast<SymbolAST *> (child);
     auto symbol = symbolAst->getSymbol();
 
+    SymbolInfo * t = nullptr;
     if(flag){
-        return new SymbolInfo(symbol->getName(), "");
+        t = new SymbolInfo(symbol->getName(), "");
     }
     else{
-        return new SymbolInfo(symbol->getName(), "array");
+        t = new SymbolInfo(symbol->getName(), "array");
     }
+
+    return new SymbolAST(t, symbolAst->getBeginLine());
 }
 
-SymbolInfo* TreeWalker::declarationListChild(std::vector<AST*> childs, AST** rootptr){
+SymbolAST* TreeWalker::declarationListChild(std::vector<AST*> childs, AST** rootptr){
     if(childs.size() == 0){
         *rootptr = nullptr;
         return nullptr;
@@ -27,8 +30,8 @@ SymbolInfo* TreeWalker::declarationListChild(std::vector<AST*> childs, AST** roo
         return createDeclarationChild(childs[2], childs.size() == 3);
     }
 }
-std::vector<SymbolInfo *> TreeWalker::walkDeclarationList(AST* root){
-    std::vector<SymbolInfo *> ans;
+std::vector<SymbolAST *> TreeWalker::walkDeclarationList(AST* root){
+    std::vector<SymbolAST *> ans;
 
     while(root){
         // root->print(std::cout);
@@ -40,9 +43,6 @@ std::vector<SymbolInfo *> TreeWalker::walkDeclarationList(AST* root){
         // std::cout << t << " " << root << std::endl;
     }
 
-    for(auto i: ans){
-        std::cout << *i << std::endl;
-    }
     return ans;
 }
 
