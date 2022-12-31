@@ -13,6 +13,8 @@ class TreeWalker
 private:
     SymbolAST* createDeclarationChild(AST* child, bool flag);
     SymbolAST* declarationListChild(std::vector<AST*> childs, AST** rootptr);
+
+    SymbolAST* parameterListChild(std::vector<AST *> childs, AST** rootptr);
 public:
     TreeWalker();
 

@@ -18,3 +18,12 @@
 <COMMA, ,>
 <ID, a>
 <SEMICOLON, ;>
+<INT, int>
+<ID, abc>
+<LPAREN, (>
+<INT, int>
+<ID, z>
+<COMMA, ,>
+<FLOAT, float>
+<RPAREN, )>
+<SEMICOLON, ;>

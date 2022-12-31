@@ -34,4 +34,21 @@ Error at line# 2: redefination of parameter 'a'
 var_declaration : type_specifier declaration_list SEMICOLON
 unit : var_declaration
 program : program unit
+Line# 4: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 4: Token <ID> Lexeme abc found
+Line# 4: Token <LPAREN> Lexeme ( found
+Line# 4: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 4: Token <ID> Lexeme z found
+parameter_list : type_specifier ID
+Line# 4: Token <COMMA> Lexeme , found
+Line# 4: Token <FLOAT> Lexeme float found
+type_specifier : FLOAT
+Line# 4: Token <RPAREN> Lexeme ) found
+parameter_list: parameter_list COMMA type_specifier
+Line# 4: Token <SEMICOLON> Lexeme ; found
+func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
+unit : func_declaration
+program : program unit
 start : program

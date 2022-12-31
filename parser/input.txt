@@ -1,2 +1,4 @@
 int a, b, c[10];
 float d[10], e, a;
+
+int abc(int z, float );

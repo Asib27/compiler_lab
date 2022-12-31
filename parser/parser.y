@@ -108,7 +108,25 @@ unit : var_declaration
 func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 			{
 				$$ = new TokenAST(NodeType::FUNC_DECL, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
-				$$->addChild({$1, $2, $3, $4, $5, $6});		
+				$$->addChild({$1, $2, $3, $4, $5, $6});	
+
+
+				auto symbols = treeWalker.walkDeclarationList($4);
+
+				for(auto symbol: symbols){
+					auto i = symbol->getSymbol();
+					auto isInserted = symbolTable.insert(i);
+
+					if(!isInserted){
+						printUtil.printError("redefination of parameter \'" + i->getName() + "\'", "", symbol->getBeginLine());
+						delete i;
+					}
+
+					symbol->setSymbol(nullptr);
+					delete symbol;
+				}
+
+				cout << symbolTable << endl;
 
 				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
 			}
@@ -140,21 +158,21 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
 
 parameter_list  : parameter_list COMMA type_specifier ID
 			{
-				$$ = new TokenAST(NodeType::PARAM_LIST, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
+				$$ = new TokenAST(NodeType::PARAM_LIST, "parameter_list COMMA type_specifier ID", yylineno);
 				$$->addChild({$1, $2, $3, $4});
 
 				logout << "parameter_list : parameter_list COMMA type_specifier ID" << endl;
 			}
 		| parameter_list COMMA type_specifier
 			{
-				$$ = new TokenAST(NodeType::PARAM_LIST, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
+				$$ = new TokenAST(NodeType::PARAM_LIST, "parameter_list COMMA type_specifier", yylineno);
 				$$->addChild({$1, $2, $3});
 
 				logout << "parameter_list: parameter_list COMMA type_specifier" << endl;
 			}
  		| type_specifier ID
 			{
-				$$ = new TokenAST(NodeType::PARAM_LIST, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
+				$$ = new TokenAST(NodeType::PARAM_LIST, "type_specifier ID", yylineno);
 				$$->addChild({$1, $2});
 
 				logout << "parameter_list : type_specifier ID" << endl;
