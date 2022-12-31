@@ -105,34 +105,34 @@ unit : var_declaration
 	}
      ;
      
-func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
+func_declaration : func_first_part SEMICOLON
 			{
 				$$ = new TokenAST(NodeType::FUNC_DECL, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
-				$$->addChild({$1, $2, $3, $4, $5, $6});	
+				$$->addChild({$1, $2});	
 
 
-				auto symbols = treeWalker.walkDeclarationList($4);
+				// auto symbols = treeWalker.walkDeclarationList($4);
 
-				for(auto symbol: symbols){
-					auto i = symbol->getSymbol();
+				// for(auto symbol: symbols){
+				// 	auto i = symbol->getSymbol();
 
-					if(i->getName() == ""){
-						delete i;
-					}
-					else{
-						auto isInserted = symbolTable.insert(i);
+				// 	if(i->getName() == ""){
+				// 		delete i;
+				// 	}
+				// 	else{
+				// 		auto isInserted = symbolTable.insert(i);
 
-						if(!isInserted){
-							printUtil.printError("redefination of parameter \'" + i->getName() + "\'", "", symbol->getBeginLine());
-							delete i;
-						}
-					}
+				// 		if(!isInserted){
+				// 			printUtil.printError("redefination of parameter \'" + i->getName() + "\'", "", symbol->getBeginLine());
+				// 			delete i;
+				// 		}
+				// 	}
 
-					symbol->setSymbol(nullptr);
-					delete symbol;
-				}
+				// 	symbol->setSymbol(nullptr);
+				// 	delete symbol;
+				// }
 
-				cout << symbolTable << endl;
+				// cout << symbolTable << endl;
 
 				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
 			}
@@ -145,10 +145,10 @@ func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 			}
 		;
 		 
-func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
+func_definition : func_first_part compound_statement
 			{
 				$$ = new TokenAST(NodeType::FUNC_DEF, "type_specifier ID LPAREN parameter_list RPAREN compound_statement", yylineno);
-				$$->addChild({$1, $2, $3, $4, $5, $6});		
+				$$->addChild({$1, $2});		
 
 				logout << "func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
 			}
@@ -162,10 +162,28 @@ func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statem
  		;				
 
 
+func_first_part : type_specifier ID LPAREN {symbolTable.enterScope();} parameter_list RPAREN
+	{
+		$$ = new TokenAST(NodeType::TOKEN, "token", yylineno);
+		$$->addChild({$1, $2, $3, $5, $6});		
+	}
+
 parameter_list  : parameter_list COMMA type_specifier ID
 			{
 				$$ = new TokenAST(NodeType::PARAM_LIST, "parameter_list COMMA type_specifier ID", yylineno);
 				$$->addChild({$1, $2, $3, $4});
+				
+				auto type = treeWalker.walkTypeSpecifier($3);
+				auto symbolAST = dynamic_cast<SymbolAST *>($4);
+				auto newSymbl = new SymbolInfo(symbolAST->getSymbol()->getName(), type);
+				auto isInserted = symbolTable.insert(newSymbl);
+				if(!isInserted){
+					printUtil.printError("redefination of parameter \'" + newSymbl->getName() + "\'", "", symbolAST->getBeginLine());
+					delete newSymbl;
+				}
+
+				cout << symbolTable << endl;
+
 
 				logout << "parameter_list : parameter_list COMMA type_specifier ID" << endl;
 			}
@@ -180,6 +198,17 @@ parameter_list  : parameter_list COMMA type_specifier ID
 			{
 				$$ = new TokenAST(NodeType::PARAM_LIST, "type_specifier ID", yylineno);
 				$$->addChild({$1, $2});
+
+				auto type = treeWalker.walkTypeSpecifier($1);
+				auto symbolAST = dynamic_cast<SymbolAST *>($2);
+				auto newSymbl = new SymbolInfo(symbolAST->getSymbol()->getName(), type);
+				auto isInserted = symbolTable.insert(newSymbl);
+				if(!isInserted){
+					printUtil.printError("redefination of parameter \'" + newSymbl->getName() + "\'", "", symbolAST->getBeginLine());
+					delete newSymbl;
+				}
+
+				cout << symbolTable << endl;
 
 				logout << "parameter_list : type_specifier ID" << endl;
 			}
