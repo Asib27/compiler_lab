@@ -75,33 +75,34 @@ ScopeTable::ScopeTable(int n, int scopeId, ScopeTable *next, Printer *printer)
     }
 } 
 
-SymbolInfo* ScopeTable::insert(SymbolInfo s){
-    auto hash = _getHash(s.getName());
+bool ScopeTable::insert(SymbolInfo *s){
+    auto hash = _getHash(s->getName());
 
     if(_table[hash] == nullptr){
-        auto sptr = new SymbolInfo(s, _table[hash]);
-        _table[hash] = sptr;
+        // auto sptr = new SymbolInfo(s, _table[hash]);
+        s->setNext(_table[hash]);
+        _table[hash] = s;
         // printInsertHelper(hash+1, 1);
-        return sptr;
+        return true;
     }
     else{
         auto toInsertAt = _table[hash];
         int i = 1;
         for(auto head = _table[hash]; head != nullptr; head = head->getNext(), i++){
-            if(*head == s.getName()){
-                printInsertHelper(s.getName());
-                return nullptr;
+            if(*head == s->getName()){
+                printInsertHelper(s->getName());
+                return false;
             }
             toInsertAt = head;
         }
 
-        auto sptr = new SymbolInfo(s);
-        toInsertAt->setNext(sptr);
-        return sptr;
+        s->setNext(nullptr);
+        toInsertAt->setNext(s);
+        return true;
         // printInsertHelper(hash+1, i);
     }
 
-    // return true;
+    return false;
 }
 
 SymbolInfo* ScopeTable::lookup(std::string s){

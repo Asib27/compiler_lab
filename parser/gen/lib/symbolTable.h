@@ -12,17 +12,13 @@ public:
     SymbolTable(int bucket_size, Printer *printer=nullptr);
 
     void enterScope();
-
     void exitScope();
 
-    SymbolInfo* insert(SymbolInfo s);
-
+    bool insert(SymbolInfo *s);
     bool remove(std::string s);
-
     SymbolInfo* lookup(std::string s);
 
     std::ostream& printCurrentScope(std::ostream &os);
-
     friend std::ostream& operator<<(std::ostream &os, const SymbolTable &s);
 
     ~SymbolTable();

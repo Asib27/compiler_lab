@@ -31,7 +31,7 @@ class ScopeTable
 public:
 	ScopeTable(int n, int scopeId, ScopeTable *next=nullptr, Printer *printer=nullptr);
 
-    SymbolInfo* insert(SymbolInfo s);
+    bool insert(SymbolInfo *s);
     SymbolInfo* lookup(std::string s);
     bool remove(std::string s);
 
