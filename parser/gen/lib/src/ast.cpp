@@ -30,6 +30,10 @@ TokenAST::~TokenAST()
     }
 }
 
+std::string TokenAST::getTokenType(){
+    return getStringofNode(nodeType);
+}
+
 std::ostream& TokenAST::print(std::ostream &os, int tab){
     os << std::string(tab, ' ') << getStringofNode(nodeType) << " : "<< info << "\t<Line:" << startLine << "-" 
         << endLine << ">" << std::endl;

@@ -15,6 +15,8 @@ public:
     virtual std::ostream& print(std::ostream &os, int tab=0) = 0;
     virtual int getBeginLine() = 0;
     virtual int getEndLine() = 0;
+    virtual std::vector<AST *> getChilds() = 0;
+    virtual std::string getTokenType() = 0;
     virtual ~AST();
 };
 
@@ -29,10 +31,11 @@ class TokenAST : public AST
 public:
     TokenAST(NodeType nodeType, std::string info, int startLineNo, int endLineNo = -1);
     void addChild(AST * child) override;
-    // void addChild(std::vector<AST *> childs) override;
+    std::vector<AST *> getChilds() override { return childs;}
     std::ostream& print(std::ostream &os, int tab=0) override;
     int getBeginLine() override { return startLine; }
     int getEndLine() override { return endLine;}
+    std::string getTokenType() override ;
     ~TokenAST();
 };
 
@@ -49,6 +52,7 @@ public:
     }
 
     void addChild(AST * child) override{}
+    std::vector<AST *> getChilds() override { return std::vector<AST *> ();}
     std::ostream& print(std::ostream &os, int tab=0) override{
         os << std::string(tab, ' ') << symbolInfo->getType() << " : " << symbolInfo->getName() 
         << "  <Line:" << lineNo << ">" << std::endl;
@@ -57,6 +61,7 @@ public:
     }
     int getBeginLine() override{ return lineNo; }
     int getEndLine() override{ return lineNo; }
+    std::string getTokenType() override {return "symbol";}
 
     ~SymbolAST(){
         delete symbolInfo;

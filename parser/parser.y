@@ -34,10 +34,10 @@ SymbolInfo int_symbol("int", "INT"), float_symbol("float", "FLOAT"),
 
 SymbolInfo* getSymbol(string name, string type){
 	auto t = constTable.lookup(name);
-	if(t == nullptr){
-		SymbolInfo s(name, type);
-		t = constTable.insert(s);
-	}
+	// if(t == nullptr){
+	// 	SymbolInfo s(name, type);
+	// 	t = constTable.insert(s);
+	// }
 
 	return t;
 }
