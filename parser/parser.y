@@ -108,7 +108,13 @@ unit : var_declaration
 func_declaration : func_first_part SEMICOLON
 			{
 				$$ = new TokenAST(NodeType::FUNC_DECL, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
-				$$->addChild({$1, $2});	
+				$$->addChild($1->getChilds());	
+
+				$1->removeAllChild();
+				delete $1;
+
+				$$->addChild($2);
+				symbolTable.exitScope();
 
 
 				// auto symbols = treeWalker.walkDeclarationList($4);
@@ -136,10 +142,16 @@ func_declaration : func_first_part SEMICOLON
 
 				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
 			}
-		| type_specifier ID LPAREN RPAREN SEMICOLON
+		| func_first_part2 SEMICOLON
 			{
 				$$ = new TokenAST(NodeType::FUNC_DECL, "type_specifier ID LPAREN RPAREN SEMICOLON", yylineno);
-				$$->addChild({$1, $2, $3, $4, $5});
+				$$->addChild($1->getChilds());	
+
+				$1->removeAllChild();
+				delete $1;
+
+				$$->addChild($2);
+				symbolTable.exitScope();
 
 				logout << "func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON" << endl;
 			}
@@ -148,14 +160,31 @@ func_declaration : func_first_part SEMICOLON
 func_definition : func_first_part compound_statement
 			{
 				$$ = new TokenAST(NodeType::FUNC_DEF, "type_specifier ID LPAREN parameter_list RPAREN compound_statement", yylineno);
-				$$->addChild({$1, $2});		
+				$$->addCh         SEMICOLON : ;  <Line:7>
+ild($1->getChilds());
+
+				$1->removeAllChild();
+				delete $1;
+
+				$$->addChild($2);
+
+				logout << symbolTable << endl;
+				symbolTable.exitScope();
 
 				logout << "func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
 			}
-		| type_specifier ID LPAREN RPAREN compound_statement
+		| func_first_part2 compound_statement
 			{
 				$$ = new TokenAST(NodeType::FUNC_DEF, "type_specifier ID LPAREN RPAREN compound_statement", yylineno);
-				$$->addChild({$1, $2, $3, $4, $5});
+				$$->addChild($1->getChilds());
+
+				$1->removeAllChild();
+				delete $1;
+
+				$$->addChild($2);
+
+				logout << symbolTable << endl;
+				symbolTable.exitScope();
 
 				logout << "func_definition: type_specifier ID LPAREN RPAREN compound_statement" << endl;
 			}
@@ -167,6 +196,15 @@ func_first_part : type_specifier ID LPAREN {symbolTable.enterScope();} parameter
 		$$ = new TokenAST(NodeType::TOKEN, "token", yylineno);
 		$$->addChild({$1, $2, $3, $5, $6});		
 	}
+	;
+func_first_part2 : type_specifier ID LPAREN RPAREN 
+	{
+		$$ = new TokenAST(NodeType::TOKEN, "token", yylineno);
+		$$->addChild({$1, $2, $3, $4});		
+
+		symbolTable.enterScope();
+	}
+	;
 
 parameter_list  : parameter_list COMMA type_specifier ID
 			{

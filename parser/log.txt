@@ -51,4 +51,62 @@ Line# 4: Token <SEMICOLON> Lexeme ; found
 func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
 unit : func_declaration
 program : program unit
+Line# 5: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 5: Token <ID> Lexeme cde found
+Line# 5: Token <LPAREN> Lexeme ( found
+Line# 5: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 5: Token <ID> Lexeme k found
+parameter_list : type_specifier ID
+Line# 5: Token <COMMA> Lexeme , found
+Line# 5: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 5: Token <ID> Lexeme r found
+parameter_list : parameter_list COMMA type_specifier ID
+Line# 5: Token <RPAREN> Lexeme ) found
+Line# 5: Token <LCURL> Lexeme { found
+Line# 6: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 6: Token <ID> Lexeme m found
+Line# 6: Token <SEMICOLON> Lexeme ; found
+declaration_list : ID
+var_declaration : type_specifier declaration_list SEMICOLON
+statement : var_declaration
+statements : statement
+Line# 7: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 7: Token <ID> Lexeme a found
+Line# 7: Token <SEMICOLON> Lexeme ; found
+declaration_list : ID
+var_declaration : type_specifier declaration_list SEMICOLON
+statement : var_declaration
+statements : statements statement
+Line# 8: Token <RCURL> Lexeme } found
+compound_statement: LCURL statements RCURL
+	ScopeTable# 3
+	5--> <r,int> 
+	8--> <k,int> <a,int> 
+	10--> <m,int> 
+	ScopeTable# 1
+	1--> <d,floatarray> 
+	2--> <e,float> 
+	8--> <a,int> 
+	9--> <b,int> 
+	10--> <c,intarray> 
+
+func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement
+unit : func_definition
+program : program unit
+Line# 11: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 11: Token <ID> Lexeme i found
+Line# 11: Token <COMMA> Lexeme , found
+declaration_list : ID
+Line# 11: Token <ID> Lexeme j found
+Line# 11: Token <SEMICOLON> Lexeme ; found
+declaration_list : declaration_list COMMA ID
+var_declaration : type_specifier declaration_list SEMICOLON
+unit : var_declaration
+program : program unit
 start : program

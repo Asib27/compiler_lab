@@ -12,6 +12,7 @@ public:
     AST() = default;
     virtual void addChild(AST * child) = 0;
     virtual void addChild(std::vector<AST *> childs);
+    virtual void removeAllChild() = 0;
     virtual std::ostream& print(std::ostream &os, int tab=0) = 0;
     virtual int getBeginLine() = 0;
     virtual int getEndLine() = 0;
@@ -32,6 +33,7 @@ public:
     TokenAST(NodeType nodeType, std::string info, int startLineNo, int endLineNo = -1);
     void addChild(AST * child) override;
     std::vector<AST *> getChilds() override { return childs;}
+    void removeAllChild() override { childs = std::vector<AST * >();}
     std::ostream& print(std::ostream &os, int tab=0) override;
     int getBeginLine() override { return startLine; }
     int getEndLine() override { return endLine;}
@@ -47,8 +49,9 @@ class SymbolAST : public AST
 public:
     SymbolAST(SymbolInfo *symbolInfo, int lineNo);
 
-    void addChild(AST * child) override{}
+    void addChild(AST * child) override {}
     std::vector<AST *> getChilds() override { return std::vector<AST *> ();}
+    void removeAllChild() override {}
 
     std::ostream& print(std::ostream &os, int tab=0) override;
 
