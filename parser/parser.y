@@ -29,9 +29,22 @@ void yyerror(char *s)
 
 std::string getDataType(AST *node){
 	auto t = dynamic_cast<ExpressionAST *> (node);
-	if(t == nullptr) return "";
-	return t->getDataType();
+	if(t != nullptr) return t->getDataType();
+	
+	return "";
 }
+
+SymbolInfo *getSymbol(AST *node){
+	auto t = dynamic_cast<SymbolAST *>(node);
+	if(t != nullptr){
+		auto name = t->getSymbol()->getName();
+		auto symbol = symbolTable.lookup(name);
+
+		return symbol;
+	}
+	return nullptr;
+}
+
 %}
 
 // %union {
@@ -486,16 +499,37 @@ expression_statement 	: SEMICOLON
 	  
 variable : ID 	
 		{
-			// TODO: convert to ExpressionAST
-			$$ = new TokenAST(NodeType::VARIABLE, "ID", yylineno);
+			auto symbol = getSymbol($1);
+			string type = "INT";
+			if(symbol == nullptr){
+				printUtil.printError("undeclared variable", "", yylineno);
+			}else{
+				type = symbol->getType();
+			}
+			
+			$$ = new ExpressionAST(NodeType::VARIABLE, "ID", type, yylineno);
 			$$->addChild($1);
 
 			logout << "variable : ID" << endl;
 		}	
 	 | ID LTHIRD expression RTHIRD 
 		{
-			// TODO: convert to ExpressionAST
-			$$ = new TokenAST(NodeType::VARIABLE, "ID LSQUARE expression RSQUARE", yylineno);
+			auto symbol = getSymbol($1);
+			string type = "INT";
+			if(symbol == nullptr){
+				printUtil.printError("undeclared variable", "", yylineno);
+			}else if( dynamic_cast<VariableSymbolInfo *>(symbol) == nullptr){
+				printUtil.printError("array access on normal variable", "", yylineno);
+				type = symbol->getType();
+			}else{
+				type = symbol->getType();
+			}
+
+			if(getDataType($3) != "INT"){
+				printUtil.printError("array access operation is not integer", "", yylineno);
+			}
+			
+			$$ = new ExpressionAST(NodeType::VARIABLE, "ID LSQUARE expression RSQUARE", type, yylineno);
 			$$->addChild({$1, $2, $3, $4});
 
 			logout << "variable : ID LSQUARE expression RSQUARE" << endl;
