@@ -30,6 +30,11 @@ void yyerror(char *s)
 	//write your code
 }
 
+std::string getDataType(AST *node){
+	auto t = dynamic_cast<ExpressionAST *> (node);
+	if(t == nullptr) return "";
+	return t->getDataType();
+}
 %}
 
 // %union {
@@ -474,6 +479,7 @@ expression_statement 	: SEMICOLON
 			}		
 			| expression SEMICOLON 
 			{
+				cout << getDataType($1) << endl;
 				$$ = new TokenAST(NodeType::EXPR_STMNT, "expression SEMICOLON", yylineno);
 				$$->addChild({$1, $2});
 
@@ -483,6 +489,7 @@ expression_statement 	: SEMICOLON
 	  
 variable : ID 	
 		{
+			// TODO: convert to ExpressionAST
 			$$ = new TokenAST(NodeType::VARIABLE, "ID", yylineno);
 			$$->addChild($1);
 
@@ -490,6 +497,7 @@ variable : ID
 		}	
 	 | ID LTHIRD expression RTHIRD 
 		{
+			// TODO: convert to ExpressionAST
 			$$ = new TokenAST(NodeType::VARIABLE, "ID LSQUARE expression RSQUARE", yylineno);
 			$$->addChild({$1, $2, $3, $4});
 
@@ -499,13 +507,14 @@ variable : ID
 	 
 expression : logic_expression	
 		{
-			$$ = new TokenAST(NodeType::EXP, "logic_expression", yylineno);
+			$$ = new ExpressionAST(NodeType::EXP, "logic_expression", getDataType($1), yylineno);
 			$$->addChild($1);
 
 			logout << "expression : logic_expression" << endl;
 		}
 	   | variable ASSIGNOP logic_expression 	
 	   {
+			// TODO: convert to ExpressionAST
 			$$ = new TokenAST(NodeType::EXP, "variable ASSIGNOP logic_expression", yylineno);
 			$$->addChild({$1, $2, $3});
 
@@ -515,14 +524,14 @@ expression : logic_expression
 			
 logic_expression : rel_expression 	
 		{
-			$$ = new TokenAST(NodeType::LOGIC_EXP, "rel_expression", yylineno);
+			$$ = new ExpressionAST(NodeType::LOGIC_EXP, "rel_expression", getDataType($1), yylineno);
 			$$->addChild($1);
 
 			logout << "logic_expression : rel_expression" << endl;
 		}
 		 | rel_expression LOGICOP rel_expression
 		{
-			$$ = new TokenAST(NodeType::LOGIC_EXP, "rel_expression LOGICOP rel_expression", yylineno);
+			$$ = new ExpressionAST(NodeType::LOGIC_EXP, "rel_expression LOGICOP rel_expression", "INT", yylineno);
 			$$->addChild({$1, $2, $3});
 
 			logout << "logic_expression : rel_expression LOGICOP rel_expression" << endl;
@@ -531,14 +540,14 @@ logic_expression : rel_expression
 			
 rel_expression	: simple_expression 
 		{
-			$$ = new TokenAST(NodeType::REL_EXP, "simple_expression", yylineno);
+			$$ = new ExpressionAST(NodeType::REL_EXP, "simple_expression", getDataType($1), yylineno);
 			$$->addChild($1);
 
 			logout << "rel_expression : simple_expression" << endl;
 		}
 		| simple_expression RELOP simple_expression	
 		{
-			$$ = new TokenAST(NodeType::REL_EXP, "simple_expression RELOP simple_expression", yylineno);
+			$$ = new ExpressionAST(NodeType::REL_EXP, "simple_expression RELOP simple_expression", "INT", yylineno);
 			$$->addChild({$1, $2, $3});
 
 			logout << "rel_expression : simple_expression RELOP simple_expression" << endl;
@@ -547,13 +556,14 @@ rel_expression	: simple_expression
 				
 simple_expression : term 
 		{
-			$$ = new TokenAST(NodeType::SIMPLE_EXP, "term", yylineno);
+			$$ = new ExpressionAST(NodeType::SIMPLE_EXP, "term", getDataType($1), yylineno);
 			$$->addChild($1);
 
 			logout << "simple_expression : term" << endl;
 		}
 		  | simple_expression ADDOP term 
 		{
+			// TODO: convert to expression AST
 			$$ = new TokenAST(NodeType::SIMPLE_EXP, "simple_expression ADDOP term", yylineno);
 			$$->addChild({$1, $2, $3});
 			
@@ -564,13 +574,14 @@ simple_expression : term
 					
 term :	unary_expression
 		{
-			$$ = new TokenAST(NodeType::TERM, "unary_expression", yylineno);
+			$$ = new ExpressionAST(NodeType::TERM, "unary_expression", getDataType($1), yylineno);
 			$$->addChild($1);
 
 			logout << "term : unary_expression" << endl;
 		}
      |  term MULOP unary_expression
 		{
+			// TODO: convert to expression AST
 			$$ = new TokenAST(NodeType::TERM, "term MULOP unary_expression", yylineno);
 			$$->addChild({$1, $2, $3});
 
@@ -580,21 +591,21 @@ term :	unary_expression
 
 unary_expression : ADDOP unary_expression  
 		{
-			$$ = new TokenAST(NodeType::UNARY_EXP, "ADDOP unary_expression", yylineno);
+			$$ = new ExpressionAST(NodeType::UNARY_EXP, "ADDOP unary_expression", getDataType($2), yylineno);
 			$$->addChild({$1, $2});
 
 			logout << "unary_expression : ADDOP unary_expression" << endl;
 		}
 		 | NOT unary_expression 
 		{
-			$$ = new TokenAST(NodeType::UNARY_EXP, "NOT unary_expression", yylineno);
+			$$ = new ExpressionAST(NodeType::UNARY_EXP, "NOT unary_expression", "INT", yylineno);
 			$$->addChild({$1, $2});
 
 			logout << "NOT unary_expression" << endl;
 		}
 		 | factor 
 		{
-			$$ = new TokenAST(NodeType::UNARY_EXP, "factor", yylineno);
+			$$ = new ExpressionAST(NodeType::UNARY_EXP, "factor", getDataType($1), yylineno);
 			$$->addChild($1);
 
 			logout << "unary_expression : factor" << endl;
@@ -603,7 +614,7 @@ unary_expression : ADDOP unary_expression
 	
 factor	: variable 
 		{
-			$$ = new TokenAST(NodeType::FACTOR, "variable", yylineno);
+			$$ = new ExpressionAST(NodeType::FACTOR, "variable", getDataType($1), yylineno);
 			$$->addChild($1);
 
 			logout << "factor : variable" << endl;
@@ -611,6 +622,7 @@ factor	: variable
 		
 	| ID LPAREN argument_list RPAREN
 		{
+			// TODO : FUNCTION ERROR CHECKING
 			$$ = new TokenAST(NodeType::FACTOR, "ID LPAREN argument_list RPAREN", yylineno);
 			$$->addChild({$1, $2, $3, $4});
 
@@ -618,28 +630,28 @@ factor	: variable
 		}
 	| LPAREN expression RPAREN
 		{
-			$$ = new TokenAST(NodeType::FACTOR, "LPAREN expression RPAREN", yylineno);
+			$$ = new ExpressionAST(NodeType::FACTOR, "LPAREN expression RPAREN", getDataType($2), yylineno);
 			$$->addChild({$1, $2, $3});
 
 			logout << "factor : LPAREN expression RPAREN" << endl;
 		}
 	| CONST_INT
 		{
-			$$ = new TokenAST(NodeType::FACTOR, "CONST_INT", yylineno);
+			$$ = new ExpressionAST(NodeType::FACTOR, "CONST_INT", "INT", yylineno);
 			$$->addChild($1);
 
 			logout << "factor : CONST_INT" << endl;
 		}
 	| CONST_FLOAT
 		{
-			$$ = new TokenAST(NodeType::FACTOR, "CONST_FLOAT", yylineno);
+			$$ = new ExpressionAST(NodeType::FACTOR, "CONST_FLOAT", "FLOAT", yylineno);
 			$$->addChild($1);
 
 			logout << "factor : CONST_FLOAT" << endl;
 		}
 	| variable INCOP 
 		{
-			$$ = new TokenAST(NodeType::FACTOR, "variable INCOP", yylineno);
+			$$ = new ExpressionAST(NodeType::FACTOR, "variable INCOP", getDataType($1), yylineno);
 			$$->addChild({$1, $2});
 
 			logout << "factor : variable INCOP" << endl;
@@ -647,7 +659,7 @@ factor	: variable
 
 	| variable DECOP
 		{
-			$$ = new TokenAST(NodeType::FACTOR, "variable DECOP", yylineno);
+			$$ = new ExpressionAST(NodeType::FACTOR, "variable DECOP", getDataType($1), yylineno);
 			$$->addChild({$1, $2});
 
 			logout << "factor : variable DECOP" << endl;

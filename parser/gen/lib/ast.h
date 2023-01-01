@@ -41,6 +41,21 @@ public:
     ~TokenAST();
 };
 
+class ExpressionAST : public TokenAST
+{
+    std::string dataType;
+public:
+    ExpressionAST(TokenAST *token, std::string dataType)
+        : TokenAST(*token), dataType(dataType)
+    {}
+    
+    ExpressionAST(NodeType nodeType, std::string info, std::string dataType ,int startLineNo, int endLineNo = -1)
+        : TokenAST(nodeType, info, startLineNo, endLineNo) , dataType(dataType)
+    {}
+
+    std::string getDataType(){ return dataType; }
+};
+
 
 class SymbolAST : public AST
 {
