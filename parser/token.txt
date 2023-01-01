@@ -28,14 +28,11 @@
 <ID, z>
 <RPAREN, )>
 <LCURL, {>
-<ID, e>
-<SEMICOLON, ;>
+<ID, a>
+<ASSIGNOP, =>
 <ID, d>
 <LSQUARE, [>
-<ID, c>
-<LSQUARE, [>
-<CONST_INT, 1>
-<RSQUARE, ]>
+<CONST_INT, 4>
 <RSQUARE, ]>
 <SEMICOLON, ;>
 <RCURL, }>

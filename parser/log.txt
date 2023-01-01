@@ -50,57 +50,36 @@ parameter_list : parameter_list COMMA type_specifier ID
 Line# 4: Token <RPAREN> Lexeme ) found
 	'abc' found in ScopeTable# 1 at position 9, 2
 Line# 4: Token <LCURL> Lexeme { found
-Line# 5: Token <ID> Lexeme e found
-Line# 5: Token <SEMICOLON> Lexeme ; found
-	'e' found in ScopeTable# 1 at position 2, 1
+Line# 5: Token <ID> Lexeme a found
+Line# 5: Token <ASSIGNOP> Lexeme = found
+	'a' found in ScopeTable# 1 at position 8, 1
 variable : ID
-factor : variable
-unary_expression : factor
-term : unary_expression
-simple_expression : term
-rel_expression : simple_expression
-logic_expression : rel_expression
-expression : logic_expression
-expression_statement : expression SEMICOLON
-statement : expression_statement
-statements : statement
-Line# 6: Token <ID> Lexeme d found
-Line# 6: Token <LSQUARE> Lexeme [ found
-Line# 6: Token <ID> Lexeme c found
-Line# 6: Token <LSQUARE> Lexeme [ found
-Line# 6: Token <CONST_INT> Lexeme 1 found
+Line# 5: Token <ID> Lexeme d found
+Line# 5: Token <LSQUARE> Lexeme [ found
+Line# 5: Token <CONST_INT> Lexeme 4 found
 factor : CONST_INT
 unary_expression : factor
 term : unary_expression
-Line# 6: Token <RSQUARE> Lexeme ] found
-simple_expression : term
-rel_expression : simple_expression
-logic_expression : rel_expression
-expression : logic_expression
-	'c' found in ScopeTable# 1 at position 10, 1
-variable : ID LSQUARE expression RSQUARE
-Line# 6: Token <RSQUARE> Lexeme ] found
-factor : variable
-unary_expression : factor
-term : unary_expression
+Line# 5: Token <RSQUARE> Lexeme ] found
 simple_expression : term
 rel_expression : simple_expression
 logic_expression : rel_expression
 expression : logic_expression
 	'd' found in ScopeTable# 1 at position 1, 1
 variable : ID LSQUARE expression RSQUARE
-Line# 6: Token <SEMICOLON> Lexeme ; found
+Line# 5: Token <SEMICOLON> Lexeme ; found
 factor : variable
 unary_expression : factor
 term : unary_expression
 simple_expression : term
 rel_expression : simple_expression
 logic_expression : rel_expression
-expression : logic_expression
+Error at line# 5: Assignment of float to int 
+expression : variable ASSIGNOP logic_expression
 expression_statement : expression SEMICOLON
 statement : expression_statement
-statements : statements statement
-Line# 7: Token <RCURL> Lexeme } found
+statements : statement
+Line# 6: Token <RCURL> Lexeme } found
 compound_statement: LCURL statements RCURL
 	ScopeTable# 2
 	2--> <y,INT> 

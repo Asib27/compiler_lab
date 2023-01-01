@@ -45,6 +45,10 @@ SymbolInfo *getSymbol(AST *node){
 	return nullptr;
 }
 
+bool isAssignopCorrect(string lhs, string rhs){
+	return !(lhs == "INT" && rhs == "FLOAT");
+}
+
 %}
 
 // %union {
@@ -545,8 +549,11 @@ expression : logic_expression
 		}
 	   | variable ASSIGNOP logic_expression 	
 	   {
-			// TODO: convert to ExpressionAST
-			$$ = new TokenAST(NodeType::EXP, "variable ASSIGNOP logic_expression", yylineno);
+			if(!isAssignopCorrect(getDataType($1), getDataType($3))){
+				printUtil.printError("Assignment of float to int", "", yylineno);
+			}
+			
+			$$ = new ExpressionAST(NodeType::EXP, "variable ASSIGNOP logic_expression", getDataType($1), yylineno);
 			$$->addChild({$1, $2, $3});
 
 			logout << "expression : variable ASSIGNOP logic_expression" << endl;

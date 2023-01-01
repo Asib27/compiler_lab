@@ -2,6 +2,5 @@ int a, b, c[10];
 float d[10], e, a;
 
 int abc(int y, float z){
-    e;
-    d[c[1]];
+    a = d[4];
 }
