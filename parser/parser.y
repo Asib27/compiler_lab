@@ -116,30 +116,6 @@ func_declaration : func_first_part SEMICOLON
 				$$->addChild($2);
 				symbolTable.exitScope();
 
-
-				// auto symbols = treeWalker.walkDeclarationList($4);
-
-				// for(auto symbol: symbols){
-				// 	auto i = symbol->getSymbol();
-
-				// 	if(i->getName() == ""){
-				// 		delete i;
-				// 	}
-				// 	else{
-				// 		auto isInserted = symbolTable.insert(i);
-
-				// 		if(!isInserted){
-				// 			printUtil.printError("redefination of parameter \'" + i->getName() + "\'", "", symbol->getBeginLine());
-				// 			delete i;
-				// 		}
-				// 	}
-
-				// 	symbol->setSymbol(nullptr);
-				// 	delete symbol;
-				// }
-
-				// cout << symbolTable << endl;
-
 				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
 			}
 		| func_first_part2 SEMICOLON
@@ -201,6 +177,13 @@ func_first_part : common_func_first_part LPAREN {symbolTable.enterScope();} para
 		$$->addChild($2);		
 		$$->addChild($4);
 		$$->addChild($5);
+
+		// setting parameter list to the function
+		auto types = treeWalker.walkParameterList($4);
+		auto funcName = treeWalker.walkID($$->getChilds()[1]);
+		auto id = symbolTable.lookup(funcName);
+		auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
+		funcId->setParam(types);
 	}
 	;
 func_first_part2 : common_func_first_part LPAREN RPAREN 

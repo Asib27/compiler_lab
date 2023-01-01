@@ -14,11 +14,12 @@ private:
     SymbolAST* createDeclarationChild(AST* child, bool flag);
     SymbolAST* declarationListChild(std::vector<AST*> childs, AST** rootptr);
 
-    SymbolAST* parameterListChild(std::vector<AST *> childs, AST** rootptr);
+    std::string parameterListChild(std::vector<AST *> childs, AST** rootptr);
 public:
     TreeWalker();
 
     std::vector<SymbolAST *> walkDeclarationList(AST* root);
+    std::vector<std::string> walkParameterList(AST* root);
     std::string walkTypeSpecifier(AST* root);
     std::string walkID(AST* root);
 

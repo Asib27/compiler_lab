@@ -32,7 +32,7 @@ SymbolAST* TreeWalker::declarationListChild(std::vector<AST*> childs, AST** root
 }
 
 
-SymbolAST* TreeWalker::parameterListChild(std::vector<AST *> childs, AST** rootptr){
+std::string TreeWalker::parameterListChild(std::vector<AST *> childs, AST** rootptr){
     if(childs.size() == 0){
         *rootptr = nullptr;
         return nullptr;
@@ -50,16 +50,25 @@ SymbolAST* TreeWalker::parameterListChild(std::vector<AST *> childs, AST** rootp
     // type specifier is found
     std::string type = walkTypeSpecifier(childs[idx]);
 
-    // optional ID part is found
-    std::string id = "";
-    if(childs.size() > idx+1){
-        auto symbolAST = dynamic_cast<SymbolAST *> (childs[idx+1]);
-        id = symbolAST->getSymbol()->getName();
+    // new SymbolAST is created and returned 
+    return type;
+}
+
+
+std::vector<std::string> TreeWalker::walkParameterList(AST* root){
+    std::vector<std::string> ans;
+
+    while(root){
+        // root->print(std::cout);
+
+        auto childs = root->getChilds();
+        auto t = parameterListChild(childs, &root);
+        ans.push_back(t);
+
+        // std::cout << t << " " << root << std::endl;
     }
 
-    // new SymbolAST is created and returned 
-    auto newSymbol = new SymbolInfo(id, type);
-    return new SymbolAST(newSymbol, childs[0]->getBeginLine());
+    return ans;
 }
 
 std::vector<SymbolAST *> TreeWalker::walkDeclarationList(AST* root){
@@ -69,15 +78,8 @@ std::vector<SymbolAST *> TreeWalker::walkDeclarationList(AST* root){
         // root->print(std::cout);
 
         auto childs = root->getChilds();
-
-        if(root->getTokenType() == "declaration_list"){
-            auto t = declarationListChild(childs, &root);
-            ans.push_back(t);
-        }
-        else if(root->getTokenType() == "parameter_list"){
-            auto t = parameterListChild(childs, &root);
-            ans.push_back(t);
-        }
+        auto t = declarationListChild(childs, &root);
+        ans.push_back(t);
 
         // std::cout << t << " " << root << std::endl;
     }
