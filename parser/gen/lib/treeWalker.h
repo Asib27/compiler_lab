@@ -4,6 +4,7 @@
 
 #include<iostream>
 #include<vector>
+#include<algorithm>
 #include"symbolInfo.h"
 #include"functionSymbolInfo.h"
 #include"variableSymbolInfo.h"

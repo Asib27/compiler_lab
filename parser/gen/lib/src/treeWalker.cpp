@@ -97,7 +97,10 @@ std::string TreeWalker::walkTypeSpecifier(AST* root){
 
     auto symbolAST = dynamic_cast<SymbolAST *>  (t[0]);
     if(symbolAST == nullptr || symbolAST->getSymbol() == nullptr) return "";
-    return symbolAST->getSymbol()->getName();
+
+    auto type = symbolAST->getSymbol()->getName();
+    transform(type.begin(), type.end(), type.begin(), ::toupper);
+    return type;
 }
 
 std::string TreeWalker::walkID(AST* root){

@@ -1,9 +1,6 @@
 %{
 #include<iostream>
 #include<fstream>
-#include<cstdlib>
-#include<cstring>
-#include<cmath>
 #include"lib/symbolTable.h"
 #include "lib/symbolInfo.h"
 #include "lib/ast.h"
