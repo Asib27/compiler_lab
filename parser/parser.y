@@ -49,6 +49,10 @@ bool isAssignopCorrect(string lhs, string rhs){
 	return !(lhs == "INT" && rhs == "FLOAT");
 }
 
+string getAddopType(string lhs, string rhs){
+	return (lhs == "FLOAT" || rhs == "FLOAT") ? "FLOAT" : "INT";
+}
+
 %}
 
 // %union {
@@ -552,7 +556,7 @@ expression : logic_expression
 			if(!isAssignopCorrect(getDataType($1), getDataType($3))){
 				printUtil.printError("Assignment of float to int", "", yylineno);
 			}
-			
+
 			$$ = new ExpressionAST(NodeType::EXP, "variable ASSIGNOP logic_expression", getDataType($1), yylineno);
 			$$->addChild({$1, $2, $3});
 
@@ -601,8 +605,9 @@ simple_expression : term
 		}
 		  | simple_expression ADDOP term 
 		{
-			// TODO: convert to expression AST
-			$$ = new TokenAST(NodeType::SIMPLE_EXP, "simple_expression ADDOP term", yylineno);
+			auto type = getAddopType(getDataType($1), getDataType($3));
+
+			$$ = new ExpressionAST(NodeType::SIMPLE_EXP, "simple_expression ADDOP term", type, yylineno);
 			$$->addChild({$1, $2, $3});
 			
 			logout << "simple_expression : simple_expression ADDOP term" << endl;
@@ -620,7 +625,17 @@ term :	unary_expression
      |  term MULOP unary_expression
 		{
 			// TODO: convert to expression AST
-			$$ = new TokenAST(NodeType::TERM, "term MULOP unary_expression", yylineno);
+			auto lhsType = getDataType($1);
+			auto rhsType = getDataType($3);
+			auto type = getAddopType(lhsType, rhsType);
+			if(treeWalker.walkID($2) == "%"){
+				if(lhsType != "INT" || rhsType != "INT"){
+					printUtil.printError("both side of modulus operator should be int", "", yylineno);
+				}
+				type = "INT";
+			}
+
+			$$ = new ExpressionAST(NodeType::TERM, "term MULOP unary_expression", type, yylineno);
 			$$->addChild({$1, $2, $3});
 
 			logout << "term : term MULOP unary_expression" << endl;

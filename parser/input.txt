@@ -2,5 +2,9 @@ int a, b, c[10];
 float d[10], e, a;
 
 int abc(int y, float z){
-    a = d[4];
+    a%10;
+    a%10.2;
+    a%b;
+    b % e;
+    d[2]%c[1];
 }

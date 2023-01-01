@@ -44,7 +44,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 58 "parser.y"
+#line 62 "parser.y"
 
 	#include "lib/ast.h"
 
