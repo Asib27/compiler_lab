@@ -29,10 +29,10 @@
 <RPAREN, )>
 <LCURL, {>
 <ID, abc>
-<SEMICOLON, ;>
-<ID, abc>
-<LSQUARE, [>
-<CONST_INT, 1>
-<RSQUARE, ]>
+<LPAREN, (>
+<ID, a>
+<COMMA, ,>
+<ID, e>
+<RPAREN, )>
 <SEMICOLON, ;>
 <RCURL, }>

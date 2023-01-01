@@ -201,7 +201,7 @@ func_first_part : common_func_first_part LPAREN {symbolTable.enterScope();} para
 		$$->addChild($4);
 		$$->addChild($5);
 
-		// setting parameter list to the function
+		// setting parameter list the function
 		auto types = treeWalker.walkParameterList($4);
 		auto funcName = treeWalker.walkID($$->getChilds()[1]);
 		auto id = symbolTable.lookup(funcName);
@@ -681,16 +681,28 @@ factor	: variable
 		
 	| ID LPAREN argument_list RPAREN
 		{
-			// TODO : FUNCTION ERROR CHECKING
 			auto name = treeWalker.walkID($1);
 			auto symbol = symbolTable.lookup(name);
-			string token = "INT";
+			auto arguments = treeWalker.walkArgumentList($3);
+			string type = "INT";
 
 			if(symbol == nullptr){
 				printUtil.printError("undeclared function", "", yylineno);
+			}else if(symbol->getType() != "FUNCTION"){
+				printUtil.printError("cannot call variable", "", yylineno);
+			}else{
+				auto functionSymbol = dynamic_cast<FunctionSymbolInfo *>(symbol);
+				// TODO: VOID should be handled
+				if(functionSymbol->getReturnType() == "VOID"){
+					printUtil.printError("VOID function cannot be used in expression", "", yylineno);
+				}else if(!functionSymbol->matchParam(arguments)){
+					printUtil.printError("arguments does not match", "", yylineno);
+				}else{
+					type = functionSymbol->getReturnType();
+				}
 			}
 
-			$$ = new ExpressionAST(NodeType::FACTOR, "ID LPAREN argument_list RPAREN", token, yylineno);
+			$$ = new ExpressionAST(NodeType::FACTOR, "ID LPAREN argument_list RPAREN", type, yylineno);
 			$$->addChild({$1, $2, $3, $4});
 
 			logout << "factor : ID LPAREN expression RPAREN" << endl;
