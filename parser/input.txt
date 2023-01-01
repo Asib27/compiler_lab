@@ -2,6 +2,7 @@ int a, b, c[10];
 float d[10], e, a;
 
 int abc(int z, float );
+void abc(int z);
 int cde(int k, int r){
     int m;
     int a;

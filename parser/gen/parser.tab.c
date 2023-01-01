@@ -513,18 +513,18 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  13
+#define YYFINAL  14
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   181
+#define YYLAST   160
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  43
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  27
+#define YYNNTS  28
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  67
+#define YYNRULES  68
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  121
+#define YYNSTATES  122
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   297
@@ -576,12 +576,12 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int16 yyrline[] =
 {
        0,    58,    58,    69,    76,    85,    92,    99,   108,   145,
-     160,   175,   193,   193,   199,   208,   227,   234,   252,   262,
-     270,   280,   308,   315,   322,   331,   338,   345,   352,   361,
-     368,   377,   384,   391,   399,   406,   413,   421,   428,   435,
-     444,   451,   460,   467,   476,   483,   492,   499,   508,   515,
-     524,   531,   541,   548,   557,   564,   571,   580,   588,   595,
-     602,   609,   616,   624,   633,   641,   647,   654
+     160,   175,   193,   193,   206,   221,   249,   268,   275,   293,
+     303,   311,   321,   349,   356,   363,   372,   379,   386,   393,
+     402,   409,   418,   425,   432,   440,   447,   454,   462,   469,
+     476,   485,   492,   501,   508,   517,   524,   533,   540,   549,
+     556,   565,   572,   582,   589,   598,   605,   612,   621,   629,
+     636,   643,   650,   657,   665,   674,   682,   688,   695
 };
 #endif
 
@@ -598,11 +598,11 @@ static const char *const yytname[] =
   "DECOP", "RELOP", "LOGICOP", "BITOP", "ID", "PRINTLN", "LOWER_THAN_ELSE",
   "$accept", "start", "program", "unit", "func_declaration",
   "func_definition", "func_first_part", "$@1", "func_first_part2",
-  "parameter_list", "compound_statement", "var_declaration",
-  "type_specifier", "declaration_list", "statements", "statement",
-  "expression_statement", "variable", "expression", "logic_expression",
-  "rel_expression", "simple_expression", "term", "unary_expression",
-  "factor", "argument_list", "arguments", YY_NULLPTR
+  "common_func_first_part", "parameter_list", "compound_statement",
+  "var_declaration", "type_specifier", "declaration_list", "statements",
+  "statement", "expression_statement", "variable", "expression",
+  "logic_expression", "rel_expression", "simple_expression", "term",
+  "unary_expression", "factor", "argument_list", "arguments", YY_NULLPTR
 };
 #endif
 
@@ -619,12 +619,12 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-53)
+#define YYPACT_NINF (-62)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-1)
+#define YYTABLE_NINF (-16)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -633,19 +633,19 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-      22,   -53,   -53,   -53,     2,    22,   -53,   -53,   -53,    -9,
-      27,   -53,   -28,   -53,   -53,    78,   -53,   -53,   -53,   -53,
-      18,    36,    -3,    13,    26,    33,   -53,   -53,    33,    33,
-     -53,   -53,    33,    35,    30,   -53,   -53,    31,   109,   -53,
-     -53,     4,    12,   -53,    34,    -2,    40,   -53,   -53,    49,
-      63,    47,   -53,    33,    -7,    33,    56,    29,   -53,    65,
-     -53,    33,    33,    52,    62,   -53,   -53,    33,   -53,   -53,
-     -53,    33,    33,    33,    33,   -53,    22,    67,    66,    70,
-      -7,    71,   -53,   -53,   -53,    74,    73,    77,    75,   -53,
-     -53,    40,    76,   -53,   -10,    80,   -53,    94,   140,    33,
-     140,   -53,    33,   -53,    90,   -53,    22,   -53,    95,   113,
-     100,   -53,   -53,   -53,    87,   -53,   140,   140,   -53,   -53,
-     -53
+      63,   -62,   -62,   -62,    27,    63,   -62,   -62,   -62,   -12,
+      25,    10,   -62,    13,   -62,   -62,    52,   -62,   -62,   -62,
+     -62,    48,    69,     8,    50,    58,    72,     4,   -62,   -62,
+       4,     4,   -62,   -62,     4,    75,    76,   -62,   -62,    65,
+      83,   -62,   -62,    -4,    74,   -62,    71,     1,    77,   -62,
+     -62,   -62,    63,    90,    79,   -62,     4,   -10,     4,    82,
+      26,   -62,    99,   -62,     4,     4,    87,   101,   -62,   -62,
+       4,   -62,   -62,   -62,     4,     4,     4,     4,   -13,    89,
+     103,   105,   107,   -10,   110,   -62,   -62,   -62,   111,   109,
+     113,   116,   -62,   -62,    77,   112,   -62,   -62,    63,   -62,
+     -62,   124,   114,     4,   114,   -62,     4,   -62,   117,   108,
+     122,   140,   126,   -62,   -62,   -62,   -62,   -62,   114,   114,
+     -62,   -62
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -653,35 +653,35 @@ static const yytype_int16 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       0,    22,    23,    24,     0,     2,     4,     6,     7,     0,
-       0,     5,     0,     1,     3,     0,     8,    10,     9,    11,
-      27,     0,     0,     0,     0,     0,    60,    61,     0,     0,
-      20,    40,     0,    42,     0,    33,    31,     0,     0,    29,
-      32,    57,     0,    44,    46,    48,    50,    52,    56,    12,
-       0,     0,    21,     0,     0,     0,     0,    57,    55,     0,
-      54,    65,     0,     0,    27,    19,    30,     0,    62,    63,
-      41,     0,     0,     0,     0,    14,     0,     0,    25,     0,
-       0,     0,    39,    59,    67,     0,    64,     0,     0,    45,
-      47,    51,    49,    53,     0,    18,    28,     0,     0,     0,
-       0,    58,     0,    43,     0,    13,     0,    17,     0,    35,
-       0,    37,    66,    38,    16,    26,     0,     0,    15,    36,
-      34
+       0,    23,    24,    25,     0,     2,     4,     6,     7,     0,
+       0,     0,     5,     0,     1,     3,     0,     8,    10,     9,
+      11,    12,    28,     0,     0,     0,     0,     0,    61,    62,
+       0,     0,    21,    41,     0,    43,     0,    34,    32,     0,
+       0,    30,    33,    58,     0,    45,    47,    49,    51,    53,
+      57,    14,     0,     0,     0,    22,     0,     0,     0,     0,
+      58,    56,     0,    55,    66,     0,     0,    28,    20,    31,
+       0,    63,    64,    42,     0,     0,     0,     0,     0,    19,
+       0,    26,     0,     0,     0,    40,    60,    68,     0,    65,
+       0,     0,    46,    48,    52,    50,    54,    13,     0,    18,
+      29,     0,     0,     0,     0,    59,     0,    44,     0,    17,
+       0,    36,     0,    38,    67,    39,    16,    27,     0,     0,
+      37,    35
 };
 
   /* YYPGOTO[NTERM-NUM].  */
-static const yytype_int8 yypgoto[] =
+static const yytype_int16 yypgoto[] =
 {
-     -53,   -53,   -53,   123,   -53,   -53,   -53,   -53,   -53,   -53,
-      60,    19,     0,   -53,   -53,   -37,   -43,   -25,   -21,   -52,
-      61,    58,    64,   -22,   -53,   -53,   -53
+     -62,   -62,   -62,   148,   -62,   -62,   -62,   -62,   -62,   -62,
+     -62,    57,    21,     0,   -62,   -62,   -39,   -50,   -28,   -15,
+     -61,    84,    80,    85,   -26,   -62,   -62,   -62
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     4,     5,     6,     7,     8,     9,    76,    10,    94,
-      35,    36,    37,    21,    38,    39,    40,    41,    42,    43,
-      44,    45,    46,    47,    48,    85,    86
+      -1,     4,     5,     6,     7,     8,     9,    52,    10,    11,
+      78,    37,    38,    39,    23,    40,    41,    42,    43,    44,
+      45,    46,    47,    48,    49,    50,    88,    89
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -689,48 +689,44 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      12,    66,    13,    57,    56,    12,    58,    57,    59,    84,
-      60,    80,    20,    26,    27,    89,   105,    28,    29,    11,
-      15,   106,    53,    16,    11,    31,    32,    67,     1,     2,
-       3,    72,    79,    33,    81,    73,    57,    99,    54,    68,
-      69,    87,    57,    49,    70,    50,    57,    57,    57,    57,
-     112,    55,    93,    26,    27,    63,    15,    28,    29,    18,
-      61,   109,    62,   111,    68,    69,    32,    51,    52,    17,
-      19,    64,    71,    33,    74,    75,    95,    57,   110,   119,
-     120,    22,    23,    77,     1,     2,     3,    78,    82,    50,
-      24,    83,    88,    97,    25,    96,    98,   100,    26,    27,
-     101,   104,    28,    29,   102,   103,   114,    15,    30,    72,
-      31,    32,    22,    23,   108,     1,     2,     3,    33,    34,
-     107,    24,   113,   115,   116,    25,   117,   118,    14,    26,
-      27,    92,    90,    28,    29,     0,    91,     0,    15,    65,
-       0,    31,    32,    22,    23,     0,     1,     2,     3,    33,
-      34,     0,    24,     0,     0,     0,    25,     0,     0,     0,
-      26,    27,     0,     0,    28,    29,     0,     0,     0,    15,
-       0,     0,    31,    32,     0,     0,     0,     0,     0,     0,
-      33,    34
+      13,    69,    60,    87,    61,    13,    60,    83,    63,    92,
+      28,    29,    59,    97,    30,    31,    62,    16,    98,    70,
+      17,    12,    33,    34,    28,    29,    12,    14,    30,    31,
+      35,    71,    72,   103,    75,    21,    60,    34,    76,    54,
+      55,    82,    60,    84,    35,   114,    60,    60,    60,    60,
+      90,    96,    79,    22,    16,    24,    25,    19,     1,     2,
+       3,    71,    72,   111,    26,   113,    18,    20,    27,     1,
+       2,     3,    28,    29,    51,    56,    30,    31,    60,   120,
+     121,    16,    32,    57,    33,    34,    24,    25,   112,     1,
+       2,     3,    35,    36,   -15,    26,    53,    58,   109,    27,
+      64,    66,    65,    28,    29,    67,    73,    30,    31,    74,
+      80,    77,    16,    68,    85,    33,    34,    24,    25,    81,
+       1,     2,     3,    35,    36,    86,    26,    91,    53,    99,
+      27,   100,   101,   102,    28,    29,   104,   105,    30,    31,
+     106,   107,   108,    16,   110,    75,    33,    34,   116,   115,
+     117,   118,   119,    15,    35,    36,    95,     0,    93,     0,
+      94
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,    38,     0,    28,    25,     5,    28,    32,    29,    61,
-      32,    54,    40,    20,    21,    67,    26,    24,    25,     0,
-      29,    31,    25,    32,     5,    32,    33,    23,     6,     7,
-       8,    33,    53,    40,    55,    37,    61,    80,    25,    35,
-      36,    62,    67,    25,    32,    27,    71,    72,    73,    74,
-     102,    25,    74,    20,    21,    25,    29,    24,    25,    32,
-      25,    98,    27,   100,    35,    36,    33,    31,    32,     9,
-      10,    40,    38,    40,    34,    26,    76,   102,    99,   116,
-     117,     3,     4,    20,     6,     7,     8,    40,    32,    27,
-      12,    26,    40,    27,    16,    28,    26,    26,    20,    21,
-      26,    26,    24,    25,    31,    28,   106,    29,    30,    33,
-      32,    33,     3,     4,    20,     6,     7,     8,    40,    41,
-      40,    12,    32,    28,    11,    16,    26,    40,     5,    20,
-      21,    73,    71,    24,    25,    -1,    72,    -1,    29,    30,
-      -1,    32,    33,     3,     4,    -1,     6,     7,     8,    40,
-      41,    -1,    12,    -1,    -1,    -1,    16,    -1,    -1,    -1,
-      20,    21,    -1,    -1,    24,    25,    -1,    -1,    -1,    29,
-      -1,    -1,    32,    33,    -1,    -1,    -1,    -1,    -1,    -1,
-      40,    41
+       0,    40,    30,    64,    30,     5,    34,    57,    34,    70,
+      20,    21,    27,    26,    24,    25,    31,    29,    31,    23,
+      32,     0,    32,    33,    20,    21,     5,     0,    24,    25,
+      40,    35,    36,    83,    33,    25,    64,    33,    37,    31,
+      32,    56,    70,    58,    40,   106,    74,    75,    76,    77,
+      65,    77,    52,    40,    29,     3,     4,    32,     6,     7,
+       8,    35,    36,   102,    12,   104,     9,    10,    16,     6,
+       7,     8,    20,    21,    26,    25,    24,    25,   106,   118,
+     119,    29,    30,    25,    32,    33,     3,     4,   103,     6,
+       7,     8,    40,    41,    25,    12,    27,    25,    98,    16,
+      25,    25,    27,    20,    21,    40,    32,    24,    25,    38,
+      20,    34,    29,    30,    32,    32,    33,     3,     4,    40,
+       6,     7,     8,    40,    41,    26,    12,    40,    27,    40,
+      16,    28,    27,    26,    20,    21,    26,    26,    24,    25,
+      31,    28,    26,    29,    20,    33,    32,    33,    40,    32,
+      28,    11,    26,     5,    40,    41,    76,    -1,    74,    -1,
+      75
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -738,42 +734,42 @@ static const yytype_int8 yycheck[] =
 static const yytype_int8 yystos[] =
 {
        0,     6,     7,     8,    44,    45,    46,    47,    48,    49,
-      51,    54,    55,     0,    46,    29,    32,    53,    32,    53,
-      40,    56,     3,     4,    12,    16,    20,    21,    24,    25,
-      30,    32,    33,    40,    41,    53,    54,    55,    57,    58,
-      59,    60,    61,    62,    63,    64,    65,    66,    67,    25,
-      27,    31,    32,    25,    25,    25,    61,    60,    66,    61,
-      66,    25,    27,    25,    40,    30,    58,    23,    35,    36,
-      32,    38,    33,    37,    34,    26,    50,    20,    40,    61,
-      59,    61,    32,    26,    62,    68,    69,    61,    40,    62,
-      63,    65,    64,    66,    52,    55,    28,    27,    26,    59,
-      26,    26,    31,    28,    26,    26,    31,    40,    20,    58,
-      61,    58,    62,    32,    55,    28,    11,    26,    40,    58,
-      58
+      51,    52,    55,    56,     0,    46,    29,    32,    54,    32,
+      54,    25,    40,    57,     3,     4,    12,    16,    20,    21,
+      24,    25,    30,    32,    33,    40,    41,    54,    55,    56,
+      58,    59,    60,    61,    62,    63,    64,    65,    66,    67,
+      68,    26,    50,    27,    31,    32,    25,    25,    25,    62,
+      61,    67,    62,    67,    25,    27,    25,    40,    30,    59,
+      23,    35,    36,    32,    38,    33,    37,    34,    53,    56,
+      20,    40,    62,    60,    62,    32,    26,    63,    69,    70,
+      62,    40,    63,    64,    66,    65,    67,    26,    31,    40,
+      28,    27,    26,    60,    26,    26,    31,    28,    26,    56,
+      20,    59,    62,    59,    63,    32,    40,    28,    11,    26,
+      59,    59
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
        0,    43,    44,    45,    45,    46,    46,    46,    47,    47,
-      48,    48,    50,    49,    51,    52,    52,    52,    52,    53,
-      53,    54,    55,    55,    55,    56,    56,    56,    56,    57,
-      57,    58,    58,    58,    58,    58,    58,    58,    58,    58,
-      59,    59,    60,    60,    61,    61,    62,    62,    63,    63,
-      64,    64,    65,    65,    66,    66,    66,    67,    67,    67,
-      67,    67,    67,    67,    68,    68,    69,    69
+      48,    48,    50,    49,    51,    52,    53,    53,    53,    53,
+      54,    54,    55,    56,    56,    56,    57,    57,    57,    57,
+      58,    58,    59,    59,    59,    59,    59,    59,    59,    59,
+      59,    60,    60,    61,    61,    62,    62,    63,    63,    64,
+      64,    65,    65,    66,    66,    67,    67,    67,    68,    68,
+      68,    68,    68,    68,    68,    69,    69,    70,    70
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     1,     2,     1,     1,     1,     1,     2,     2,
-       2,     2,     0,     6,     4,     4,     3,     2,     1,     3,
-       2,     3,     1,     1,     1,     3,     6,     1,     4,     1,
-       2,     1,     1,     1,     7,     5,     7,     5,     5,     3,
-       1,     2,     1,     4,     1,     3,     1,     3,     1,     3,
-       1,     3,     1,     3,     2,     2,     1,     1,     4,     3,
-       1,     1,     2,     2,     1,     0,     3,     1
+       2,     2,     0,     5,     3,     2,     4,     3,     2,     1,
+       3,     2,     3,     1,     1,     1,     3,     6,     1,     4,
+       1,     2,     1,     1,     1,     7,     5,     7,     5,     5,
+       3,     1,     2,     1,     4,     1,     3,     1,     3,     1,
+       3,     1,     3,     1,     3,     2,     2,     1,     1,     4,
+       3,     1,     1,     2,     2,     1,     0,     3,     1
 };
 
 
@@ -1478,7 +1474,7 @@ yyreduce:
 		yyval->print(cout);
 		delete yyval;
 	}
-#line 1482 "parser.tab.c"
+#line 1478 "parser.tab.c"
     break;
 
   case 3:
@@ -1489,7 +1485,7 @@ yyreduce:
 
 			logout << "program : program unit" << endl;
 		}
-#line 1493 "parser.tab.c"
+#line 1489 "parser.tab.c"
     break;
 
   case 4:
@@ -1500,7 +1496,7 @@ yyreduce:
 
 			logout << "program : unit" << endl;
 		}
-#line 1504 "parser.tab.c"
+#line 1500 "parser.tab.c"
     break;
 
   case 5:
@@ -1511,7 +1507,7 @@ yyreduce:
 
 		logout << "unit : var_declaration" << endl;
 	}
-#line 1515 "parser.tab.c"
+#line 1511 "parser.tab.c"
     break;
 
   case 6:
@@ -1522,7 +1518,7 @@ yyreduce:
 		
 		logout << "unit : func_declaration" << endl;
 	}
-#line 1526 "parser.tab.c"
+#line 1522 "parser.tab.c"
     break;
 
   case 7:
@@ -1533,7 +1529,7 @@ yyreduce:
 		
 		logout << "unit : func_definition" << endl;
 	}
-#line 1537 "parser.tab.c"
+#line 1533 "parser.tab.c"
     break;
 
   case 8:
@@ -1574,7 +1570,7 @@ yyreduce:
 
 				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
 			}
-#line 1578 "parser.tab.c"
+#line 1574 "parser.tab.c"
     break;
 
   case 9:
@@ -1591,7 +1587,7 @@ yyreduce:
 
 				logout << "func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON" << endl;
 			}
-#line 1595 "parser.tab.c"
+#line 1591 "parser.tab.c"
     break;
 
   case 10:
@@ -1610,7 +1606,7 @@ yyreduce:
 
 				logout << "func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
 			}
-#line 1614 "parser.tab.c"
+#line 1610 "parser.tab.c"
     break;
 
   case 11:
@@ -1629,37 +1625,80 @@ yyreduce:
 
 				logout << "func_definition: type_specifier ID LPAREN RPAREN compound_statement" << endl;
 			}
-#line 1633 "parser.tab.c"
+#line 1629 "parser.tab.c"
     break;
 
   case 12:
 #line 193 "parser.y"
-                                           {symbolTable.enterScope();}
-#line 1639 "parser.tab.c"
+                                                {symbolTable.enterScope();}
+#line 1635 "parser.tab.c"
     break;
 
   case 13:
 #line 194 "parser.y"
         {
 		yyval = new TokenAST(NodeType::TOKEN, "token", yylineno);
-		yyval->addChild({yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-1], yyvsp[0]});		
+
+		yyval->addChild(yyvsp[-4]->getChilds());
+		yyvsp[-4]->removeAllChild();
+		delete yyvsp[-4];
+
+		yyval->addChild(yyvsp[-3]);		
+		yyval->addChild(yyvsp[-1]);
+		yyval->addChild(yyvsp[0]);
 	}
-#line 1648 "parser.tab.c"
+#line 1651 "parser.tab.c"
     break;
 
   case 14:
-#line 200 "parser.y"
+#line 207 "parser.y"
         {
 		yyval = new TokenAST(NodeType::TOKEN, "token", yylineno);
-		yyval->addChild({yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});		
+		
+		yyval->addChild(yyvsp[-2]->getChilds());
+		yyvsp[-2]->removeAllChild();
+		delete yyvsp[-2];
+
+		yyval->addChild(yyvsp[-1]);		
+		yyval->addChild(yyvsp[0]);
 
 		symbolTable.enterScope();
 	}
-#line 1659 "parser.tab.c"
+#line 1668 "parser.tab.c"
     break;
 
   case 15:
-#line 209 "parser.y"
+#line 222 "parser.y"
+        {
+		yyval = new TokenAST(NodeType::TOKEN, "token", yylineno);
+		yyval->addChild({yyvsp[-1], yyvsp[0]});
+
+		auto type = treeWalker.walkTypeSpecifier(yyvsp[-1]);
+		auto name = treeWalker.walkID(yyvsp[0]);
+		auto symbol = new FunctionSymbolInfo(name, type, {});
+		auto isInserted = symbolTable.insert(symbol);
+
+		if(!isInserted){
+			auto prev = symbolTable.lookup(name);
+			if(prev->getType() == "FUNCTION"){
+				auto t = dynamic_cast<FunctionSymbolInfo *> (prev);
+				if(t->getReturnType() != type){
+					printUtil.printError("function decl changed" , "", yylineno);
+				}
+			}else{
+				printUtil.printError("variable delared as function", "", yylineno);
+			}
+
+			delete symbol;
+		}
+
+		cout << symbolTable << endl;
+	}
+#line 1698 "parser.tab.c"
+    break;
+
+  case 16:
+#line 250 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::PARAM_LIST, "parameter_list COMMA type_specifier ID", yylineno);
 				yyval->addChild({yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
@@ -1678,22 +1717,22 @@ yyreduce:
 
 				logout << "parameter_list : parameter_list COMMA type_specifier ID" << endl;
 			}
-#line 1682 "parser.tab.c"
+#line 1721 "parser.tab.c"
     break;
 
-  case 16:
-#line 228 "parser.y"
+  case 17:
+#line 269 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::PARAM_LIST, "parameter_list COMMA type_specifier", yylineno);
 				yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 				logout << "parameter_list: parameter_list COMMA type_specifier" << endl;
 			}
-#line 1693 "parser.tab.c"
+#line 1732 "parser.tab.c"
     break;
 
-  case 17:
-#line 235 "parser.y"
+  case 18:
+#line 276 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::PARAM_LIST, "type_specifier ID", yylineno);
 				yyval->addChild({yyvsp[-1], yyvsp[0]});
@@ -1711,22 +1750,22 @@ yyreduce:
 
 				logout << "parameter_list : type_specifier ID" << endl;
 			}
-#line 1715 "parser.tab.c"
+#line 1754 "parser.tab.c"
     break;
 
-  case 18:
-#line 253 "parser.y"
+  case 19:
+#line 294 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::PARAM_LIST, "type_specifier", yylineno);
 				yyval->addChild(yyvsp[0]);
 
 				logout << "parameter_list : type_specifier" << endl;
 			}
-#line 1726 "parser.tab.c"
+#line 1765 "parser.tab.c"
     break;
 
-  case 19:
-#line 263 "parser.y"
+  case 20:
+#line 304 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL statement RCURL", yylineno);
 				yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
@@ -1734,11 +1773,11 @@ yyreduce:
 				logout << "compound_statement: LCURL statements RCURL" << endl;
 
 			}
-#line 1738 "parser.tab.c"
+#line 1777 "parser.tab.c"
     break;
 
-  case 20:
-#line 271 "parser.y"
+  case 21:
+#line 312 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL RCURL", yylineno);
 				yyval->addChild({yyvsp[-1], yyvsp[0]});
@@ -1746,11 +1785,11 @@ yyreduce:
 				logout << "compound_statement : LCURL RCURL" << endl;	
 
 			}
-#line 1750 "parser.tab.c"
+#line 1789 "parser.tab.c"
     break;
 
-  case 21:
-#line 281 "parser.y"
+  case 22:
+#line 322 "parser.y"
                 {	
 			yyval = new TokenAST(NodeType::VAR_DECL, "type_specifier declaration_list SEMICOLON", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
@@ -1776,132 +1815,132 @@ yyreduce:
 
 			logout << "var_declaration : type_specifier declaration_list SEMICOLON" << endl;
 		}
-#line 1780 "parser.tab.c"
+#line 1819 "parser.tab.c"
     break;
 
-  case 22:
-#line 309 "parser.y"
+  case 23:
+#line 350 "parser.y"
         {
 		yyval = new TokenAST(NodeType::TYPE_SPECIFIER, "INT", yylineno);
 		yyval->addChild(yyvsp[0]);
 
 		logout << "type_specifier : INT" << endl;
 	}
-#line 1791 "parser.tab.c"
+#line 1830 "parser.tab.c"
     break;
 
-  case 23:
-#line 316 "parser.y"
+  case 24:
+#line 357 "parser.y"
         {
 		yyval = new TokenAST(NodeType::TYPE_SPECIFIER, "FLOAT", yylineno);
 		yyval->addChild(yyvsp[0]);
 
 		logout << "type_specifier : FLOAT" << endl;
 	}
-#line 1802 "parser.tab.c"
+#line 1841 "parser.tab.c"
     break;
 
-  case 24:
-#line 323 "parser.y"
+  case 25:
+#line 364 "parser.y"
         {
 		yyval = new TokenAST(NodeType::TYPE_SPECIFIER, "VOID", yylineno);
 		yyval->addChild(yyvsp[0]);
 
 		logout << "type_specifier : VOID" << endl;
 	}
-#line 1813 "parser.tab.c"
+#line 1852 "parser.tab.c"
     break;
 
-  case 25:
-#line 332 "parser.y"
+  case 26:
+#line 373 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::DECL_LIST, "declaration_list COMMA ID", yylineno);
 				yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 				logout << "declaration_list : declaration_list COMMA ID" << endl;
 			}
-#line 1824 "parser.tab.c"
+#line 1863 "parser.tab.c"
     break;
 
-  case 26:
-#line 339 "parser.y"
+  case 27:
+#line 380 "parser.y"
                   {
 			yyval = new TokenAST(NodeType::DECL_LIST, "declaration_list COMMA ID LSQUARE CONST_INT RSQUARE", yylineno);
 			yyval->addChild({yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
  		  	logout << "declaration_list : declaration_list COMMA ID LSQUARE int_const RSQUARE" << endl;
 		  }
-#line 1835 "parser.tab.c"
+#line 1874 "parser.tab.c"
     break;
 
-  case 27:
-#line 346 "parser.y"
+  case 28:
+#line 387 "parser.y"
                   {
 			yyval = new TokenAST(NodeType::DECL_LIST, "ID", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "declaration_list : ID" << endl;
 		  }
-#line 1846 "parser.tab.c"
+#line 1885 "parser.tab.c"
     break;
 
-  case 28:
-#line 353 "parser.y"
+  case 29:
+#line 394 "parser.y"
                   {
 			yyval = new TokenAST(NodeType::DECL_LIST, "ID LSQUARE CONST_INT RSQUARE", yylineno);
 			yyval->addChild({yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "declaration_list : ID LSQUARE CONST_INT RSQUARE" << endl;
 		  }
-#line 1857 "parser.tab.c"
+#line 1896 "parser.tab.c"
     break;
 
-  case 29:
-#line 362 "parser.y"
+  case 30:
+#line 403 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENTS, "statement", yylineno);
 			yyval->addChild(yyvsp[0]);		
 
 			logout << "statements : statement" << endl;
 		}
-#line 1868 "parser.tab.c"
+#line 1907 "parser.tab.c"
     break;
 
-  case 30:
-#line 369 "parser.y"
+  case 31:
+#line 410 "parser.y"
            {
 			yyval = new TokenAST(NodeType::STATEMENTS, "statements statement", yylineno);
 			yyval->addChild({yyvsp[-1], yyvsp[0]});
 
 			logout << "statements : statements statement" << endl;
 	   }
-#line 1879 "parser.tab.c"
+#line 1918 "parser.tab.c"
     break;
 
-  case 31:
-#line 378 "parser.y"
+  case 32:
+#line 419 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "var_declaration", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "statement : var_declaration" << endl;
 		}
-#line 1890 "parser.tab.c"
+#line 1929 "parser.tab.c"
     break;
 
-  case 32:
-#line 385 "parser.y"
+  case 33:
+#line 426 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "expression_statement", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "statement : expression_statement" << endl;
 		}
-#line 1901 "parser.tab.c"
+#line 1940 "parser.tab.c"
     break;
 
-  case 33:
-#line 392 "parser.y"
+  case 34:
+#line 433 "parser.y"
           {
 			yyval = new TokenAST(NodeType::STATEMENT, "compound_statement", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -1909,383 +1948,383 @@ yyreduce:
 			logout << "statement : compound_statement" << endl;
 
 	  }
-#line 1913 "parser.tab.c"
+#line 1952 "parser.tab.c"
     break;
 
-  case 34:
-#line 400 "parser.y"
+  case 35:
+#line 441 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "FOR LPAREN expression_statement expression_statement expression RPAREN statement", yylineno);
 			yyval->addChild({yyvsp[-6], yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement" << endl;
 		}
-#line 1924 "parser.tab.c"
+#line 1963 "parser.tab.c"
     break;
 
-  case 35:
-#line 407 "parser.y"
+  case 36:
+#line 448 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "IF LPAREN expression RPAREN statement", yylineno);
 			yyval->addChild({yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "statement : IF LPAREN expression RPAREN statement" << endl;
 		}
-#line 1935 "parser.tab.c"
+#line 1974 "parser.tab.c"
     break;
 
-  case 36:
-#line 414 "parser.y"
+  case 37:
+#line 455 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "IF LPAREN expression RPAREN statement ELSE statement", yylineno);
 			yyval->addChild({yyvsp[-6], yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "statement : IF LPAREN expression RPAREN statement ELSE statement" << endl;
 		}
-#line 1946 "parser.tab.c"
+#line 1985 "parser.tab.c"
     break;
 
-  case 37:
-#line 422 "parser.y"
+  case 38:
+#line 463 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "WHILE LPAREN expression RPAREN statement", yylineno);
 			yyval->addChild({yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "statement : WHILE LPAREN expression RPAREN statement" << endl;
 		}
-#line 1957 "parser.tab.c"
+#line 1996 "parser.tab.c"
     break;
 
-  case 38:
-#line 429 "parser.y"
+  case 39:
+#line 470 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "PRINTLN LPAREN ID RPAREN SEMICOLON", yylineno);
 			yyval->addChild({yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "statement: PRINTLN LPAREN ID RPAREN SEMICOLON";
 		}
-#line 1968 "parser.tab.c"
+#line 2007 "parser.tab.c"
     break;
 
-  case 39:
-#line 436 "parser.y"
+  case 40:
+#line 477 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "RETURN expression SEMICOLON", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 			
 			logout << "statement : RETURN expression SEMICOLON" << endl;
 		}
-#line 1979 "parser.tab.c"
+#line 2018 "parser.tab.c"
     break;
 
-  case 40:
-#line 445 "parser.y"
+  case 41:
+#line 486 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::EXPR_STMNT, "SEMICOLON", yylineno);
 				yyval->addChild(yyvsp[0]);
 
 				logout << "expression_statement : SEMICOLON" << endl;
 			}
-#line 1990 "parser.tab.c"
+#line 2029 "parser.tab.c"
     break;
 
-  case 41:
-#line 452 "parser.y"
+  case 42:
+#line 493 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::EXPR_STMNT, "expression SEMICOLON", yylineno);
 				yyval->addChild({yyvsp[-1], yyvsp[0]});
 
 				logout << "expression_statement : expression SEMICOLON" << endl;
 			}
-#line 2001 "parser.tab.c"
+#line 2040 "parser.tab.c"
     break;
 
-  case 42:
-#line 461 "parser.y"
+  case 43:
+#line 502 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::VARIABLE, "ID", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "variable : ID" << endl;
 		}
-#line 2012 "parser.tab.c"
+#line 2051 "parser.tab.c"
     break;
 
-  case 43:
-#line 468 "parser.y"
+  case 44:
+#line 509 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::VARIABLE, "ID LSQUARE expression RSQUARE", yylineno);
 			yyval->addChild({yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "variable : ID LSQUARE expression RSQUARE" << endl;
 		}
-#line 2023 "parser.tab.c"
+#line 2062 "parser.tab.c"
     break;
 
-  case 44:
-#line 477 "parser.y"
+  case 45:
+#line 518 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::EXP, "logic_expression", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "expression : logic_expression" << endl;
 		}
-#line 2034 "parser.tab.c"
+#line 2073 "parser.tab.c"
     break;
 
-  case 45:
-#line 484 "parser.y"
+  case 46:
+#line 525 "parser.y"
            {
 			yyval = new TokenAST(NodeType::EXP, "variable ASSIGNOP logic_expression", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "expression : variable ASSIGNOP logic_expression" << endl;
 	   }
-#line 2045 "parser.tab.c"
+#line 2084 "parser.tab.c"
     break;
 
-  case 46:
-#line 493 "parser.y"
+  case 47:
+#line 534 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::LOGIC_EXP, "rel_expression", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "logic_expression : rel_expression" << endl;
 		}
-#line 2056 "parser.tab.c"
+#line 2095 "parser.tab.c"
     break;
 
-  case 47:
-#line 500 "parser.y"
+  case 48:
+#line 541 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::LOGIC_EXP, "rel_expression LOGICOP rel_expression", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "logic_expression : rel_expression LOGICOP rel_expression" << endl;
 		}
-#line 2067 "parser.tab.c"
+#line 2106 "parser.tab.c"
     break;
 
-  case 48:
-#line 509 "parser.y"
+  case 49:
+#line 550 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::REL_EXP, "simple_expression", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "rel_expression : simple_expression" << endl;
 		}
-#line 2078 "parser.tab.c"
+#line 2117 "parser.tab.c"
     break;
 
-  case 49:
-#line 516 "parser.y"
+  case 50:
+#line 557 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::REL_EXP, "simple_expression RELOP simple_expression", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "rel_expression : simple_expression RELOP simple_expression" << endl;
 		}
-#line 2089 "parser.tab.c"
+#line 2128 "parser.tab.c"
     break;
 
-  case 50:
-#line 525 "parser.y"
+  case 51:
+#line 566 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::SIMPLE_EXP, "term", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "simple_expression : term" << endl;
 		}
-#line 2100 "parser.tab.c"
+#line 2139 "parser.tab.c"
     break;
 
-  case 51:
-#line 532 "parser.y"
+  case 52:
+#line 573 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::SIMPLE_EXP, "simple_expression ADDOP term", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 			
 			logout << "simple_expression : simple_expression ADDOP term" << endl;
 		}
-#line 2111 "parser.tab.c"
+#line 2150 "parser.tab.c"
     break;
 
-  case 52:
-#line 542 "parser.y"
+  case 53:
+#line 583 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::TERM, "unary_expression", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "term : unary_expression" << endl;
 		}
-#line 2122 "parser.tab.c"
+#line 2161 "parser.tab.c"
     break;
 
-  case 53:
-#line 549 "parser.y"
+  case 54:
+#line 590 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::TERM, "term MULOP unary_expression", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "term : term MULOP unary_expression" << endl;
 		}
-#line 2133 "parser.tab.c"
+#line 2172 "parser.tab.c"
     break;
 
-  case 54:
-#line 558 "parser.y"
+  case 55:
+#line 599 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::UNARY_EXP, "ADDOP unary_expression", yylineno);
 			yyval->addChild({yyvsp[-1], yyvsp[0]});
 
 			logout << "unary_expression : ADDOP unary_expression" << endl;
 		}
-#line 2144 "parser.tab.c"
+#line 2183 "parser.tab.c"
     break;
 
-  case 55:
-#line 565 "parser.y"
+  case 56:
+#line 606 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::UNARY_EXP, "NOT unary_expression", yylineno);
 			yyval->addChild({yyvsp[-1], yyvsp[0]});
 
 			logout << "NOT unary_expression" << endl;
 		}
-#line 2155 "parser.tab.c"
+#line 2194 "parser.tab.c"
     break;
 
-  case 56:
-#line 572 "parser.y"
+  case 57:
+#line 613 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::UNARY_EXP, "factor", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "unary_expression : factor" << endl;
 		}
-#line 2166 "parser.tab.c"
+#line 2205 "parser.tab.c"
     break;
 
-  case 57:
-#line 581 "parser.y"
+  case 58:
+#line 622 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::FACTOR, "variable", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "factor : variable" << endl;
 		}
-#line 2177 "parser.tab.c"
+#line 2216 "parser.tab.c"
     break;
 
-  case 58:
-#line 589 "parser.y"
+  case 59:
+#line 630 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::FACTOR, "ID LPAREN argument_list RPAREN", yylineno);
 			yyval->addChild({yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "factor : ID LPAREN expression RPAREN" << endl;
 		}
-#line 2188 "parser.tab.c"
+#line 2227 "parser.tab.c"
     break;
 
-  case 59:
-#line 596 "parser.y"
+  case 60:
+#line 637 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::FACTOR, "LPAREN expression RPAREN", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "factor : LPAREN expression RPAREN" << endl;
 		}
-#line 2199 "parser.tab.c"
+#line 2238 "parser.tab.c"
     break;
 
-  case 60:
-#line 603 "parser.y"
+  case 61:
+#line 644 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::FACTOR, "CONST_INT", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "factor : CONST_INT" << endl;
 		}
-#line 2210 "parser.tab.c"
+#line 2249 "parser.tab.c"
     break;
 
-  case 61:
-#line 610 "parser.y"
+  case 62:
+#line 651 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::FACTOR, "CONST_FLOAT", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "factor : CONST_FLOAT" << endl;
 		}
-#line 2221 "parser.tab.c"
+#line 2260 "parser.tab.c"
     break;
 
-  case 62:
-#line 617 "parser.y"
+  case 63:
+#line 658 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::FACTOR, "variable INCOP", yylineno);
 			yyval->addChild({yyvsp[-1], yyvsp[0]});
 
 			logout << "factor : variable INCOP" << endl;
 		}
-#line 2232 "parser.tab.c"
+#line 2271 "parser.tab.c"
     break;
 
-  case 63:
-#line 625 "parser.y"
+  case 64:
+#line 666 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::FACTOR, "variable DECOP", yylineno);
 			yyval->addChild({yyvsp[-1], yyvsp[0]});
 
 			logout << "factor : variable DECOP" << endl;
 		}
-#line 2243 "parser.tab.c"
+#line 2282 "parser.tab.c"
     break;
 
-  case 64:
-#line 634 "parser.y"
+  case 65:
+#line 675 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::ARG_LIST, "arguments", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "argument_list : arguments" << endl;
 		}
-#line 2254 "parser.tab.c"
+#line 2293 "parser.tab.c"
     break;
 
-  case 65:
-#line 641 "parser.y"
+  case 66:
+#line 682 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::ARG_LIST, "", yylineno);
 			logout << "argument_list : " << endl;
 		}
-#line 2263 "parser.tab.c"
+#line 2302 "parser.tab.c"
     break;
 
-  case 66:
-#line 648 "parser.y"
+  case 67:
+#line 689 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::ARGS, "arguments COMMA logic_expression", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "arguments : arguments COMMA logic_expression" << endl;
 		}
-#line 2274 "parser.tab.c"
+#line 2313 "parser.tab.c"
     break;
 
-  case 67:
-#line 655 "parser.y"
+  case 68:
+#line 696 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::ARGS, "logic_expression", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "arguments : logic_expression" << endl;
 		}
-#line 2285 "parser.tab.c"
+#line 2324 "parser.tab.c"
     break;
 
 
-#line 2289 "parser.tab.c"
+#line 2328 "parser.tab.c"
 
       default: break;
     }
@@ -2517,7 +2556,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 663 "parser.y"
+#line 704 "parser.y"
 
 int main(int argc,char *argv[])
 {

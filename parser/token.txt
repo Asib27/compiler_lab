@@ -27,6 +27,13 @@
 <FLOAT, float>
 <RPAREN, )>
 <SEMICOLON, ;>
+<VOID, void>
+<ID, abc>
+<LPAREN, (>
+<INT, int>
+<ID, z>
+<RPAREN, )>
+<SEMICOLON, ;>
 <INT, int>
 <ID, cde>
 <LPAREN, (>

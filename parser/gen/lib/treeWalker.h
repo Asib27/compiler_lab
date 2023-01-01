@@ -20,6 +20,7 @@ public:
 
     std::vector<SymbolAST *> walkDeclarationList(AST* root);
     std::string walkTypeSpecifier(AST* root);
+    std::string walkID(AST* root);
 
     ~TreeWalker();
 };

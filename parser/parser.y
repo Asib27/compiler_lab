@@ -160,8 +160,7 @@ func_declaration : func_first_part SEMICOLON
 func_definition : func_first_part compound_statement
 			{
 				$$ = new TokenAST(NodeType::FUNC_DEF, "type_specifier ID LPAREN parameter_list RPAREN compound_statement", yylineno);
-				$$->addCh         SEMICOLON : ;  <Line:7>
-ild($1->getChilds());
+				$$->addChild($1->getChilds());
 
 				$1->removeAllChild();
 				delete $1;
@@ -191,18 +190,59 @@ ild($1->getChilds());
  		;				
 
 
-func_first_part : type_specifier ID LPAREN {symbolTable.enterScope();} parameter_list RPAREN
+func_first_part : common_func_first_part LPAREN {symbolTable.enterScope();} parameter_list RPAREN
 	{
 		$$ = new TokenAST(NodeType::TOKEN, "token", yylineno);
-		$$->addChild({$1, $2, $3, $5, $6});		
+
+		$$->addChild($1->getChilds());
+		$1->removeAllChild();
+		delete $1;
+
+		$$->addChild($2);		
+		$$->addChild($4);
+		$$->addChild($5);
 	}
 	;
-func_first_part2 : type_specifier ID LPAREN RPAREN 
+func_first_part2 : common_func_first_part LPAREN RPAREN 
 	{
 		$$ = new TokenAST(NodeType::TOKEN, "token", yylineno);
-		$$->addChild({$1, $2, $3, $4});		
+		
+		$$->addChild($1->getChilds());
+		$1->removeAllChild();
+		delete $1;
+
+		$$->addChild($2);		
+		$$->addChild($3);
 
 		symbolTable.enterScope();
+	}
+	;
+
+common_func_first_part : type_specifier ID 
+	{
+		$$ = new TokenAST(NodeType::TOKEN, "token", yylineno);
+		$$->addChild({$1, $2});
+
+		auto type = treeWalker.walkTypeSpecifier($1);
+		auto name = treeWalker.walkID($2);
+		auto symbol = new FunctionSymbolInfo(name, type, {});
+		auto isInserted = symbolTable.insert(symbol);
+
+		if(!isInserted){
+			auto prev = symbolTable.lookup(name);
+			if(prev->getType() == "FUNCTION"){
+				auto t = dynamic_cast<FunctionSymbolInfo *> (prev);
+				if(t->getReturnType() != type){
+					printUtil.printError("function decl changed" , "", yylineno);
+				}
+			}else{
+				printUtil.printError("variable delared as function", "", yylineno);
+			}
+
+			delete symbol;
+		}
+
+		cout << symbolTable << endl;
 	}
 	;
 
