@@ -17,13 +17,17 @@ private:
     SymbolAST* declarationListChild(std::vector<AST*> childs, AST** rootptr);
 
     std::string parameterListChild(std::vector<AST *> childs, AST** rootptr);
+
+    std::string argumentListChild(std::vector<AST *> childs, AST **rootptr);
 public:
     TreeWalker();
-
-    std::vector<SymbolAST *> walkDeclarationList(AST* root);
-    std::vector<std::string> walkParameterList(AST* root);
+    
+    std::string getDataType(AST *expressionNode);
     std::string walkTypeSpecifier(AST* root);
     std::string walkID(AST* root);
+    std::vector<SymbolAST *> walkDeclarationList(AST* root);
+    std::vector<std::string> walkParameterList(AST* root);
+    std::vector<std::string> walkArgumentList(AST *root);
 
     ~TreeWalker();
 };

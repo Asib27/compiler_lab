@@ -1,5 +1,13 @@
 #include"../treeWalker.h"
 
+
+std::string TreeWalker::getDataType(AST *node){
+	auto t = dynamic_cast<ExpressionAST *> (node);
+	if(t != nullptr) return t->getDataType();
+	
+	return "";
+}
+
 SymbolAST* TreeWalker::createDeclarationChild(AST* child, bool flag){
     auto symbolAst = dynamic_cast<SymbolAST *> (child);
     auto symbol = symbolAst->getSymbol();
@@ -110,6 +118,46 @@ std::string TreeWalker::walkID(AST* root){
     auto symbolAST = dynamic_cast<SymbolAST *> (root);
     if(symbolAST == nullptr || symbolAST->getSymbol() == nullptr) return "";
     return symbolAST->getSymbol()->getName();
+}
+
+
+std::string TreeWalker::argumentListChild(std::vector<AST *> childs, AST **rootptr){
+    if(childs.size() == 0){
+        *rootptr = nullptr;
+        return nullptr;
+    }
+
+    // if first node is not type specifier, then it is parameter list
+    // so rootptr points to there and typespecifier node is kept in idx
+    int idx = 0;
+    *rootptr = nullptr;
+    if(childs[0]->getTokenType() != "logic_expression"){
+        *rootptr = childs[0];
+        idx = 2;
+    }
+
+    // type specifier is found
+    std::string type = getDataType(childs[idx]);
+
+    // new SymbolAST is created and returned 
+    return type;
+}
+
+std::vector<std::string> TreeWalker::walkArgumentList(AST *root){
+    std::vector<std::string> ans;
+
+    while(root){
+        // root->print(std::cout);
+
+        auto childs = root->getChilds();
+        auto t = argumentListChild(childs, &root);
+        ans.push_back(t);
+
+        // std::cout << t << " " << root << std::endl;
+    }
+
+    reverse(ans.begin(), ans.end());
+    return ans;
 }
 
 TreeWalker::TreeWalker(/* args */)

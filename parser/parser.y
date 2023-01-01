@@ -497,7 +497,7 @@ expression_statement 	: SEMICOLON
 			}		
 			| expression SEMICOLON 
 			{
-				cout << getDataType($1) << endl;
+				// cout << getDataType($1) << endl;
 				$$ = new TokenAST(NodeType::EXPR_STMNT, "expression SEMICOLON", yylineno);
 				$$->addChild({$1, $2});
 
@@ -511,6 +511,11 @@ variable : ID
 			string type = "INT";
 			if(symbol == nullptr){
 				printUtil.printError("undeclared variable", "", yylineno);
+			}else if(symbol->getType() == "FUNCTION"){
+				printUtil.printError("function cannot used as variable", "", yylineno);
+			}else if(dynamic_cast<VariableSymbolInfo *>(symbol) != nullptr){
+				printUtil.printError("array used as normal variable", "", yylineno);
+				type = symbol->getType();
 			}else{
 				type = symbol->getType();
 			}
@@ -526,6 +531,8 @@ variable : ID
 			string type = "INT";
 			if(symbol == nullptr){
 				printUtil.printError("undeclared variable", "", yylineno);
+			}else if(symbol->getType() == "FUNCTION"){
+				printUtil.printError("function cannot used as variable", "", yylineno);
 			}else if( dynamic_cast<VariableSymbolInfo *>(symbol) == nullptr){
 				printUtil.printError("array access on normal variable", "", yylineno);
 				type = symbol->getType();
@@ -624,7 +631,6 @@ term :	unary_expression
 		}
      |  term MULOP unary_expression
 		{
-			// TODO: convert to expression AST
 			auto lhsType = getDataType($1);
 			auto rhsType = getDataType($3);
 			auto type = getAddopType(lhsType, rhsType);
@@ -676,7 +682,15 @@ factor	: variable
 	| ID LPAREN argument_list RPAREN
 		{
 			// TODO : FUNCTION ERROR CHECKING
-			$$ = new TokenAST(NodeType::FACTOR, "ID LPAREN argument_list RPAREN", yylineno);
+			auto name = treeWalker.walkID($1);
+			auto symbol = symbolTable.lookup(name);
+			string token = "INT";
+
+			if(symbol == nullptr){
+				printUtil.printError("undeclared function", "", yylineno);
+			}
+
+			$$ = new ExpressionAST(NodeType::FACTOR, "ID LPAREN argument_list RPAREN", token, yylineno);
 			$$->addChild({$1, $2, $3, $4});
 
 			logout << "factor : ID LPAREN expression RPAREN" << endl;
