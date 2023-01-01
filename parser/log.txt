@@ -68,11 +68,11 @@ compound_statement: LCURL statements RCURL
 	2--> <y,int> 
 	3--> <z,float> 
 	ScopeTable# 1
-	1--> <d,floatarray> 
+	1--> <d,ARRAY,float> 
 	2--> <e,float> 
 	8--> <a,int> 
 	9--> <b,int> <abc,FUNCTION,int> 
-	10--> <c,intarray> 
+	10--> <c,ARRAY,int> 
 
 func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement
 unit : func_definition

@@ -316,7 +316,7 @@ var_declaration : type_specifier declaration_list SEMICOLON
 
 			for(auto symbol: symbols){
 				auto i = symbol->getSymbol();
-        		i->setType(type + i->getType());
+        		i->setType(type);
 				auto isInserted = symbolTable.insert(i);
 
 				if(!isInserted){

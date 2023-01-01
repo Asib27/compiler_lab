@@ -2,12 +2,12 @@ lib_path := gen/lib/bin
 lib_src := gen/lib/src
 header_path := gen/lib
 gen := gen
-lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o ${lib_path}/symbolTable.o ${lib_path}/printUtil.o ${lib_path}/tokenHelper.o ${lib_path}/ast.o ${lib_path}/functionSymbolInfo.o ${lib_path}/treeWalker.o
+lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o ${lib_path}/symbolTable.o ${lib_path}/printUtil.o ${lib_path}/tokenHelper.o ${lib_path}/ast.o ${lib_path}/functionSymbolInfo.o ${lib_path}/treeWalker.o ${lib_path}/variableSymbolInfo.o
 
 parser.out:	${gen}/parser.o ${gen}/lexer.o ${lib}
 	g++ -ggdb3 ${gen}/parser.o ${gen}/lexer.o ${lib} -o parser.out
 
-${gen}/parser.o: parser.y ${header_path}/ast.h
+${gen}/parser.o: parser.y ${header_path}/ast.h ${header_path}/variableSymbolInfo.h ${header_path}/printUtil.h
 	bison -d parser.y
 	mv parser.tab.c parser.tab.h ${gen}
 	g++ -ggdb3 -c ${gen}/parser.tab.c -o ${gen}/parser.o
@@ -50,8 +50,11 @@ ${lib_path}/functionSymbolInfo.o:	${lib_src}/functionSymbolInfo.cpp ${header_pat
 	g++ -c ${lib_src}/functionSymbolInfo.cpp
 	mv functionSymbolInfo.o ${lib_path}
 
+${lib_path}/variableSymbolInfo.o:	${lib_src}/variableSymbolInfo.cpp ${header_path}/symbolInfo.h ${header_path}/variableSymbolInfo.h
+	g++ -c ${lib_src}/variableSymbolInfo.cpp
+	mv variableSymbolInfo.o ${lib_path}
 
-${lib_path}/treeWalker.o:	${lib_src}/treeWalker.cpp ${header_path}/treeWalker.h
+${lib_path}/treeWalker.o:	${lib_src}/treeWalker.cpp ${header_path}/treeWalker.h ${header_path}/variableSymbolInfo.h
 	g++ -ggdb3 -c ${lib_src}/treeWalker.cpp
 	mv treeWalker.o ${lib_path}
 

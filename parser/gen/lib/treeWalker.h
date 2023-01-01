@@ -6,6 +6,7 @@
 #include<vector>
 #include"symbolInfo.h"
 #include"functionSymbolInfo.h"
+#include"variableSymbolInfo.h"
 #include"ast.h"
 
 class TreeWalker

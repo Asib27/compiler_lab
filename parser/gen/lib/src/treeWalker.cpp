@@ -9,7 +9,7 @@ SymbolAST* TreeWalker::createDeclarationChild(AST* child, bool flag){
         t = new SymbolInfo(symbol->getName(), "");
     }
     else{
-        t = new SymbolInfo(symbol->getName(), "array");
+        t = new VariableSymbolInfo(symbol->getName(), "", "ARRAY");
     }
 
     return new SymbolAST(t, symbolAst->getBeginLine());
