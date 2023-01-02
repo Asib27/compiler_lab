@@ -76,6 +76,7 @@ std::vector<std::string> TreeWalker::walkParameterList(AST* root){
         // std::cout << t << " " << root << std::endl;
     }
 
+    
     return ans;
 }
 
@@ -146,6 +147,7 @@ std::string TreeWalker::argumentListChild(std::vector<AST *> childs, AST **rootp
 std::vector<std::string> TreeWalker::walkArgumentList(AST *root){
     std::vector<std::string> ans;
 
+    root = root->getChilds()[0];
     while(root){
         // root->print(std::cout);
 
@@ -156,7 +158,7 @@ std::vector<std::string> TreeWalker::walkArgumentList(AST *root){
         // std::cout << t << " " << root << std::endl;
     }
 
-    reverse(ans.begin(), ans.end());
+    // reverse(ans.begin(), ans.end());
     return ans;
 }
 

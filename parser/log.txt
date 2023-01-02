@@ -24,18 +24,13 @@ Line# 2: Token <RSQUARE> Lexeme ] found
 declaration_list : ID LSQUARE CONST_INT RSQUARE
 Line# 2: Token <COMMA> Lexeme , found
 Line# 2: Token <ID> Lexeme e found
-Line# 2: Token <COMMA> Lexeme , found
-declaration_list : declaration_list COMMA ID
-Line# 2: Token <ID> Lexeme a found
 Line# 2: Token <SEMICOLON> Lexeme ; found
 declaration_list : declaration_list COMMA ID
-	a already exists in the current ScopeTable
-Error at line# 2: redefination of parameter 'a' 
 var_declaration : type_specifier declaration_list SEMICOLON
 unit : var_declaration
 program : program unit
-Line# 4: Token <INT> Lexeme int found
-type_specifier : INT
+Line# 4: Token <VOID> Lexeme void found
+type_specifier : VOID
 Line# 4: Token <ID> Lexeme abc found
 Line# 4: Token <LPAREN> Lexeme ( found
 Line# 4: Token <INT> Lexeme int found
@@ -50,6 +45,10 @@ parameter_list : parameter_list COMMA type_specifier ID
 Line# 4: Token <RPAREN> Lexeme ) found
 	'abc' found in ScopeTable# 1 at position 9, 2
 Line# 4: Token <LCURL> Lexeme { found
+Line# 5: Token <ID> Lexeme a found
+Line# 5: Token <ASSIGNOP> Lexeme = found
+	'a' found in ScopeTable# 1 at position 8, 1
+variable : ID
 Line# 5: Token <ID> Lexeme abc found
 Line# 5: Token <LPAREN> Lexeme ( found
 Line# 5: Token <ID> Lexeme a found
@@ -76,7 +75,6 @@ logic_expression : rel_expression
 arguments : arguments COMMA logic_expression
 argument_list : arguments
 	'abc' found in ScopeTable# 1 at position 9, 2
-Error at line# 5: arguments does not match 
 factor : ID LPAREN expression RPAREN
 unary_expression : factor
 term : unary_expression
@@ -84,7 +82,8 @@ Line# 5: Token <SEMICOLON> Lexeme ; found
 simple_expression : term
 rel_expression : simple_expression
 logic_expression : rel_expression
-expression : logic_expression
+Error at line# 5: void function cannot be used in expression 
+expression : variable ASSIGNOP logic_expression
 expression_statement : expression SEMICOLON
 statement : expression_statement
 statements : statement
@@ -97,7 +96,7 @@ compound_statement: LCURL statements RCURL
 	1--> <d,ARRAY,FLOAT> 
 	2--> <e,FLOAT> 
 	8--> <a,INT> 
-	9--> <b,INT> <abc,FUNCTION,INT> 
+	9--> <b,INT> <abc,FUNCTION,VOID> 
 	10--> <c,ARRAY,INT> 
 
 func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement

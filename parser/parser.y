@@ -560,7 +560,9 @@ expression : logic_expression
 		}
 	   | variable ASSIGNOP logic_expression 	
 	   {
-			if(!isAssignopCorrect(getDataType($1), getDataType($3))){
+			if(getDataType($3) == "VOID"){
+				printUtil.printError("void function cannot be used in expression", "", yylineno);
+			}else if(!isAssignopCorrect(getDataType($1), getDataType($3))){
 				printUtil.printError("Assignment of float to int", "", yylineno);
 			}
 
@@ -580,6 +582,15 @@ logic_expression : rel_expression
 		}
 		 | rel_expression LOGICOP rel_expression
 		{
+			auto lhsType = getDataType($1);
+			auto rhsType = getDataType($3);
+
+			if(lhsType == "VOID" || rhsType == "VOID"){
+				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				if(lhsType == "VOID") lhsType = "INT";
+				if(rhsType == "VOID") rhsType = "INT";
+			}
+
 			$$ = new ExpressionAST(NodeType::LOGIC_EXP, "rel_expression LOGICOP rel_expression", "INT", yylineno);
 			$$->addChild({$1, $2, $3});
 
@@ -596,6 +607,15 @@ rel_expression	: simple_expression
 		}
 		| simple_expression RELOP simple_expression	
 		{
+			auto lhsType = getDataType($1);
+			auto rhsType = getDataType($3);
+
+			if(lhsType == "VOID" || rhsType == "VOID"){
+				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				if(lhsType == "VOID") lhsType = "INT";
+				if(rhsType == "VOID") rhsType = "INT";
+			}
+
 			$$ = new ExpressionAST(NodeType::REL_EXP, "simple_expression RELOP simple_expression", "INT", yylineno);
 			$$->addChild({$1, $2, $3});
 
@@ -612,7 +632,16 @@ simple_expression : term
 		}
 		  | simple_expression ADDOP term 
 		{
-			auto type = getAddopType(getDataType($1), getDataType($3));
+			auto lhsType = getDataType($1);
+			auto rhsType = getDataType($3);
+
+			if(lhsType == "VOID" || rhsType == "VOID"){
+				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				if(lhsType == "VOID") lhsType = "INT";
+				if(rhsType == "VOID") rhsType = "INT";
+			}
+
+			auto type = getAddopType(lhsType, rhsType);
 
 			$$ = new ExpressionAST(NodeType::SIMPLE_EXP, "simple_expression ADDOP term", type, yylineno);
 			$$->addChild({$1, $2, $3});
@@ -633,6 +662,13 @@ term :	unary_expression
 		{
 			auto lhsType = getDataType($1);
 			auto rhsType = getDataType($3);
+
+			if(lhsType == "VOID" || rhsType == "VOID"){
+				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				if(lhsType == "VOID") lhsType = "INT";
+				if(rhsType == "VOID") rhsType = "INT";
+			}
+
 			auto type = getAddopType(lhsType, rhsType);
 			if(treeWalker.walkID($2) == "%"){
 				if(lhsType != "INT" || rhsType != "INT"){
@@ -650,13 +686,25 @@ term :	unary_expression
 
 unary_expression : ADDOP unary_expression  
 		{
-			$$ = new ExpressionAST(NodeType::UNARY_EXP, "ADDOP unary_expression", getDataType($2), yylineno);
+			auto type = getDataType($2);
+			if(type == "VOID"){
+				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				type = "INT";
+			}
+
+			$$ = new ExpressionAST(NodeType::UNARY_EXP, "ADDOP unary_expression", type, yylineno);
 			$$->addChild({$1, $2});
 
 			logout << "unary_expression : ADDOP unary_expression" << endl;
 		}
 		 | NOT unary_expression 
 		{
+			auto type = getDataType($2);
+			if(type == "VOID"){
+				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				type = "INT";
+			}
+
 			$$ = new ExpressionAST(NodeType::UNARY_EXP, "NOT unary_expression", "INT", yylineno);
 			$$->addChild({$1, $2});
 
@@ -692,10 +740,8 @@ factor	: variable
 				printUtil.printError("cannot call variable", "", yylineno);
 			}else{
 				auto functionSymbol = dynamic_cast<FunctionSymbolInfo *>(symbol);
-				// TODO: VOID should be handled
-				if(functionSymbol->getReturnType() == "VOID"){
-					printUtil.printError("VOID function cannot be used in expression", "", yylineno);
-				}else if(!functionSymbol->matchParam(arguments)){
+				
+				if(!functionSymbol->matchParam(arguments)){
 					printUtil.printError("arguments does not match", "", yylineno);
 				}else{
 					type = functionSymbol->getReturnType();
@@ -730,7 +776,13 @@ factor	: variable
 		}
 	| variable INCOP 
 		{
-			$$ = new ExpressionAST(NodeType::FACTOR, "variable INCOP", getDataType($1), yylineno);
+			auto type = getDataType($1);
+			if(type == "VOID"){
+				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				type = "INT";
+			}
+
+			$$ = new ExpressionAST(NodeType::FACTOR, "variable INCOP", type, yylineno);
 			$$->addChild({$1, $2});
 
 			logout << "factor : variable INCOP" << endl;
@@ -738,7 +790,13 @@ factor	: variable
 
 	| variable DECOP
 		{
-			$$ = new ExpressionAST(NodeType::FACTOR, "variable DECOP", getDataType($1), yylineno);
+			auto type = getDataType($1);
+			if(type == "VOID"){
+				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				type = "INT";
+			}
+
+			$$ = new ExpressionAST(NodeType::FACTOR, "variable DECOP", type, yylineno);
 			$$->addChild({$1, $2});
 
 			logout << "factor : variable DECOP" << endl;

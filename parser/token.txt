@@ -15,10 +15,8 @@
 <RSQUARE, ]>
 <COMMA, ,>
 <ID, e>
-<COMMA, ,>
-<ID, a>
 <SEMICOLON, ;>
-<INT, int>
+<VOID, void>
 <ID, abc>
 <LPAREN, (>
 <INT, int>
@@ -28,6 +26,8 @@
 <ID, z>
 <RPAREN, )>
 <LCURL, {>
+<ID, a>
+<ASSIGNOP, =>
 <ID, abc>
 <LPAREN, (>
 <ID, a>
