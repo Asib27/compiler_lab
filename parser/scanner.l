@@ -157,7 +157,7 @@ ESCAPES ['"nt\\afrbv0a-zA-z0-9]
 
 "&&"	| 
 "||"	{
-			printUtil.print("LOGIOP", yytext, yylineno); 
+			printUtil.print("LOGICOP", yytext, yylineno); 
 			auto curSymbol = new SymbolInfo(yytext, "LOGICOP");
 			yylval = new SymbolAST(curSymbol, yylineno);
 			return LOGICOP;

@@ -15,9 +15,10 @@ int yylex(void);
 extern FILE *yyin;
 extern int yylineno;
 
-ofstream logout("log.txt"), tokenout("token.txt");
-PrintUtil printUtil(tokenout, logout);
-Printer printer(logout, true);
+ofstream logout("log.txt"), tokenout("token.txt"), errorout("error.txt");
+ofstream treeout("parseTree.txt");
+PrintUtil printUtil(tokenout, logout, errorout);
+Printer printer(logout, false);
 SymbolTable symbolTable(10, &printer);
 TreeWalker treeWalker;
 
@@ -84,8 +85,11 @@ start : program
 		$$->addChild($1); 
 
 		logout << "start : program" << endl;
-		$$->print(cout);
+		$$->print(treeout);
 		delete $$;
+
+		logout << "Total Lines: " << yylineno << endl;
+		logout << "Total Errors: " << printUtil.getErrorCount() << endl;
 	}
 	;
 
@@ -130,6 +134,7 @@ unit : var_declaration
      
 func_declaration : func_first_part SEMICOLON
 			{
+				// TODO : Function redeclaration checking
 				$$ = new TokenAST(NodeType::FUNC_DECL, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
 				$$->addChild($1->getChilds());	
 
@@ -166,7 +171,7 @@ func_definition : func_first_part compound_statement
 
 				$$->addChild($2);
 
-				logout << symbolTable << endl;
+				logout << symbolTable;
 				symbolTable.exitScope();
 
 				logout << "func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
@@ -206,7 +211,8 @@ func_first_part : common_func_first_part LPAREN {symbolTable.enterScope();} para
 		auto funcName = treeWalker.walkID($$->getChilds()[1]);
 		auto id = symbolTable.lookup(funcName);
 		auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
-		funcId->setParam(types);
+		if(funcId != nullptr)
+			funcId->setParam(types);
 	}
 	;
 func_first_part2 : common_func_first_part LPAREN RPAREN 
@@ -248,7 +254,7 @@ common_func_first_part : type_specifier ID
 			delete symbol;
 		}
 
-		cout << symbolTable << endl;
+		// cout << symbolTable << endl;
 	}
 	;
 
@@ -266,7 +272,7 @@ parameter_list  : parameter_list COMMA type_specifier ID
 					delete newSymbl;
 				}
 
-				cout << symbolTable << endl;
+				// cout << symbolTable << endl;
 
 
 				logout << "parameter_list : parameter_list COMMA type_specifier ID" << endl;
@@ -292,7 +298,7 @@ parameter_list  : parameter_list COMMA type_specifier ID
 					delete newSymbl;
 				}
 
-				cout << symbolTable << endl;
+				// cout << symbolTable << endl;
 
 				logout << "parameter_list : type_specifier ID" << endl;
 			}
@@ -332,6 +338,10 @@ var_declaration : type_specifier declaration_list SEMICOLON
 			auto symbols = treeWalker.walkDeclarationList($2);
 			auto type = treeWalker.walkTypeSpecifier($1);
 
+			if(type == "VOID"){
+				printUtil.printError("Variable of field declared void", "", yylineno);
+			}
+
 			for(auto symbol: symbols){
 				auto i = symbol->getSymbol();
         		i->setType(type);
@@ -346,7 +356,7 @@ var_declaration : type_specifier declaration_list SEMICOLON
 				delete symbol;
 			}
 
-			cout << symbolTable << endl;
+			// cout << symbolTable << endl;
 
 			logout << "var_declaration : type_specifier declaration_list SEMICOLON" << endl;
 		}
@@ -497,7 +507,6 @@ expression_statement 	: SEMICOLON
 			}		
 			| expression SEMICOLON 
 			{
-				// cout << getDataType($1) << endl;
 				$$ = new TokenAST(NodeType::EXPR_STMNT, "expression SEMICOLON", yylineno);
 				$$->addChild({$1, $2});
 
@@ -751,7 +760,7 @@ factor	: variable
 			$$ = new ExpressionAST(NodeType::FACTOR, "ID LPAREN argument_list RPAREN", type, yylineno);
 			$$->addChild({$1, $2, $3, $4});
 
-			logout << "factor : ID LPAREN expression RPAREN" << endl;
+			logout << "factor : ID LPAREN argument_list RPAREN" << endl;
 		}
 	| LPAREN expression RPAREN
 		{

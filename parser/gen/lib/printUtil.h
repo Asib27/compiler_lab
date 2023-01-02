@@ -9,6 +9,7 @@
 class PrintUtil{
 	std::ostream& logos;
 	std::ostream& tokenos;
+	std::ostream& errors;
 	int errorCount;
 
 	void printLog(std::string token, std::string symbol, int lineNo);
@@ -25,7 +26,7 @@ class PrintUtil{
 
 	int newLineCount(std::string text);
 public:
-	PrintUtil(std::ostream &token, std::ostream &log);
+	PrintUtil(std::ostream &token, std::ostream &log, std::ostream &error);
 	std::pair<int, std::string> printKeyword(std::string text, int lineNo);
 	void print(std::string token, std::string text, int lineNo);
 	std::pair<int, std::string> printPunctuation(std::string text, int lineNo);

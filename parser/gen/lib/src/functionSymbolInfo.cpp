@@ -17,7 +17,7 @@ bool FunctionSymbolInfo::matchParam(std::vector<std::string> v){
     if(_params.size() != v.size()) return false;
     
     for(int i = 0; i < _params.size();i++){
-        if(_params[i] != v[i]) {std::cout << "---" << _params[i] << v[i] << std::endl;return false;}
+        if(_params[i] != v[i]) {return false;}
     }
 
     return true;

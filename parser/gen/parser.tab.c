@@ -84,9 +84,10 @@ int yylex(void);
 extern FILE *yyin;
 extern int yylineno;
 
-ofstream logout("log.txt"), tokenout("token.txt");
-PrintUtil printUtil(tokenout, logout);
-Printer printer(logout, true);
+ofstream logout("log.txt"), tokenout("token.txt"), errorout("error.txt");
+ofstream treeout("parseTree.txt");
+PrintUtil printUtil(tokenout, logout, errorout);
+Printer printer(logout, false);
 SymbolTable symbolTable(10, &printer);
 TreeWalker treeWalker;
 
@@ -123,7 +124,7 @@ string getAddopType(string lhs, string rhs){
 }
 
 
-#line 127 "parser.tab.c"
+#line 128 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -166,11 +167,11 @@ string getAddopType(string lhs, string rhs){
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 62 "parser.y"
+#line 63 "parser.y"
 
 	#include "lib/ast.h"
 
-#line 174 "parser.tab.c"
+#line 175 "parser.tab.c"
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
@@ -598,13 +599,13 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    81,    81,    92,    99,   108,   115,   122,   131,   144,
-     159,   174,   192,   192,   212,   227,   255,   274,   281,   299,
-     309,   317,   327,   355,   362,   369,   378,   385,   392,   399,
-     408,   415,   424,   431,   438,   446,   453,   460,   468,   475,
-     482,   491,   498,   508,   528,   554,   561,   576,   583,   601,
-     608,   626,   633,   654,   661,   687,   700,   713,   722,   730,
-     756,   763,   770,   777,   791,   806,   814,   820,   827
+       0,    82,    82,    96,   103,   112,   119,   126,   135,   148,
+     163,   178,   196,   196,   217,   232,   260,   279,   286,   304,
+     314,   322,   332,   364,   371,   378,   387,   394,   401,   408,
+     417,   424,   433,   440,   447,   455,   462,   469,   477,   484,
+     491,   500,   507,   516,   536,   562,   569,   584,   591,   609,
+     616,   634,   641,   662,   669,   695,   708,   721,   730,   738,
+     764,   771,   778,   785,   799,   814,   822,   828,   835
 };
 #endif
 
@@ -1488,75 +1489,78 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 82 "parser.y"
+#line 83 "parser.y"
         {
 		yyval = new TokenAST(NodeType::START, "program", yylineno);
 		yyval->addChild(yyvsp[0]); 
 
 		logout << "start : program" << endl;
-		yyval->print(cout);
+		yyval->print(treeout);
 		delete yyval;
+
+		logout << "Total Lines: " << yylineno << endl;
+		logout << "Total Errors: " << printUtil.getErrorCount() << endl;
 	}
-#line 1501 "parser.tab.c"
+#line 1505 "parser.tab.c"
     break;
 
   case 3:
-#line 93 "parser.y"
+#line 97 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::PROGRAM, "program unit", yylineno);
 			yyval->addChild({yyvsp[-1], yyvsp[0]});
 
 			logout << "program : program unit" << endl;
 		}
-#line 1512 "parser.tab.c"
+#line 1516 "parser.tab.c"
     break;
 
   case 4:
-#line 100 "parser.y"
+#line 104 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::PROGRAM, "unit", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "program : unit" << endl;
 		}
-#line 1523 "parser.tab.c"
+#line 1527 "parser.tab.c"
     break;
 
   case 5:
-#line 109 "parser.y"
+#line 113 "parser.y"
         {
         yyval = new TokenAST(NodeType::UNIT, "var_declaration", yylineno);
 		yyval->addChild(yyvsp[0]);
 
 		logout << "unit : var_declaration" << endl;
 	}
-#line 1534 "parser.tab.c"
+#line 1538 "parser.tab.c"
     break;
 
   case 6:
-#line 116 "parser.y"
+#line 120 "parser.y"
         {
         yyval = new TokenAST(NodeType::UNIT, "func_declaration", yylineno);
 		yyval->addChild(yyvsp[0]);
 		
 		logout << "unit : func_declaration" << endl;
 	}
-#line 1545 "parser.tab.c"
+#line 1549 "parser.tab.c"
     break;
 
   case 7:
-#line 123 "parser.y"
+#line 127 "parser.y"
         {
         yyval = new TokenAST(NodeType::UNIT, "func_definition", yylineno);
 		yyval->addChild(yyvsp[0]);
 		
 		logout << "unit : func_definition" << endl;
 	}
-#line 1556 "parser.tab.c"
+#line 1560 "parser.tab.c"
     break;
 
   case 8:
-#line 132 "parser.y"
+#line 136 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::FUNC_DECL, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
 				yyval->addChild(yyvsp[-1]->getChilds());	
@@ -1569,11 +1573,11 @@ yyreduce:
 
 				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
 			}
-#line 1573 "parser.tab.c"
+#line 1577 "parser.tab.c"
     break;
 
   case 9:
-#line 145 "parser.y"
+#line 149 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::FUNC_DECL, "type_specifier ID LPAREN RPAREN SEMICOLON", yylineno);
 				yyval->addChild(yyvsp[-1]->getChilds());	
@@ -1586,11 +1590,11 @@ yyreduce:
 
 				logout << "func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON" << endl;
 			}
-#line 1590 "parser.tab.c"
+#line 1594 "parser.tab.c"
     break;
 
   case 10:
-#line 160 "parser.y"
+#line 164 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::FUNC_DEF, "type_specifier ID LPAREN parameter_list RPAREN compound_statement", yylineno);
 				yyval->addChild(yyvsp[-1]->getChilds());
@@ -1600,16 +1604,16 @@ yyreduce:
 
 				yyval->addChild(yyvsp[0]);
 
-				logout << symbolTable << endl;
+				logout << symbolTable;
 				symbolTable.exitScope();
 
 				logout << "func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
 			}
-#line 1609 "parser.tab.c"
+#line 1613 "parser.tab.c"
     break;
 
   case 11:
-#line 175 "parser.y"
+#line 179 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::FUNC_DEF, "type_specifier ID LPAREN RPAREN compound_statement", yylineno);
 				yyval->addChild(yyvsp[-1]->getChilds());
@@ -1624,17 +1628,17 @@ yyreduce:
 
 				logout << "func_definition: type_specifier ID LPAREN RPAREN compound_statement" << endl;
 			}
-#line 1628 "parser.tab.c"
+#line 1632 "parser.tab.c"
     break;
 
   case 12:
-#line 192 "parser.y"
+#line 196 "parser.y"
                                                 {symbolTable.enterScope();}
-#line 1634 "parser.tab.c"
+#line 1638 "parser.tab.c"
     break;
 
   case 13:
-#line 193 "parser.y"
+#line 197 "parser.y"
         {
 		yyval = new TokenAST(NodeType::TOKEN, "token", yylineno);
 
@@ -1651,13 +1655,14 @@ yyreduce:
 		auto funcName = treeWalker.walkID(yyval->getChilds()[1]);
 		auto id = symbolTable.lookup(funcName);
 		auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
-		funcId->setParam(types);
+		if(funcId != nullptr)
+			funcId->setParam(types);
 	}
-#line 1657 "parser.tab.c"
+#line 1662 "parser.tab.c"
     break;
 
   case 14:
-#line 213 "parser.y"
+#line 218 "parser.y"
         {
 		yyval = new TokenAST(NodeType::TOKEN, "token", yylineno);
 		
@@ -1670,11 +1675,11 @@ yyreduce:
 
 		symbolTable.enterScope();
 	}
-#line 1674 "parser.tab.c"
+#line 1679 "parser.tab.c"
     break;
 
   case 15:
-#line 228 "parser.y"
+#line 233 "parser.y"
         {
 		yyval = new TokenAST(NodeType::TOKEN, "token", yylineno);
 		yyval->addChild({yyvsp[-1], yyvsp[0]});
@@ -1698,13 +1703,13 @@ yyreduce:
 			delete symbol;
 		}
 
-		cout << symbolTable << endl;
+		// cout << symbolTable << endl;
 	}
-#line 1704 "parser.tab.c"
+#line 1709 "parser.tab.c"
     break;
 
   case 16:
-#line 256 "parser.y"
+#line 261 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::PARAM_LIST, "parameter_list COMMA type_specifier ID", yylineno);
 				yyval->addChild({yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
@@ -1718,27 +1723,27 @@ yyreduce:
 					delete newSymbl;
 				}
 
-				cout << symbolTable << endl;
+				// cout << symbolTable << endl;
 
 
 				logout << "parameter_list : parameter_list COMMA type_specifier ID" << endl;
 			}
-#line 1727 "parser.tab.c"
+#line 1732 "parser.tab.c"
     break;
 
   case 17:
-#line 275 "parser.y"
+#line 280 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::PARAM_LIST, "parameter_list COMMA type_specifier", yylineno);
 				yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 				logout << "parameter_list: parameter_list COMMA type_specifier" << endl;
 			}
-#line 1738 "parser.tab.c"
+#line 1743 "parser.tab.c"
     break;
 
   case 18:
-#line 282 "parser.y"
+#line 287 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::PARAM_LIST, "type_specifier ID", yylineno);
 				yyval->addChild({yyvsp[-1], yyvsp[0]});
@@ -1752,26 +1757,26 @@ yyreduce:
 					delete newSymbl;
 				}
 
-				cout << symbolTable << endl;
+				// cout << symbolTable << endl;
 
 				logout << "parameter_list : type_specifier ID" << endl;
 			}
-#line 1760 "parser.tab.c"
+#line 1765 "parser.tab.c"
     break;
 
   case 19:
-#line 300 "parser.y"
+#line 305 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::PARAM_LIST, "type_specifier", yylineno);
 				yyval->addChild(yyvsp[0]);
 
 				logout << "parameter_list : type_specifier" << endl;
 			}
-#line 1771 "parser.tab.c"
+#line 1776 "parser.tab.c"
     break;
 
   case 20:
-#line 310 "parser.y"
+#line 315 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL statement RCURL", yylineno);
 				yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
@@ -1779,11 +1784,11 @@ yyreduce:
 				logout << "compound_statement: LCURL statements RCURL" << endl;
 
 			}
-#line 1783 "parser.tab.c"
+#line 1788 "parser.tab.c"
     break;
 
   case 21:
-#line 318 "parser.y"
+#line 323 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL RCURL", yylineno);
 				yyval->addChild({yyvsp[-1], yyvsp[0]});
@@ -1791,17 +1796,21 @@ yyreduce:
 				logout << "compound_statement : LCURL RCURL" << endl;	
 
 			}
-#line 1795 "parser.tab.c"
+#line 1800 "parser.tab.c"
     break;
 
   case 22:
-#line 328 "parser.y"
+#line 333 "parser.y"
                 {	
 			yyval = new TokenAST(NodeType::VAR_DECL, "type_specifier declaration_list SEMICOLON", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			auto symbols = treeWalker.walkDeclarationList(yyvsp[-1]);
 			auto type = treeWalker.walkTypeSpecifier(yyvsp[-2]);
+
+			if(type == "VOID"){
+				printUtil.printError("Variable of field declared void", "", yylineno);
+			}
 
 			for(auto symbol: symbols){
 				auto i = symbol->getSymbol();
@@ -1817,136 +1826,136 @@ yyreduce:
 				delete symbol;
 			}
 
-			cout << symbolTable << endl;
+			// cout << symbolTable << endl;
 
 			logout << "var_declaration : type_specifier declaration_list SEMICOLON" << endl;
 		}
-#line 1825 "parser.tab.c"
+#line 1834 "parser.tab.c"
     break;
 
   case 23:
-#line 356 "parser.y"
+#line 365 "parser.y"
         {
 		yyval = new TokenAST(NodeType::TYPE_SPECIFIER, "INT", yylineno);
 		yyval->addChild(yyvsp[0]);
 
 		logout << "type_specifier : INT" << endl;
 	}
-#line 1836 "parser.tab.c"
+#line 1845 "parser.tab.c"
     break;
 
   case 24:
-#line 363 "parser.y"
+#line 372 "parser.y"
         {
 		yyval = new TokenAST(NodeType::TYPE_SPECIFIER, "FLOAT", yylineno);
 		yyval->addChild(yyvsp[0]);
 
 		logout << "type_specifier : FLOAT" << endl;
 	}
-#line 1847 "parser.tab.c"
+#line 1856 "parser.tab.c"
     break;
 
   case 25:
-#line 370 "parser.y"
+#line 379 "parser.y"
         {
 		yyval = new TokenAST(NodeType::TYPE_SPECIFIER, "VOID", yylineno);
 		yyval->addChild(yyvsp[0]);
 
 		logout << "type_specifier : VOID" << endl;
 	}
-#line 1858 "parser.tab.c"
+#line 1867 "parser.tab.c"
     break;
 
   case 26:
-#line 379 "parser.y"
+#line 388 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::DECL_LIST, "declaration_list COMMA ID", yylineno);
 				yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 				logout << "declaration_list : declaration_list COMMA ID" << endl;
 			}
-#line 1869 "parser.tab.c"
+#line 1878 "parser.tab.c"
     break;
 
   case 27:
-#line 386 "parser.y"
+#line 395 "parser.y"
                   {
 			yyval = new TokenAST(NodeType::DECL_LIST, "declaration_list COMMA ID LSQUARE CONST_INT RSQUARE", yylineno);
 			yyval->addChild({yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
  		  	logout << "declaration_list : declaration_list COMMA ID LSQUARE int_const RSQUARE" << endl;
 		  }
-#line 1880 "parser.tab.c"
+#line 1889 "parser.tab.c"
     break;
 
   case 28:
-#line 393 "parser.y"
+#line 402 "parser.y"
                   {
 			yyval = new TokenAST(NodeType::DECL_LIST, "ID", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "declaration_list : ID" << endl;
 		  }
-#line 1891 "parser.tab.c"
+#line 1900 "parser.tab.c"
     break;
 
   case 29:
-#line 400 "parser.y"
+#line 409 "parser.y"
                   {
 			yyval = new TokenAST(NodeType::DECL_LIST, "ID LSQUARE CONST_INT RSQUARE", yylineno);
 			yyval->addChild({yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "declaration_list : ID LSQUARE CONST_INT RSQUARE" << endl;
 		  }
-#line 1902 "parser.tab.c"
+#line 1911 "parser.tab.c"
     break;
 
   case 30:
-#line 409 "parser.y"
+#line 418 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENTS, "statement", yylineno);
 			yyval->addChild(yyvsp[0]);		
 
 			logout << "statements : statement" << endl;
 		}
-#line 1913 "parser.tab.c"
+#line 1922 "parser.tab.c"
     break;
 
   case 31:
-#line 416 "parser.y"
+#line 425 "parser.y"
            {
 			yyval = new TokenAST(NodeType::STATEMENTS, "statements statement", yylineno);
 			yyval->addChild({yyvsp[-1], yyvsp[0]});
 
 			logout << "statements : statements statement" << endl;
 	   }
-#line 1924 "parser.tab.c"
+#line 1933 "parser.tab.c"
     break;
 
   case 32:
-#line 425 "parser.y"
+#line 434 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "var_declaration", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "statement : var_declaration" << endl;
 		}
-#line 1935 "parser.tab.c"
+#line 1944 "parser.tab.c"
     break;
 
   case 33:
-#line 432 "parser.y"
+#line 441 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "expression_statement", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "statement : expression_statement" << endl;
 		}
-#line 1946 "parser.tab.c"
+#line 1955 "parser.tab.c"
     break;
 
   case 34:
-#line 439 "parser.y"
+#line 448 "parser.y"
           {
 			yyval = new TokenAST(NodeType::STATEMENT, "compound_statement", yylineno);
 			yyval->addChild(yyvsp[0]);
@@ -1954,100 +1963,99 @@ yyreduce:
 			logout << "statement : compound_statement" << endl;
 
 	  }
-#line 1958 "parser.tab.c"
+#line 1967 "parser.tab.c"
     break;
 
   case 35:
-#line 447 "parser.y"
+#line 456 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "FOR LPAREN expression_statement expression_statement expression RPAREN statement", yylineno);
 			yyval->addChild({yyvsp[-6], yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement" << endl;
 		}
-#line 1969 "parser.tab.c"
+#line 1978 "parser.tab.c"
     break;
 
   case 36:
-#line 454 "parser.y"
+#line 463 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "IF LPAREN expression RPAREN statement", yylineno);
 			yyval->addChild({yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "statement : IF LPAREN expression RPAREN statement" << endl;
 		}
-#line 1980 "parser.tab.c"
+#line 1989 "parser.tab.c"
     break;
 
   case 37:
-#line 461 "parser.y"
+#line 470 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "IF LPAREN expression RPAREN statement ELSE statement", yylineno);
 			yyval->addChild({yyvsp[-6], yyvsp[-5], yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "statement : IF LPAREN expression RPAREN statement ELSE statement" << endl;
 		}
-#line 1991 "parser.tab.c"
+#line 2000 "parser.tab.c"
     break;
 
   case 38:
-#line 469 "parser.y"
+#line 478 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "WHILE LPAREN expression RPAREN statement", yylineno);
 			yyval->addChild({yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "statement : WHILE LPAREN expression RPAREN statement" << endl;
 		}
-#line 2002 "parser.tab.c"
+#line 2011 "parser.tab.c"
     break;
 
   case 39:
-#line 476 "parser.y"
+#line 485 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "PRINTLN LPAREN ID RPAREN SEMICOLON", yylineno);
 			yyval->addChild({yyvsp[-4], yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "statement: PRINTLN LPAREN ID RPAREN SEMICOLON";
 		}
-#line 2013 "parser.tab.c"
+#line 2022 "parser.tab.c"
     break;
 
   case 40:
-#line 483 "parser.y"
+#line 492 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::STATEMENT, "RETURN expression SEMICOLON", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 			
 			logout << "statement : RETURN expression SEMICOLON" << endl;
 		}
-#line 2024 "parser.tab.c"
+#line 2033 "parser.tab.c"
     break;
 
   case 41:
-#line 492 "parser.y"
+#line 501 "parser.y"
                         {
 				yyval = new TokenAST(NodeType::EXPR_STMNT, "SEMICOLON", yylineno);
 				yyval->addChild(yyvsp[0]);
 
 				logout << "expression_statement : SEMICOLON" << endl;
 			}
-#line 2035 "parser.tab.c"
+#line 2044 "parser.tab.c"
     break;
 
   case 42:
-#line 499 "parser.y"
+#line 508 "parser.y"
                         {
-				// cout << getDataType($1) << endl;
 				yyval = new TokenAST(NodeType::EXPR_STMNT, "expression SEMICOLON", yylineno);
 				yyval->addChild({yyvsp[-1], yyvsp[0]});
 
 				logout << "expression_statement : expression SEMICOLON" << endl;
 			}
-#line 2047 "parser.tab.c"
+#line 2055 "parser.tab.c"
     break;
 
   case 43:
-#line 509 "parser.y"
+#line 517 "parser.y"
                 {
 			auto symbol = getSymbol(yyvsp[0]);
 			string type = "INT";
@@ -2067,11 +2075,11 @@ yyreduce:
 
 			logout << "variable : ID" << endl;
 		}
-#line 2071 "parser.tab.c"
+#line 2079 "parser.tab.c"
     break;
 
   case 44:
-#line 529 "parser.y"
+#line 537 "parser.y"
                 {
 			auto symbol = getSymbol(yyvsp[-3]);
 			string type = "INT";
@@ -2095,22 +2103,22 @@ yyreduce:
 
 			logout << "variable : ID LSQUARE expression RSQUARE" << endl;
 		}
-#line 2099 "parser.tab.c"
+#line 2107 "parser.tab.c"
     break;
 
   case 45:
-#line 555 "parser.y"
+#line 563 "parser.y"
                 {
 			yyval = new ExpressionAST(NodeType::EXP, "logic_expression", getDataType(yyvsp[0]), yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "expression : logic_expression" << endl;
 		}
-#line 2110 "parser.tab.c"
+#line 2118 "parser.tab.c"
     break;
 
   case 46:
-#line 562 "parser.y"
+#line 570 "parser.y"
            {
 			if(getDataType(yyvsp[0]) == "VOID"){
 				printUtil.printError("void function cannot be used in expression", "", yylineno);
@@ -2123,22 +2131,22 @@ yyreduce:
 
 			logout << "expression : variable ASSIGNOP logic_expression" << endl;
 	   }
-#line 2127 "parser.tab.c"
+#line 2135 "parser.tab.c"
     break;
 
   case 47:
-#line 577 "parser.y"
+#line 585 "parser.y"
                 {
 			yyval = new ExpressionAST(NodeType::LOGIC_EXP, "rel_expression", getDataType(yyvsp[0]), yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "logic_expression : rel_expression" << endl;
 		}
-#line 2138 "parser.tab.c"
+#line 2146 "parser.tab.c"
     break;
 
   case 48:
-#line 584 "parser.y"
+#line 592 "parser.y"
                 {
 			auto lhsType = getDataType(yyvsp[-2]);
 			auto rhsType = getDataType(yyvsp[0]);
@@ -2154,22 +2162,22 @@ yyreduce:
 
 			logout << "logic_expression : rel_expression LOGICOP rel_expression" << endl;
 		}
-#line 2158 "parser.tab.c"
+#line 2166 "parser.tab.c"
     break;
 
   case 49:
-#line 602 "parser.y"
+#line 610 "parser.y"
                 {
 			yyval = new ExpressionAST(NodeType::REL_EXP, "simple_expression", getDataType(yyvsp[0]), yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "rel_expression : simple_expression" << endl;
 		}
-#line 2169 "parser.tab.c"
+#line 2177 "parser.tab.c"
     break;
 
   case 50:
-#line 609 "parser.y"
+#line 617 "parser.y"
                 {
 			auto lhsType = getDataType(yyvsp[-2]);
 			auto rhsType = getDataType(yyvsp[0]);
@@ -2185,22 +2193,22 @@ yyreduce:
 
 			logout << "rel_expression : simple_expression RELOP simple_expression" << endl;
 		}
-#line 2189 "parser.tab.c"
+#line 2197 "parser.tab.c"
     break;
 
   case 51:
-#line 627 "parser.y"
+#line 635 "parser.y"
                 {
 			yyval = new ExpressionAST(NodeType::SIMPLE_EXP, "term", getDataType(yyvsp[0]), yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "simple_expression : term" << endl;
 		}
-#line 2200 "parser.tab.c"
+#line 2208 "parser.tab.c"
     break;
 
   case 52:
-#line 634 "parser.y"
+#line 642 "parser.y"
                 {
 			auto lhsType = getDataType(yyvsp[-2]);
 			auto rhsType = getDataType(yyvsp[0]);
@@ -2218,22 +2226,22 @@ yyreduce:
 			
 			logout << "simple_expression : simple_expression ADDOP term" << endl;
 		}
-#line 2222 "parser.tab.c"
+#line 2230 "parser.tab.c"
     break;
 
   case 53:
-#line 655 "parser.y"
+#line 663 "parser.y"
                 {
 			yyval = new ExpressionAST(NodeType::TERM, "unary_expression", getDataType(yyvsp[0]), yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "term : unary_expression" << endl;
 		}
-#line 2233 "parser.tab.c"
+#line 2241 "parser.tab.c"
     break;
 
   case 54:
-#line 662 "parser.y"
+#line 670 "parser.y"
                 {
 			auto lhsType = getDataType(yyvsp[-2]);
 			auto rhsType = getDataType(yyvsp[0]);
@@ -2257,11 +2265,11 @@ yyreduce:
 
 			logout << "term : term MULOP unary_expression" << endl;
 		}
-#line 2261 "parser.tab.c"
+#line 2269 "parser.tab.c"
     break;
 
   case 55:
-#line 688 "parser.y"
+#line 696 "parser.y"
                 {
 			auto type = getDataType(yyvsp[0]);
 			if(type == "VOID"){
@@ -2274,11 +2282,11 @@ yyreduce:
 
 			logout << "unary_expression : ADDOP unary_expression" << endl;
 		}
-#line 2278 "parser.tab.c"
+#line 2286 "parser.tab.c"
     break;
 
   case 56:
-#line 701 "parser.y"
+#line 709 "parser.y"
                 {
 			auto type = getDataType(yyvsp[0]);
 			if(type == "VOID"){
@@ -2291,33 +2299,33 @@ yyreduce:
 
 			logout << "NOT unary_expression" << endl;
 		}
-#line 2295 "parser.tab.c"
+#line 2303 "parser.tab.c"
     break;
 
   case 57:
-#line 714 "parser.y"
+#line 722 "parser.y"
                 {
 			yyval = new ExpressionAST(NodeType::UNARY_EXP, "factor", getDataType(yyvsp[0]), yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "unary_expression : factor" << endl;
 		}
-#line 2306 "parser.tab.c"
+#line 2314 "parser.tab.c"
     break;
 
   case 58:
-#line 723 "parser.y"
+#line 731 "parser.y"
                 {
 			yyval = new ExpressionAST(NodeType::FACTOR, "variable", getDataType(yyvsp[0]), yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "factor : variable" << endl;
 		}
-#line 2317 "parser.tab.c"
+#line 2325 "parser.tab.c"
     break;
 
   case 59:
-#line 731 "parser.y"
+#line 739 "parser.y"
                 {
 			auto name = treeWalker.walkID(yyvsp[-3]);
 			auto symbol = symbolTable.lookup(name);
@@ -2341,46 +2349,46 @@ yyreduce:
 			yyval = new ExpressionAST(NodeType::FACTOR, "ID LPAREN argument_list RPAREN", type, yylineno);
 			yyval->addChild({yyvsp[-3], yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
-			logout << "factor : ID LPAREN expression RPAREN" << endl;
+			logout << "factor : ID LPAREN argument_list RPAREN" << endl;
 		}
-#line 2347 "parser.tab.c"
+#line 2355 "parser.tab.c"
     break;
 
   case 60:
-#line 757 "parser.y"
+#line 765 "parser.y"
                 {
 			yyval = new ExpressionAST(NodeType::FACTOR, "LPAREN expression RPAREN", getDataType(yyvsp[-1]), yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "factor : LPAREN expression RPAREN" << endl;
 		}
-#line 2358 "parser.tab.c"
+#line 2366 "parser.tab.c"
     break;
 
   case 61:
-#line 764 "parser.y"
+#line 772 "parser.y"
                 {
 			yyval = new ExpressionAST(NodeType::FACTOR, "CONST_INT", "INT", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "factor : CONST_INT" << endl;
 		}
-#line 2369 "parser.tab.c"
+#line 2377 "parser.tab.c"
     break;
 
   case 62:
-#line 771 "parser.y"
+#line 779 "parser.y"
                 {
 			yyval = new ExpressionAST(NodeType::FACTOR, "CONST_FLOAT", "FLOAT", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "factor : CONST_FLOAT" << endl;
 		}
-#line 2380 "parser.tab.c"
+#line 2388 "parser.tab.c"
     break;
 
   case 63:
-#line 778 "parser.y"
+#line 786 "parser.y"
                 {
 			auto type = getDataType(yyvsp[-1]);
 			if(type == "VOID"){
@@ -2393,11 +2401,11 @@ yyreduce:
 
 			logout << "factor : variable INCOP" << endl;
 		}
-#line 2397 "parser.tab.c"
+#line 2405 "parser.tab.c"
     break;
 
   case 64:
-#line 792 "parser.y"
+#line 800 "parser.y"
                 {
 			auto type = getDataType(yyvsp[-1]);
 			if(type == "VOID"){
@@ -2410,53 +2418,53 @@ yyreduce:
 
 			logout << "factor : variable DECOP" << endl;
 		}
-#line 2414 "parser.tab.c"
+#line 2422 "parser.tab.c"
     break;
 
   case 65:
-#line 807 "parser.y"
+#line 815 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::ARG_LIST, "arguments", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "argument_list : arguments" << endl;
 		}
-#line 2425 "parser.tab.c"
+#line 2433 "parser.tab.c"
     break;
 
   case 66:
-#line 814 "parser.y"
+#line 822 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::ARG_LIST, "", yylineno);
 			logout << "argument_list : " << endl;
 		}
-#line 2434 "parser.tab.c"
+#line 2442 "parser.tab.c"
     break;
 
   case 67:
-#line 821 "parser.y"
+#line 829 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::ARGS, "arguments COMMA logic_expression", yylineno);
 			yyval->addChild({yyvsp[-2], yyvsp[-1], yyvsp[0]});
 
 			logout << "arguments : arguments COMMA logic_expression" << endl;
 		}
-#line 2445 "parser.tab.c"
+#line 2453 "parser.tab.c"
     break;
 
   case 68:
-#line 828 "parser.y"
+#line 836 "parser.y"
                 {
 			yyval = new TokenAST(NodeType::ARGS, "logic_expression", yylineno);
 			yyval->addChild(yyvsp[0]);
 
 			logout << "arguments : logic_expression" << endl;
 		}
-#line 2456 "parser.tab.c"
+#line 2464 "parser.tab.c"
     break;
 
 
-#line 2460 "parser.tab.c"
+#line 2468 "parser.tab.c"
 
       default: break;
     }
@@ -2688,7 +2696,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 836 "parser.y"
+#line 844 "parser.y"
 
 int main(int argc,char *argv[])
 {

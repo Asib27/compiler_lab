@@ -1104,7 +1104,7 @@ case 43:
 YY_RULE_SETUP
 #line 159 "scanner.l"
 {
-			printUtil.print("LOGIOP", yytext, yylineno); 
+			printUtil.print("LOGICOP", yytext, yylineno); 
 			auto curSymbol = new SymbolInfo(yytext, "LOGICOP");
 			yylval = new SymbolAST(curSymbol, yylineno);
 			return LOGICOP;

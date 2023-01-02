@@ -77,8 +77,8 @@ std::string PrintUtil::insertEscapeInString(std::string text){
     return ans;
 }
 
-PrintUtil::PrintUtil(std::ostream &token, std::ostream &log)
-    : tokenos(token), logos(log), errorCount(0)
+PrintUtil::PrintUtil(std::ostream &token, std::ostream &log , std::ostream &error)
+    : tokenos(token), logos(log), errors(error), errorCount(0)
 {
 
 }
@@ -195,7 +195,7 @@ void PrintUtil::printMultilineComment(std::string text, int lineNo){
 
 void PrintUtil::printError(std::string error, std::string text, int lineNo){
     errorCount++;
-    logos << "Error at line# " << lineNo << ": " << error << " " << text << std::endl;
+    errors << "Error at line# " << lineNo << ": " << error << " " << text << std::endl;
 }
 
 int PrintUtil::getErrorCount(){
