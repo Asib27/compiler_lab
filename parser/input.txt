@@ -1,6 +1,3 @@
-int a, b, c[10];
-float d[10], e;
 
-void abc(int y, float z){
-    a = abc(a,e);
-}
+int abc();
+int abc(int a);

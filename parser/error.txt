@@ -1,6 +1,7 @@
 Error at line# 20: redefination of parameter 'a' 
 Error at line# 24: function decl changed 
 Error at line# 28: variable delared as function 
+Error at line# 34: defination doesnt match to declaration 
 Error at line# 42: Variable of field declared void 
 Error at line# 43: redefination of parameter 'c' 
 Error at line# 43: redefination of parameter 'a' 

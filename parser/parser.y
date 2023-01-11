@@ -1,7 +1,8 @@
 %{
 #include<iostream>
 #include<fstream>
-#include"lib/symbolTable.h"
+#include<set>
+#include "lib/symbolTable.h"
 #include "lib/symbolInfo.h"
 #include "lib/ast.h"
 #include "lib/treeWalker.h"
@@ -22,6 +23,7 @@ Printer printer(logout, false);
 SymbolTable symbolTable(10, &printer);
 TreeWalker treeWalker;
 
+set<FunctionSymbolInfo *> funcDeclared, funcDefined;
 
 void yyerror(char *s)
 {
@@ -142,6 +144,17 @@ func_declaration : func_first_part SEMICOLON
 				delete $1;
 
 				$$->addChild($2);
+		
+				
+				auto funcName = treeWalker.walkID($$->getChilds()[1]);
+				auto id = symbolTable.lookup(funcName);
+				auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
+				if(funcDeclared.count(funcId) || funcDefined.count(funcId)){
+					printUtil.printError("redeclaration of function", "",yylineno);
+				}
+				else funcDeclared.insert(funcId);
+
+			
 				symbolTable.exitScope();
 
 				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
@@ -156,6 +169,14 @@ func_declaration : func_first_part SEMICOLON
 
 				$$->addChild($2);
 				symbolTable.exitScope();
+				
+				auto funcName = treeWalker.walkID($$->getChilds()[1]);
+				auto id = symbolTable.lookup(funcName);
+				auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
+				if(funcDeclared.count(funcId) || funcDefined.count(funcId)){
+					printUtil.printError("redeclaration of function", "",yylineno);
+				}
+				else funcDeclared.insert(funcId);
 
 				logout << "func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON" << endl;
 			}
@@ -173,6 +194,23 @@ func_definition : func_first_part compound_statement
 
 				logout << symbolTable;
 				symbolTable.exitScope();
+				
+				
+				auto types = treeWalker.walkParameterList($$->getChilds()[3]);
+				auto funcName = treeWalker.walkID($$->getChilds()[1]);
+				auto id = symbolTable.lookup(funcName);
+				auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
+
+				if(funcDefined.count(funcId)){
+					printUtil.printError("redefination of function", "",yylineno);
+				}
+				else if(funcDeclared.count(funcId) && !funcId->matchParam(types)){
+					printUtil.printError("defination doesnt match to declaration", "", yylineno);
+				}
+				else {
+					funcDefined.insert(funcId);
+					funcDeclared.insert(funcId);
+				}
 
 				logout << "func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
 			}
@@ -188,6 +226,15 @@ func_definition : func_first_part compound_statement
 
 				logout << symbolTable << endl;
 				symbolTable.exitScope();
+				
+				auto funcName = treeWalker.walkID($$->getChilds()[1]);
+				auto id = symbolTable.lookup(funcName);
+				auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
+				if(funcDefined.count(funcId)){
+					printUtil.printError("redefination of function", "",yylineno);
+				}else if(funcDeclared.count(funcId) && !funcId->matchParam({})){
+					printUtil.printError("defination doesnt match to declaration", "", yylineno);
+				}else funcDeclared.insert(funcId);
 
 				logout << "func_definition: type_specifier ID LPAREN RPAREN compound_statement" << endl;
 			}
@@ -211,8 +258,9 @@ func_first_part : common_func_first_part LPAREN {symbolTable.enterScope();} para
 		auto funcName = treeWalker.walkID($$->getChilds()[1]);
 		auto id = symbolTable.lookup(funcName);
 		auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
-		if(funcId != nullptr)
+		if(funcId != nullptr && !funcDeclared.count(funcId)){
 			funcId->setParam(types);
+		}
 	}
 	;
 func_first_part2 : common_func_first_part LPAREN RPAREN 
