@@ -58,10 +58,6 @@ string getAddopType(string lhs, string rhs){
 
 %}
 
-// %union {
-// 	class AST *ast;
-// }
-
 %code requires {
 	#include "lib/ast.h"
 }
@@ -727,11 +723,19 @@ term :	unary_expression
 			}
 
 			auto type = getAddopType(lhsType, rhsType);
-			if(treeWalker.walkID($2) == "%"){
+			auto opType = treeWalker.walkID($2);
+			if(opType == "%"){
 				if(lhsType != "INT" || rhsType != "INT"){
 					printUtil.printError("both side of modulus operator should be int", "", yylineno);
 				}
 				type = "INT";
+			}
+
+			int value = treeWalker.walkUnaryExpressionValue($3);
+			if(opType == "%" || opType == "/"){
+				if(value == 0){
+					printUtil.printError("Division by zero error", "", yylineno);
+				}				
 			}
 
 			$$ = new ExpressionAST(NodeType::TERM, "term MULOP unary_expression", type, yylineno);

@@ -1,22 +1,2 @@
-Error at line# 20: redefination of parameter 'a' 
-Error at line# 24: function decl changed 
-Error at line# 28: variable delared as function 
-Error at line# 34: defination doesnt match to declaration 
-Error at line# 42: Variable of field declared void 
-Error at line# 43: redefination of parameter 'c' 
-Error at line# 43: redefination of parameter 'a' 
-Error at line# 45: arguments does not match 
-Error at line# 48: array used as normal variable 
-Error at line# 48: arguments does not match 
-Error at line# 49: arguments does not match 
-Error at line# 50: arguments does not match 
-Error at line# 52: undeclared variable 
-Error at line# 53: array access on normal variable 
-Error at line# 54: array access operation is not integer 
-Error at line# 55: void function cannot be used in expression 
-Error at line# 58: void function cannot be used in expression 
-Error at line# 59: Assignment of float to int 
-Error at line# 61: both side of modulus operator should be int 
-Error at line# 63: undeclared function 
-Error at line# 68: undeclared variable 
-Error at line# 68: undeclared function 
+Error at line# 3: Division by zero error 
+Error at line# 3: Assignment of float to int 

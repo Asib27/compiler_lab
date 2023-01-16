@@ -28,6 +28,7 @@ public:
     std::vector<SymbolAST *> walkDeclarationList(AST* root);
     std::vector<std::string> walkParameterList(AST* root);
     std::vector<std::string> walkArgumentList(AST *root);
+    int walkUnaryExpressionValue(AST *root);
 
     ~TreeWalker();
 };

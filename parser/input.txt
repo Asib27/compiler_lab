@@ -1,3 +1,4 @@
-
-int abc();
-int abc(int a);
+int abc(int a){
+    a = 10;
+    a = a  / 0.0;
+}

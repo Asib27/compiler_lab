@@ -162,6 +162,30 @@ std::vector<std::string> TreeWalker::walkArgumentList(AST *root){
     return ans;
 }
 
+int TreeWalker::walkUnaryExpressionValue(AST* root){
+    if(root->getTokenType() != "unary_expression") return 1;
+    if(root->getChilds().size() != 1) return 2;
+
+    auto factor = root->getChilds()[0];
+    if(factor->getTokenType() != "factor") return 3;
+    if(factor->getChilds().size() != 1) return 4;
+
+    auto value = factor->getChilds()[0];
+    if(value->getTokenType() != "symbol") return 5;
+    auto symbol = dynamic_cast<SymbolAST*>(value);
+
+    if(symbol == nullptr) return 6;
+    auto text = symbol->getSymbol()->getName();
+    int con_value = 7;
+    if(symbol->getSymbol()->getType() == "CONST_INT"){
+        con_value = std::stoi(text);
+    }
+    else if(symbol->getSymbol()->getType() == "CONST_FLOAT"){
+        con_value = (int)std::stof(text);
+    }
+    return con_value;
+}
+
 TreeWalker::TreeWalker(/* args */)
 {
 }
