@@ -1,2 +1,4 @@
-Error at line# 3: Division by zero error 
-Error at line# 3: Assignment of float to int 
+Error at line# 1: Syntax error at parameter list of function definition 
+Error at line# 3: Syntax error at parameter list of function definition 
+Error at line# 4: Syntax error at parameter list of function definition 
+Error at line# 4: redeclaration of function 

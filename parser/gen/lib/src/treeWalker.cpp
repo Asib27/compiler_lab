@@ -43,7 +43,7 @@ SymbolAST* TreeWalker::declarationListChild(std::vector<AST*> childs, AST** root
 std::string TreeWalker::parameterListChild(std::vector<AST *> childs, AST** rootptr){
     if(childs.size() == 0){
         *rootptr = nullptr;
-        return nullptr;
+        return "";
     }
 
     // if first node is not type specifier, then it is parameter list

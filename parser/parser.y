@@ -24,10 +24,15 @@ SymbolTable symbolTable(10, &printer);
 TreeWalker treeWalker;
 
 set<FunctionSymbolInfo *> funcDeclared, funcDefined;
+int errorCount;
+
+string errorString = "";
 
 void yyerror(char *s)
 {
-	//write your code
+	// printf(s);
+	// errorout << errorString << endl;
+	errorCount++;
 }
 
 std::string getDataType(AST *node){
@@ -346,12 +351,24 @@ parameter_list  : parameter_list COMMA type_specifier ID
 
 				logout << "parameter_list : type_specifier ID" << endl;
 			}
-		| type_specifier
+		| type_specifier 
 			{
 				$$ = new TokenAST(NodeType::PARAM_LIST, "type_specifier", yylineno);
 				$$->addChild($1);
 
 				logout << "parameter_list : type_specifier" << endl;
+			}
+		| parameter_list error
+			{
+				$$ = new TokenAST(NodeType::PARAM_LIST, "parameter_list error", yylineno);
+
+				delete $2;
+				$2 = new TokenAST(NodeType::PARAM_LIST, "error", yylineno);
+				$$->addChild({$1, $2});
+
+				yyclearin;
+				
+				printUtil.printError("Syntax error at parameter list of function definition", "", yylineno);
 			}
  		;
 

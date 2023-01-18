@@ -1,4 +1,8 @@
+int cd(float -);
+
+int cde(int a, float -);
+int cde(int a, float -, int c);
+
 int abc(int a){
     a = 10;
-    a = a  / 0.0;
 }
