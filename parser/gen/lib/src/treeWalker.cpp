@@ -73,7 +73,7 @@ std::vector<std::string> TreeWalker::walkParameterList(AST* root){
         auto t = parameterListChild(childs, &root);
         ans.push_back(t);
 
-        // std::cout << t << " " << root << std::endl;
+        // std::cout << t << " " << root << std::endgetChildsl;
     }
 
     
@@ -88,6 +88,8 @@ std::vector<SymbolAST *> TreeWalker::walkDeclarationList(AST* root){
 
         auto childs = root->getChilds();
         auto t = declarationListChild(childs, &root);
+
+        if(t == nullptr) return std::vector<SymbolAST *> ();
         ans.push_back(t);
 
         // std::cout << t << " " << root << std::endl;

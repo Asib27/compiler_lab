@@ -474,6 +474,16 @@ declaration_list : declaration_list COMMA ID
 
 			logout << "declaration_list : ID LSQUARE CONST_INT RSQUARE" << endl;
 		  }
+		  | declaration_list error
+		  {
+			$$ =  new TokenAST(NodeType::DECL_LIST, "error", yylineno);
+			yyclearin;
+
+			delete $2;
+			delete $1;
+
+			printUtil.printError("Syntax error at declaration list of variable declaration", "", yylineno);
+		  }
  		  ;
 
 statements : statement

@@ -1,57 +1,6 @@
-Line# 1: Token <INT> Lexeme int found
-type_specifier : INT
-Line# 1: Token <ID> Lexeme cd found
-Line# 1: Token <LPAREN> Lexeme ( found
-Line# 1: Token <FLOAT> Lexeme float found
-type_specifier : FLOAT
-Line# 1: Token <ADDOP> Lexeme - found
-parameter_list : type_specifier
-Line# 1: Token <RPAREN> Lexeme ) found
-Line# 1: Token <SEMICOLON> Lexeme ; found
-func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
-unit : func_declaration
-program : unit
-Line# 3: Token <INT> Lexeme int found
-type_specifier : INT
-Line# 3: Token <ID> Lexeme cde found
-Line# 3: Token <LPAREN> Lexeme ( found
-Line# 3: Token <INT> Lexeme int found
-type_specifier : INT
-Line# 3: Token <ID> Lexeme a found
-parameter_list : type_specifier ID
-Line# 3: Token <COMMA> Lexeme , found
-Line# 3: Token <FLOAT> Lexeme float found
-type_specifier : FLOAT
-Line# 3: Token <ADDOP> Lexeme - found
-parameter_list: parameter_list COMMA type_specifier
-Line# 3: Token <RPAREN> Lexeme ) found
-Line# 3: Token <SEMICOLON> Lexeme ; found
-func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
-unit : func_declaration
-program : program unit
-Line# 4: Token <INT> Lexeme int found
-type_specifier : INT
-Line# 4: Token <ID> Lexeme cde found
-Line# 4: Token <LPAREN> Lexeme ( found
-Line# 4: Token <INT> Lexeme int found
-type_specifier : INT
-Line# 4: Token <ID> Lexeme a found
-parameter_list : type_specifier ID
-Line# 4: Token <COMMA> Lexeme , found
-Line# 4: Token <FLOAT> Lexeme float found
-type_specifier : FLOAT
-Line# 4: Token <ADDOP> Lexeme - found
-parameter_list: parameter_list COMMA type_specifier
-Line# 4: Token <COMMA> Lexeme , found
-Line# 4: Token <INT> Lexeme int found
-type_specifier : INT
-Line# 4: Token <ID> Lexeme c found
-parameter_list : parameter_list COMMA type_specifier ID
-Line# 4: Token <RPAREN> Lexeme ) found
-Line# 4: Token <SEMICOLON> Lexeme ; found
-func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON
-unit : func_declaration
-program : program unit
+Line# 1: Token <SINGLE LINE COMMENT> Lexeme // int cd(float -); found
+Line# 3: Token <SINGLE LINE COMMENT> Lexeme // int cde(int a, float -); found
+Line# 4: Token <SINGLE LINE COMMENT> Lexeme // int cde(int a, float -, int c); found
 Line# 6: Token <INT> Lexeme int found
 type_specifier : INT
 Line# 6: Token <ID> Lexeme abc found
@@ -62,32 +11,45 @@ Line# 6: Token <ID> Lexeme a found
 parameter_list : type_specifier ID
 Line# 6: Token <RPAREN> Lexeme ) found
 Line# 6: Token <LCURL> Lexeme { found
+Line# 7: Token <INT> Lexeme int found
+type_specifier : INT
 Line# 7: Token <ID> Lexeme a found
-Line# 7: Token <ASSIGNOP> Lexeme = found
+Line# 7: Token <ADDOP> Lexeme - found
+declaration_list : ID
+Line# 7: Token <COMMA> Lexeme , found
+Line# 7: Token <ID> Lexeme b found
+Line# 7: Token <COMMA> Lexeme , found
+declaration_list : declaration_list COMMA ID
+Line# 7: Token <ID> Lexeme c found
+Line# 7: Token <SEMICOLON> Lexeme ; found
+declaration_list : declaration_list COMMA ID
+var_declaration : type_specifier declaration_list SEMICOLON
+statement : var_declaration
+statements : statement
+Line# 8: Token <ID> Lexeme a found
+Line# 8: Token <ASSIGNOP> Lexeme = found
 variable : ID
-Line# 7: Token <CONST_INT> Lexeme 10 found
+Line# 8: Token <CONST_INT> Lexeme 10 found
 factor : CONST_INT
 unary_expression : factor
 term : unary_expression
-Line# 7: Token <SEMICOLON> Lexeme ; found
+Line# 8: Token <SEMICOLON> Lexeme ; found
 simple_expression : term
 rel_expression : simple_expression
 logic_expression : rel_expression
 expression : variable ASSIGNOP logic_expression
 expression_statement : expression SEMICOLON
 statement : expression_statement
-statements : statement
-Line# 8: Token <RCURL> Lexeme } found
+statements : statements statement
+Line# 9: Token <RCURL> Lexeme } found
 compound_statement: LCURL statements RCURL
-	ScopeTable# 5
+	ScopeTable# 2
 	8--> <a,INT> 
 	ScopeTable# 1
-	1--> <cde,FUNCTION,INT> 
-	2--> <cd,FUNCTION,INT> 
 	9--> <abc,FUNCTION,INT> 
 func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement
 unit : func_definition
-program : program unit
+program : unit
 start : program
-Total Lines: 9
-Total Errors: 4
+Total Lines: 10
+Total Errors: 1

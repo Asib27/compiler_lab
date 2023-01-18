@@ -1,64 +1,7 @@
-start : program	<Line:1-8>
- program : program unit	<Line:1-8>
-  program : program unit	<Line:1-4>
-   program : program unit	<Line:1-3>
-    program : unit	<Line:1-1>
-     unit : func_declaration	<Line:1-1>
-      func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON	<Line:1-1>
-       type_specifier : INT	<Line:1-1>
-        INT : int  <Line:1>
-       ID : cd  <Line:1>
-       LPAREN : (  <Line:1>
-       parameter_list : parameter_list error	<Line:1-1>
-        parameter_list : type_specifier	<Line:1-1>
-         type_specifier : FLOAT	<Line:1-1>
-          FLOAT : float  <Line:1>
-        parameter_list : error	<Line:1-1>
-       RPAREN : )  <Line:1>
-       SEMICOLON : ;  <Line:1>
-    unit : func_declaration	<Line:3-3>
-     func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON	<Line:3-3>
-      type_specifier : INT	<Line:3-3>
-       INT : int  <Line:3>
-      ID : cde  <Line:3>
-      LPAREN : (  <Line:3>
-      parameter_list : parameter_list error	<Line:3-3>
-       parameter_list : parameter_list COMMA type_specifier	<Line:3-3>
-        parameter_list : type_specifier ID	<Line:3-3>
-         type_specifier : INT	<Line:3-3>
-          INT : int  <Line:3>
-         ID : a  <Line:3>
-        COMMA : ,  <Line:3>
-        type_specifier : FLOAT	<Line:3-3>
-         FLOAT : float  <Line:3>
-       parameter_list : error	<Line:3-3>
-      RPAREN : )  <Line:3>
-      SEMICOLON : ;  <Line:3>
-   unit : func_declaration	<Line:4-4>
-    func_declaration : type_specifier ID LPAREN parameter_list RPAREN SEMICOLON	<Line:4-4>
-     type_specifier : INT	<Line:4-4>
-      INT : int  <Line:4>
-     ID : cde  <Line:4>
-     LPAREN : (  <Line:4>
-     parameter_list : parameter_list COMMA type_specifier ID	<Line:4-4>
-      parameter_list : parameter_list error	<Line:4-4>
-       parameter_list : parameter_list COMMA type_specifier	<Line:4-4>
-        parameter_list : type_specifier ID	<Line:4-4>
-         type_specifier : INT	<Line:4-4>
-          INT : int  <Line:4>
-         ID : a  <Line:4>
-        COMMA : ,  <Line:4>
-        type_specifier : FLOAT	<Line:4-4>
-         FLOAT : float  <Line:4>
-       parameter_list : error	<Line:4-4>
-      COMMA : ,  <Line:4>
-      type_specifier : INT	<Line:4-4>
-       INT : int  <Line:4>
-      ID : c  <Line:4>
-     RPAREN : )  <Line:4>
-     SEMICOLON : ;  <Line:4>
-  unit : func_definition	<Line:6-8>
-   func_defination : type_specifier ID LPAREN parameter_list RPAREN compound_statement	<Line:6-8>
+start : program	<Line:6-9>
+ program : unit	<Line:6-9>
+  unit : func_definition	<Line:6-9>
+   func_defination : type_specifier ID LPAREN parameter_list RPAREN compound_statement	<Line:6-9>
     type_specifier : INT	<Line:6-6>
      INT : int  <Line:6>
     ID : abc  <Line:6>
@@ -68,21 +11,34 @@ start : program	<Line:1-8>
       INT : int  <Line:6>
      ID : a  <Line:6>
     RPAREN : )  <Line:6>
-    compound_statement : LCURL statement RCURL	<Line:6-8>
+    compound_statement : LCURL statement RCURL	<Line:6-9>
      LCURL : {  <Line:6>
-     statements : statement	<Line:7-7>
-      statement : expression_statement	<Line:7-7>
-       expression_statement : expression SEMICOLON	<Line:7-7>
-        expression : variable ASSIGNOP logic_expression	<Line:7-7>
-         variable : ID	<Line:7-7>
-          ID : a  <Line:7>
-         ASSIGNOP : =  <Line:7>
-         logic_expression : rel_expression	<Line:7-7>
-          rel_expression : simple_expression	<Line:7-7>
-           simple_expression : term	<Line:7-7>
-            term : unary_expression	<Line:7-7>
-             unary_expression : factor	<Line:7-7>
-              factor : CONST_INT	<Line:7-7>
-               CONST_INT : 10  <Line:7>
-        SEMICOLON : ;  <Line:7>
-     RCURL : }  <Line:8>
+     statements : statements statement	<Line:7-8>
+      statements : statement	<Line:7-7>
+       statement : var_declaration	<Line:7-7>
+        var_declaration : type_specifier declaration_list SEMICOLON	<Line:7-7>
+         type_specifier : INT	<Line:7-7>
+          INT : int  <Line:7>
+         declaration_list : declaration_list COMMA ID	<Line:7-7>
+          declaration_list : declaration_list COMMA ID	<Line:7-7>
+           declaration_list : error	<Line:7-7>
+           COMMA : ,  <Line:7>
+           ID : b  <Line:7>
+          COMMA : ,  <Line:7>
+          ID : c  <Line:7>
+         SEMICOLON : ;  <Line:7>
+      statement : expression_statement	<Line:8-8>
+       expression_statement : expression SEMICOLON	<Line:8-8>
+        expression : variable ASSIGNOP logic_expression	<Line:8-8>
+         variable : ID	<Line:8-8>
+          ID : a  <Line:8>
+         ASSIGNOP : =  <Line:8>
+         logic_expression : rel_expression	<Line:8-8>
+          rel_expression : simple_expression	<Line:8-8>
+           simple_expression : term	<Line:8-8>
+            term : unary_expression	<Line:8-8>
+             unary_expression : factor	<Line:8-8>
+              factor : CONST_INT	<Line:8-8>
+               CONST_INT : 10  <Line:8>
+        SEMICOLON : ;  <Line:8>
+     RCURL : }  <Line:9>
