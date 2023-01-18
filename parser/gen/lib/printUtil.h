@@ -35,6 +35,7 @@ public:
 	void printComment(std::string text, int lineNo);
 	void printMultilineComment(std::string text, int lineNo);
 	void printError(std::string error, std::string text, int lineNo);
+	void printError(std::string error, int lineNo);
 
 	int getErrorCount();
 };

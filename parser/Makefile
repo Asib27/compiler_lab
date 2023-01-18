@@ -7,7 +7,7 @@ lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o $
 parser.out:	${gen}/parser.o ${gen}/lexer.o ${lib}
 	g++ -ggdb3 ${gen}/parser.o ${gen}/lexer.o ${lib} -o parser.out
 
-${gen}/parser.o: parser.y ${header_path}/ast.h ${header_path}/variableSymbolInfo.h ${header_path}/printUtil.h
+${gen}/parser.o: parser.y ${header_path}/ast.h ${header_path}/functionSymbolInfo.h ${header_path}/variableSymbolInfo.h ${header_path}/printUtil.h
 	bison -d parser.y
 	mv parser.tab.c parser.tab.h ${gen}
 	g++ -ggdb3 -c ${gen}/parser.tab.c -o ${gen}/parser.o
@@ -54,7 +54,7 @@ ${lib_path}/variableSymbolInfo.o:	${lib_src}/variableSymbolInfo.cpp ${header_pat
 	g++ -c ${lib_src}/variableSymbolInfo.cpp
 	mv variableSymbolInfo.o ${lib_path}
 
-${lib_path}/treeWalker.o:	${lib_src}/treeWalker.cpp ${header_path}/treeWalker.h ${header_path}/variableSymbolInfo.h
+${lib_path}/treeWalker.o:	${lib_src}/treeWalker.cpp ${header_path}/treeWalker.h ${header_path}/variableSymbolInfo.h ${header_path}/functionSymbolInfo.h 
 	g++ -ggdb3 -c ${lib_src}/treeWalker.cpp
 	mv treeWalker.o ${lib_path}
 

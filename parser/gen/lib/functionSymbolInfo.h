@@ -21,6 +21,7 @@ public:
     int getNoParam(){ return _params.size();}
     std::vector<std::string> getParameter() { return _params;}
     bool matchParam(std::vector<std::string> v);
+    bool matchParam(std::vector<std::string> v, std::vector<int> &errors);
 
     void setParam(std::vector<std::string> v){ _params = v;}
 };

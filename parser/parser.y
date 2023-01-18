@@ -206,7 +206,7 @@ func_definition : func_first_part compound_statement
 					printUtil.printError("redefination of function", "",yylineno);
 				}
 				else if(funcDeclared.count(funcId) && !funcId->matchParam(types)){
-					printUtil.printError("defination doesnt match to declaration", "", yylineno);
+					printUtil.printError("Conflicting types for \'" + funcName + "\'", $$->getChilds()[1]->getBeginLine());
 				}
 				else {
 					funcDefined.insert(funcId);
@@ -294,10 +294,10 @@ common_func_first_part : type_specifier ID
 			if(prev->getType() == "FUNCTION"){
 				auto t = dynamic_cast<FunctionSymbolInfo *> (prev);
 				if(t->getReturnType() != type){
-					printUtil.printError("function decl changed" , "", yylineno);
+					printUtil.printError("Conflicting types for \'" + name + "\'" , yylineno);
 				}
 			}else{
-				printUtil.printError("variable delared as function", "", yylineno);
+				printUtil.printError("\'" + name + "\' redeclared as different kind of symbol", yylineno);
 			}
 
 			delete symbol;
@@ -317,7 +317,7 @@ parameter_list  : parameter_list COMMA type_specifier ID
 				auto newSymbl = new SymbolInfo(symbolAST->getSymbol()->getName(), type);
 				auto isInserted = symbolTable.insert(newSymbl);
 				if(!isInserted){
-					printUtil.printError("redefination of parameter \'" + newSymbl->getName() + "\'", "", symbolAST->getBeginLine());
+					printUtil.printError("Redefinition of parameter \'" + newSymbl->getName() + "\'", symbolAST->getBeginLine());
 					delete newSymbl;
 				}
 
@@ -400,16 +400,20 @@ var_declaration : type_specifier declaration_list SEMICOLON
 			auto type = treeWalker.walkTypeSpecifier($1);
 
 			if(type == "VOID"){
-				printUtil.printError("Variable of field declared void", "", yylineno);
+				for(auto symbol: symbols){
+					printUtil.printError("Variable or field \'" + symbol->getSymbol()->getName()  + "\' declared void", yylineno);
+				}
 			}
 
-			for(auto symbol: symbols){
+			for(int ii = symbols.size()-1; ii >= 0; ii--){
+				auto symbol = symbols[ii];
+
 				auto i = symbol->getSymbol();
         		i->setType(type);
 				auto isInserted = symbolTable.insert(i);
 
 				if(!isInserted){
-					printUtil.printError("redefination of parameter \'" + i->getName() + "\'", "", symbol->getBeginLine());
+					printUtil.printError("Conflicting types for\'" + i->getName() + "\'", symbol->getBeginLine());
 					delete i;
 				}
 
@@ -590,11 +594,12 @@ variable : ID
 			auto symbol = getSymbol($1);
 			string type = "INT";
 			if(symbol == nullptr){
-				printUtil.printError("undeclared variable", "", yylineno);
+				printUtil.printError("Undeclared variable \'" + treeWalker.walkID($1) + "\'", yylineno);
 			}else if(symbol->getType() == "FUNCTION"){
-				printUtil.printError("function cannot used as variable", "", yylineno);
+				printUtil.printError("Function cannot used as variable", yylineno);
 			}else if(dynamic_cast<VariableSymbolInfo *>(symbol) != nullptr){
-				printUtil.printError("array used as normal variable", "", yylineno);
+				// printUtil.printError("array used as normal variable", yylineno);
+				printUtil.printError("\'" + symbol->getName() + "\' is an array", yylineno);
 				type = symbol->getType();
 			}else{
 				type = symbol->getType();
@@ -610,18 +615,18 @@ variable : ID
 			auto symbol = getSymbol($1);
 			string type = "INT";
 			if(symbol == nullptr){
-				printUtil.printError("undeclared variable", "", yylineno);
+				printUtil.printError("Undeclared variable \'" + treeWalker.walkID($1) + "\'", yylineno);
 			}else if(symbol->getType() == "FUNCTION"){
 				printUtil.printError("function cannot used as variable", "", yylineno);
 			}else if( dynamic_cast<VariableSymbolInfo *>(symbol) == nullptr){
-				printUtil.printError("array access on normal variable", "", yylineno);
+				printUtil.printError("\'" + symbol->getName() + "\' is not an array", yylineno);
 				type = symbol->getType();
 			}else{
 				type = symbol->getType();
 			}
 
 			if(getDataType($3) != "INT"){
-				printUtil.printError("array access operation is not integer", "", yylineno);
+				printUtil.printError("Array subscript is not an integer", yylineno);
 			}
 			
 			$$ = new ExpressionAST(NodeType::VARIABLE, "ID LSQUARE expression RSQUARE", type, yylineno);
@@ -641,9 +646,9 @@ expression : logic_expression
 	   | variable ASSIGNOP logic_expression 	
 	   {
 			if(getDataType($3) == "VOID"){
-				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				printUtil.printError("Void cannot be used in expression", yylineno);
 			}else if(!isAssignopCorrect(getDataType($1), getDataType($3))){
-				printUtil.printError("Assignment of float to int", "", yylineno);
+				printUtil.printError("Warning: possible loss of data in assignment of FLOAT to INT", yylineno);
 			}
 
 			$$ = new ExpressionAST(NodeType::EXP, "variable ASSIGNOP logic_expression", getDataType($1), yylineno);
@@ -666,7 +671,7 @@ logic_expression : rel_expression
 			auto rhsType = getDataType($3);
 
 			if(lhsType == "VOID" || rhsType == "VOID"){
-				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				printUtil.printError("Void cannot be used in expression",  yylineno);
 				if(lhsType == "VOID") lhsType = "INT";
 				if(rhsType == "VOID") rhsType = "INT";
 			}
@@ -691,7 +696,7 @@ rel_expression	: simple_expression
 			auto rhsType = getDataType($3);
 
 			if(lhsType == "VOID" || rhsType == "VOID"){
-				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				printUtil.printError("Void cannot be used in expression", yylineno);
 				if(lhsType == "VOID") lhsType = "INT";
 				if(rhsType == "VOID") rhsType = "INT";
 			}
@@ -716,7 +721,7 @@ simple_expression : term
 			auto rhsType = getDataType($3);
 
 			if(lhsType == "VOID" || rhsType == "VOID"){
-				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				printUtil.printError("Void cannot be used in expression", yylineno);
 				if(lhsType == "VOID") lhsType = "INT";
 				if(rhsType == "VOID") rhsType = "INT";
 			}
@@ -744,7 +749,7 @@ term :	unary_expression
 			auto rhsType = getDataType($3);
 
 			if(lhsType == "VOID" || rhsType == "VOID"){
-				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				printUtil.printError("Void cannot be used in expression", yylineno);
 				if(lhsType == "VOID") lhsType = "INT";
 				if(rhsType == "VOID") rhsType = "INT";
 			}
@@ -753,7 +758,7 @@ term :	unary_expression
 			auto opType = treeWalker.walkID($2);
 			if(opType == "%"){
 				if(lhsType != "INT" || rhsType != "INT"){
-					printUtil.printError("both side of modulus operator should be int", "", yylineno);
+					printUtil.printError("Operands of modulus must be integers", yylineno);
 				}
 				type = "INT";
 			}
@@ -761,7 +766,7 @@ term :	unary_expression
 			int value = treeWalker.walkUnaryExpressionValue($3);
 			if(opType == "%" || opType == "/"){
 				if(value == 0){
-					printUtil.printError("Division by zero error", "", yylineno);
+					printUtil.printError("Warning: division by zero i=0f=1Const=0", yylineno);
 				}				
 			}
 
@@ -776,7 +781,7 @@ unary_expression : ADDOP unary_expression
 		{
 			auto type = getDataType($2);
 			if(type == "VOID"){
-				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				printUtil.printError("Void cannot be used in expression", yylineno);
 				type = "INT";
 			}
 
@@ -789,7 +794,7 @@ unary_expression : ADDOP unary_expression
 		{
 			auto type = getDataType($2);
 			if(type == "VOID"){
-				printUtil.printError("void function cannot be used in expression", "", yylineno);
+				printUtil.printError("Void cannot be used in expression", yylineno);
 				type = "INT";
 			}
 
@@ -823,14 +828,27 @@ factor	: variable
 			string type = "INT";
 
 			if(symbol == nullptr){
-				printUtil.printError("undeclared function", "", yylineno);
+				printUtil.printError("Undeclared function '" + name + "'", yylineno);
 			}else if(symbol->getType() != "FUNCTION"){
-				printUtil.printError("cannot call variable", "", yylineno);
+				printUtil.printError("'" + name + "'' is not a function", "", yylineno);
 			}else{
 				auto functionSymbol = dynamic_cast<FunctionSymbolInfo *>(symbol);
-				
-				if(!functionSymbol->matchParam(arguments)){
-					printUtil.printError("arguments does not match", "", yylineno);
+
+				vector<int> errors;	
+				if(!functionSymbol->matchParam(arguments, errors)){
+					if(errors.size() == 0){
+						if(functionSymbol->getNoParam() > arguments.size()){
+							printUtil.printError("Too few arguments to function \'" + name + "\'", yylineno);
+						}
+						else{
+							printUtil.printError("Too many arguments to function \'" + name + "\'", yylineno);
+						}
+					}
+					else{
+						for(auto i : errors){
+							printUtil.printError(string("Type mismatch for argument ") + to_string(i) + string(" of \'") + name + "\'", yylineno);
+						}
+					}
 				}else{
 					type = functionSymbol->getReturnType();
 				}

@@ -23,6 +23,18 @@ bool FunctionSymbolInfo::matchParam(std::vector<std::string> v){
     return true;
 }
 
+bool FunctionSymbolInfo::matchParam(std::vector<std::string> v, std::vector<int> &errors){
+    if(_params.size() != v.size()) return false;
+    
+    for(int i = _params.size()-1; i >= 0;i--){
+        if(_params[i] != v[i]) {
+            errors.push_back(v.size()-i);
+        }
+    }
+
+    return errors.size() == 0;
+}
+
 // int main(){
 //     FunctionSymbolInfo f1("foo", "INT", {"INT", "INT"});
 

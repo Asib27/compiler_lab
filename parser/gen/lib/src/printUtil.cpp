@@ -195,7 +195,12 @@ void PrintUtil::printMultilineComment(std::string text, int lineNo){
 
 void PrintUtil::printError(std::string error, std::string text, int lineNo){
     errorCount++;
-    errors << "Error at line# " << lineNo << ": " << error << " " << text << std::endl;
+    errors << "Line# " << lineNo << ": " << error << " " << text << std::endl;
+}
+
+void PrintUtil::printError(std::string error, int lineNo){
+    errorCount++;
+    errors << "Line# " << lineNo << ": " << error << std::endl;
 }
 
 int PrintUtil::getErrorCount(){
