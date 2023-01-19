@@ -21,5 +21,7 @@ public:
     std::ostream& printCurrentScope(std::ostream &os);
     friend std::ostream& operator<<(std::ostream &os, const SymbolTable &s);
 
+    void decreaseScopeCount(int a);
+
     ~SymbolTable();
 };

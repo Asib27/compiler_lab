@@ -6,7 +6,7 @@ VariableSymbolInfo::VariableSymbolInfo(std::string name, std::string type, std::
 
 
 void VariableSymbolInfo::printHelper(std::ostream &os){
-    os << "<" << getName() << "," << variableType << "," << getType() << ">";
+    os << "<" << getName() << ", " << variableType << ", " << getType() << ">";
 }
 
 VariableSymbolInfo::~VariableSymbolInfo()

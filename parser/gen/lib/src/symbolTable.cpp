@@ -12,6 +12,11 @@ void SymbolTable::enterScope(){
     _curScope = s;
 }
 
+
+void SymbolTable::decreaseScopeCount(int a){
+    nextScopeId -= a;
+}
+
 void SymbolTable::exitScope(){
     auto t = _curScope->getNext();
     if(t == nullptr){

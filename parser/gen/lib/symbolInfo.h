@@ -11,7 +11,7 @@ class SymbolInfo
 	SymbolInfo* _next;
 
 	virtual void printHelper(std::ostream &os){
-		os << "<" << _name << "," << _type << ">";
+		os << "<" << _name << ", " << _type << ">";
 	}
 public:
 	SymbolInfo();

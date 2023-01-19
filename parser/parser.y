@@ -20,7 +20,7 @@ ofstream logout("log.txt"), tokenout("token.txt"), errorout("error.txt");
 ofstream treeout("parseTree.txt");
 PrintUtil printUtil(tokenout, logout, errorout);
 Printer printer(logout, false);
-SymbolTable symbolTable(10, &printer);
+SymbolTable symbolTable(11, &printer);
 TreeWalker treeWalker;
 
 set<FunctionSymbolInfo *> funcDeclared, funcDefined;
@@ -157,6 +157,7 @@ func_declaration : func_first_part SEMICOLON
 
 			
 				symbolTable.exitScope();
+				symbolTable.decreaseScopeCount(1);
 
 				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
 			}
@@ -170,6 +171,7 @@ func_declaration : func_first_part SEMICOLON
 
 				$$->addChild($2);
 				symbolTable.exitScope();
+				symbolTable.decreaseScopeCount(1);
 				
 				auto funcName = treeWalker.walkID($$->getChilds()[1]);
 				auto id = symbolTable.lookup(funcName);
@@ -213,7 +215,7 @@ func_definition : func_first_part compound_statement
 					funcDeclared.insert(funcId);
 				}
 
-				logout << "func_definition: type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
+				logout << "func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
 			}
 		| func_first_part2 compound_statement
 			{
@@ -225,7 +227,7 @@ func_definition : func_first_part compound_statement
 
 				$$->addChild($2);
 
-				logout << symbolTable << endl;
+				logout << symbolTable;
 				symbolTable.exitScope();
 				
 				auto funcName = treeWalker.walkID($$->getChilds()[1]);
@@ -237,7 +239,7 @@ func_definition : func_first_part compound_statement
 					printUtil.printError("defination doesnt match to declaration", "", yylineno);
 				}else funcDeclared.insert(funcId);
 
-				logout << "func_definition: type_specifier ID LPAREN RPAREN compound_statement" << endl;
+				logout << "func_definition : type_specifier ID LPAREN RPAREN compound_statement" << endl;
 			}
  		;				
 
@@ -402,7 +404,10 @@ var_declaration : type_specifier declaration_list SEMICOLON
 			if(type == "VOID"){
 				for(auto symbol: symbols){
 					printUtil.printError("Variable or field \'" + symbol->getSymbol()->getName()  + "\' declared void", yylineno);
+					delete symbol;
 				}
+
+				symbols.clear();
 			}
 
 			for(int ii = symbols.size()-1; ii >= 0; ii--){
@@ -462,7 +467,7 @@ declaration_list : declaration_list COMMA ID
 			$$ = new TokenAST(NodeType::DECL_LIST, "declaration_list COMMA ID LSQUARE CONST_INT RSQUARE", yylineno);
 			$$->addChild({$1, $2, $3, $4, $5, $6});
 
- 		  	logout << "declaration_list : declaration_list COMMA ID LSQUARE int_const RSQUARE" << endl;
+ 		  	logout << "declaration_list : declaration_list COMMA ID LSQUARE CONST_INT RSQUARE" << endl;
 		  }
  		  | ID 
 		  {

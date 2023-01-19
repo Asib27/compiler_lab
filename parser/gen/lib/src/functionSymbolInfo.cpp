@@ -10,7 +10,7 @@ FunctionSymbolInfo::~FunctionSymbolInfo()
 }
 
 void FunctionSymbolInfo::printHelper(std::ostream &os) {
-    os << "<" << getName() << "," << getType() << "," << _returnType << ">";
+    os << "<" << getName() << ", " << getType() << ", " << _returnType << ">";
 }
 
 bool FunctionSymbolInfo::matchParam(std::vector<std::string> v){
