@@ -575,7 +575,7 @@ statement : var_declaration
 			$$->addChild({$1, $2, $3});
 			
 			logout << "statement : RETURN expression SEMICOLON" << endl;
-		}
+		}	
 	  ;
 	  
 expression_statement 	: SEMICOLON	
@@ -592,6 +592,16 @@ expression_statement 	: SEMICOLON
 
 				logout << "expression_statement : expression SEMICOLON" << endl;
 			}
+			| error SEMICOLON
+		{
+			$$ = new TokenAST(NodeType::EXPR_STMNT, "expression SEMICOLON", yylineno);
+			delete $1;
+			$1 = new TokenAST(NodeType::EXP, "error", yylineno);
+			$$->addChild({$1, $2});
+
+
+			printUtil.printError("Syntax error at expression of expression statement", yylineno);
+		}
 			;
 	  
 variable : ID 	
@@ -954,21 +964,9 @@ int main(int argc,char *argv[])
 		exit(1);
 	}
 
-	// auto fp2= fopen(argv[2],"w");
-	// fclose(fp2);
-	// auto fp3= fopen(argv[3],"w");
-	// fclose(fp3);
-	
-	// fp2= fopen(argv[2],"a");
-	// fp3= fopen(argv[3],"a");
-	
-
 	yyin=fp;
 	yyparse();
 	
-
-	// fclose(fp2);
-	// fclose(fp3);
 	fclose(fp);
 	
 	return 0;

@@ -56,7 +56,7 @@ std::string TreeWalker::parameterListChild(std::vector<AST *> childs, AST** root
     }
 
     // type specifier is found
-    std::string type = walkTypeSpecifier(childs[idx]);
+    std::string type = idx < childs.size() ? walkTypeSpecifier(childs[idx]) : "error";
 
     // new SymbolAST is created and returned 
     return type;
@@ -89,7 +89,10 @@ std::vector<SymbolAST *> TreeWalker::walkDeclarationList(AST* root){
         auto childs = root->getChilds();
         auto t = declarationListChild(childs, &root);
 
-        if(t == nullptr) return std::vector<SymbolAST *> ();
+        if(t == nullptr) {
+            for(auto i: ans) delete i;
+            return std::vector<SymbolAST *> ();
+        }
         ans.push_back(t);
 
         // std::cout << t << " " << root << std::endl;
