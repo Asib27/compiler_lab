@@ -23,6 +23,8 @@ Printer printer(logout, false);
 SymbolTable symbolTable(11, &printer);
 TreeWalker treeWalker;
 
+bool inFunction = false;
+
 set<FunctionSymbolInfo *> funcDeclared, funcDefined;
 int errorCount;
 
@@ -157,7 +159,7 @@ func_declaration : func_first_part SEMICOLON
 
 			
 				symbolTable.exitScope();
-				symbolTable.decreaseScopeCount(1);
+				// symbolTable.decreaseScopeCount(1);
 
 				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
 			}
@@ -171,7 +173,7 @@ func_declaration : func_first_part SEMICOLON
 
 				$$->addChild($2);
 				symbolTable.exitScope();
-				symbolTable.decreaseScopeCount(1);
+				// symbolTable.decreaseScopeCount(1);
 				
 				auto funcName = treeWalker.walkID($$->getChilds()[1]);
 				auto id = symbolTable.lookup(funcName);
@@ -195,8 +197,8 @@ func_definition : func_first_part compound_statement
 
 				$$->addChild($2);
 
-				logout << symbolTable;
-				symbolTable.exitScope();
+				// logout << symbolTable;
+				// symbolTable.exitScope();
 				
 				
 				auto types = treeWalker.walkParameterList($$->getChilds()[3]);
@@ -227,8 +229,8 @@ func_definition : func_first_part compound_statement
 
 				$$->addChild($2);
 
-				logout << symbolTable;
-				symbolTable.exitScope();
+				// logout << symbolTable;
+				// symbolTable.exitScope();
 				
 				auto funcName = treeWalker.walkID($$->getChilds()[1]);
 				auto id = symbolTable.lookup(funcName);
@@ -256,6 +258,8 @@ func_first_part : common_func_first_part LPAREN {symbolTable.enterScope();} para
 		$$->addChild($4);
 		$$->addChild($5);
 
+		inFunction = true;
+
 		// setting parameter list the function
 		auto types = treeWalker.walkParameterList($4);
 		auto funcName = treeWalker.walkID($$->getChilds()[1]);
@@ -277,6 +281,7 @@ func_first_part2 : common_func_first_part LPAREN RPAREN
 		$$->addChild($2);		
 		$$->addChild($3);
 
+		inFunction = true;
 		symbolTable.enterScope();
 	}
 	;
@@ -375,23 +380,35 @@ parameter_list  : parameter_list COMMA type_specifier ID
  		;
 
  		
-compound_statement : LCURL statements RCURL
+compound_statement : lcurl_rule statements RCURL
 			{
 				$$ = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL statement RCURL", yylineno);
 				$$->addChild({$1, $2, $3});
 
 				logout << "compound_statement: LCURL statements RCURL" << endl;
+				logout << symbolTable;
+				symbolTable.exitScope();
 
 			}
- 		    | LCURL RCURL
+ 		    | lcurl_rule RCURL
 			{
 				$$ = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL RCURL", yylineno);
 				$$->addChild({$1, $2});
 
+				symbolTable.exitScope();
+				// symbolTable.decreaseScopeCount(1);
 				logout << "compound_statement : LCURL RCURL" << endl;	
 
 			}
  		    ;
+
+lcurl_rule : LCURL
+{
+	$$ = $1;
+	if(!inFunction)
+		symbolTable.enterScope();
+	inFunction = false;
+}
  		    
 var_declaration : type_specifier declaration_list SEMICOLON 
 		{	
