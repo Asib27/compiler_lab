@@ -7,7 +7,7 @@ lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o $
 cc := g++
 cflags := -fpermissive -ggdb3
 
-parser.out:	${gen}/parser.o ${gen}/lexer.o ${lib}
+codegen.out:	${gen}/parser.o ${gen}/lexer.o ${lib}
 	${cc} ${cflags} ${gen}/parser.o ${gen}/lexer.o ${lib} -o parser.out
 
 ${gen}/parser.o: parser.y ${header_path}/ast.h ${header_path}/functionSymbolInfo.h ${header_path}/variableSymbolInfo.h ${header_path}/printUtil.h
