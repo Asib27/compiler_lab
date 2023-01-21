@@ -389,35 +389,30 @@ parameter_list  : parameter_list COMMA type_specifier ID
  		;
 
  		
-compound_statement : lcurl_rule statements RCURL
+compound_statement : LCURL {
+		if(!inFunction)
+			symbolTable.enterScope();
+		inFunction = false;
+	} statements RCURL
 			{
 				$$ = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL statement RCURL", yylineno);
-				$$->addChild({$1, $2, $3});
+				$$->addChild({$1, $3, $4});
 
 				logout << "compound_statement: LCURL statements RCURL" << endl;
 				logout << symbolTable;
 				symbolTable.exitScope();
 
 			}
- 		    | lcurl_rule RCURL
+ 		    | LCURL RCURL
 			{
 				$$ = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL RCURL", yylineno);
 				$$->addChild({$1, $2});
 
-				symbolTable.exitScope();
-				// symbolTable.decreaseScopeCount(1);
 				logout << "compound_statement : LCURL RCURL" << endl;	
 
 			}
  		    ;
 
-lcurl_rule : LCURL
-{
-	$$ = $1;
-	if(!inFunction)
-		symbolTable.enterScope();
-	inFunction = false;
-}
  		    
 var_declaration : type_specifier declaration_list SEMICOLON 
 		{	

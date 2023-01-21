@@ -64,5 +64,6 @@ ${lib_path}/treeWalker.o:	${lib_src}/treeWalker.cpp ${header_path}/treeWalker.h 
 clean:
 	rm ${gen}/lex.yy.c ${gen}/parser.tab.c 
 	rm ${gen}/lexer.o ${gen}/parser.o
+	rm parseTree.txt log.txt error.txt token.txt
 	rm parser.out
 	rm gen/lib/bin/*.o
