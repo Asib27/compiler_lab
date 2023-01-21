@@ -1,0 +1,44 @@
+Line# 1: Token <VOID> Lexeme void found
+type_specifier : VOID
+Line# 1: Token <ID> Lexeme abc found
+Line# 1: Token <LPAREN> Lexeme ( found
+Line# 1: Token <RPAREN> Lexeme ) found
+Line# 1: Token <SEMICOLON> Lexeme ; found
+func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON
+unit : func_declaration
+program : unit
+Line# 3: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 3: Token <ID> Lexeme main found
+Line# 3: Token <LPAREN> Lexeme ( found
+Line# 3: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 3: Token <ID> Lexeme a found
+parameter_list : type_specifier ID
+Line# 3: Token <RPAREN> Lexeme ) found
+Line# 3: Token <LCURL> Lexeme { found
+Line# 4: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 4: Token <ID> Lexeme cdde found
+Line# 4: Token <LPAREN> Lexeme ( found
+Line# 4: Token <RPAREN> Lexeme ) found
+Line# 4: Token <LCURL> Lexeme { found
+Line# 6: Token <RCURL> Lexeme } found
+compound_statement : LCURL RCURL
+func_definition : type_specifier ID LPAREN RPAREN compound_statement
+statements : statement
+Line# 7: Token <RCURL> Lexeme } found
+compound_statement: LCURL statements RCURL
+	ScopeTable# 4
+	ScopeTable# 3
+	1--> <cdde, FUNCTION, INT> 
+	10--> <a, INT> 
+	ScopeTable# 1
+	2--> <main, FUNCTION, INT> 
+	11--> <abc, FUNCTION, VOID> 
+func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement
+unit : func_definition
+program : program unit
+start : program
+Total Lines: 8
+Total Errors: 1

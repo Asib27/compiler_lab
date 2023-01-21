@@ -1,24 +1,7 @@
 void abc();
 
 int main(int a){
-    abc();
-    if(abc()){
-        return 1;
+    int cdde(){
+        
     }
-    
-    if(abc()){
-
-    }else{
-
-    }
-
-    while(abc()){
-
-    }
-
-    for(abc();abc();abc()){
-
-    }
-
-    return abc();
 }

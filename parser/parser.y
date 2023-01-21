@@ -537,8 +537,21 @@ statement : var_declaration
 			$$ = new TokenAST(NodeType::STATEMENT, "var_declaration", yylineno);
 			$$->addChild($1);
 
-			logout << "statement : var_declaration" << endl;
+			logout << "statemenparameter_listt : var_declaration" << endl;
 		}
+		| func_declaration
+		{
+			$$ = new TokenAST(NodeType::STATEMENT, "error", yylineno);
+
+			printUtil.printError("Nested function declaration is not allowed", yylineno);
+		}
+		| func_definition
+		{
+			$$ = new TokenAST(NodeType::STATEMENT, "error", yylineno);
+
+			printUtil.printError("Nested function definition is not allowed", yylineno);
+		}
+
 	  | expression_statement
 		{
 			$$ = new TokenAST(NodeType::STATEMENT, "expression_statement", yylineno);

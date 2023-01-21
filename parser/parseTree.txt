@@ -1,0 +1,27 @@
+start : program		<Line:1-7>
+ program : program unit		<Line:1-7>
+  program : unit		<Line:1-1>
+   unit : func_declaration		<Line:1-1>
+    func_declaration : type_specifier ID LPAREN RPAREN SEMICOLON		<Line:1-1>
+     type_specifier : VOID		<Line:1-1>
+      VOID : void  <Line:1>
+     ID : abc  <Line:1>
+     LPAREN : (  <Line:1>
+     RPAREN : )  <Line:1>
+     SEMICOLON : ;  <Line:1>
+  unit : func_definition		<Line:3-7>
+   func_defination : type_specifier ID LPAREN parameter_list RPAREN compound_statement		<Line:3-7>
+    type_specifier : INT		<Line:3-3>
+     INT : int  <Line:3>
+    ID : main  <Line:3>
+    LPAREN : (  <Line:3>
+    parameter_list : type_specifier ID		<Line:3-3>
+     type_specifier : INT		<Line:3-3>
+      INT : int  <Line:3>
+     ID : a  <Line:3>
+    RPAREN : )  <Line:3>
+    compound_statement : LCURL statement RCURL		<Line:3-7>
+     LCURL : {  <Line:3>
+     statements : statement		<Line:6-6>
+      statement : error		<Line:6-6>
+     RCURL : }  <Line:7>
