@@ -126,6 +126,24 @@ std::string TreeWalker::walkID(AST* root){
     return symbolAST->getSymbol()->getName();
 }
 
+std::vector<SymbolInfo *> TreeWalker::walkParameterListFindIds(AST* root){
+    std::vector<SymbolInfo *> ids;
+    auto childs = root->getChilds();
+
+    if(childs.size() == 4){
+        ids = walkParameterListFindIds(childs[0]);
+        auto type = walkTypeSpecifier(childs[2]);
+        auto id = walkID(childs[3]);
+        ids.push_back(new SymbolInfo(id, type));
+    }
+    else if(childs.size() == 2 && childs[0]->getTokenType() != "parameter_list"){
+        auto type = walkTypeSpecifier(childs[0]);
+        auto id = walkID(childs[1]);
+        ids.push_back(new SymbolInfo(id, type));
+    }
+    
+    return ids;
+}
 
 std::string TreeWalker::argumentListChild(std::vector<AST *> childs, AST **rootptr){
     if(childs.size() == 0){

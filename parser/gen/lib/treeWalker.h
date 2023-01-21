@@ -27,6 +27,7 @@ public:
     std::string walkID(AST* root);
     std::vector<SymbolAST *> walkDeclarationList(AST* root);
     std::vector<std::string> walkParameterList(AST* root);
+    std::vector<SymbolInfo *> walkParameterListFindIds(AST* root);
     std::vector<std::string> walkArgumentList(AST *root);
     int walkUnaryExpressionValue(AST *root);
 

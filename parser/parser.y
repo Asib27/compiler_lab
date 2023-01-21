@@ -25,16 +25,12 @@ TreeWalker treeWalker;
 
 bool inFunction = false;
 
-set<FunctionSymbolInfo *> funcDeclared, funcDefined;
-int errorCount;
+set<FunctionSymbolInfo *> funcDefined;
 
 string errorString = "";
 
 void yyerror(char *s)
 {
-	// printf(s);
-	// errorout << errorString << endl;
-	errorCount++;
 }
 
 std::string getDataType(AST *node){
@@ -70,6 +66,56 @@ bool errorIfVoid(AST *exp){
 		return true;
 	}
 	return false;
+}
+
+void handleFunctionDeclaration(AST* ts, AST* rid, vector<string> paramList){
+	auto type = treeWalker.walkTypeSpecifier(ts);
+	auto name = treeWalker.walkID(rid);
+
+	auto id = new FunctionSymbolInfo(name, type, paramList);
+	auto prev = symbolTable.lookup(name);
+
+	if(prev != nullptr){
+		if(prev->getType() == "FUNCTION"){
+			auto t = dynamic_cast<FunctionSymbolInfo *> (prev);
+			if(t->getReturnType() != type){
+				printUtil.printError("Conflicting types for \'" + name + "\'" , yylineno);
+			}
+		}else{
+			printUtil.printError("\'" + name + "\' redeclared as different kind of symbol", yylineno);
+		}
+	}
+	else{
+		symbolTable.insert(id);
+	}
+}
+
+void handleFunctionDefination(AST* ts, AST* rid, vector<string> paramList){
+	auto returnType = treeWalker.walkTypeSpecifier(ts);
+	auto funcName = treeWalker.walkID(rid);
+	auto prev = symbolTable.lookup(funcName);
+	auto funcId = dynamic_cast<FunctionSymbolInfo *> (prev);
+	auto newId = new FunctionSymbolInfo(funcName, returnType, paramList);
+
+	if(prev != nullptr){
+		if(funcDefined.count(funcId)){
+			printUtil.printError("Redefination of function '" + funcName +"'", "",yylineno);
+		}
+		else if(funcId == nullptr){
+			printUtil.printError("'" + funcName +"' redeclared as different kind of symbol" , "",yylineno);
+		}
+		else if(funcId->getReturnType() != returnType || !funcId->matchParam(paramList)){
+			printUtil.printError("Conflicting types for \'" + funcName + "\'", rid->getBeginLine());
+		}
+		delete newId;
+	}
+	else{
+		symbolTable.insert(newId);
+		funcDefined.insert(newId);
+	}
+
+	symbolTable.enterScope();
+	inFunction = true;
 }
 
 %}
@@ -146,199 +192,69 @@ unit : var_declaration
 	}
      ;
      
-func_declaration : func_first_part SEMICOLON
-			{
-				// TODO : Function redeclaration checking
-				$$ = new TokenAST(NodeType::FUNC_DECL, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
-				$$->addChild($1->getChilds());	
+func_declaration : type_specifier ID LPAREN parameter_list RPAREN
+{
+	handleFunctionDeclaration($1, $2, treeWalker.walkParameterList($4));
+}
+ SEMICOLON
+{
+	$$ = new TokenAST(NodeType::FUNC_DECL, "type_specifier ID LPAREN parameter_list RPAREN SEMICOLON", yylineno);
+	$$->addChild({$1, $2, $3, $4, $5, $7});	
 
-				$1->removeAllChild();
-				delete $1;
-
-				$$->addChild($2);
+	logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
+}
 		
-				
-				auto funcName = treeWalker.walkID($$->getChilds()[1]);
-				auto id = symbolTable.lookup(funcName);
-				auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
-				if(funcDeclared.count(funcId) || funcDefined.count(funcId)){
-					printUtil.printError("redeclaration of function", "",yylineno);
-				}
-				else funcDeclared.insert(funcId);
+| type_specifier ID LPAREN RPAREN
+{
+	handleFunctionDeclaration($1, $2, vector<string> ());
+} SEMICOLON
+{
+	$$ = new TokenAST(NodeType::FUNC_DECL, "type_specifier ID LPAREN RPAREN SEMICOLON", yylineno);
+	$$->addChild({$1, $2, $3, $4, $6});	
 
-			
-				symbolTable.exitScope();
-				// symbolTable.decreaseScopeCount(1);
-
-				logout << "func_declaration: type_specifier ID LPAREN parameter_list RPAREN SEMICOLON" << endl;
-			}
-		| func_first_part2 SEMICOLON
-			{
-				$$ = new TokenAST(NodeType::FUNC_DECL, "type_specifier ID LPAREN RPAREN SEMICOLON", yylineno);
-				$$->addChild($1->getChilds());	
-
-				$1->removeAllChild();
-				delete $1;
-
-				$$->addChild($2);
-				symbolTable.exitScope();
-				// symbolTable.decreaseScopeCount(1);
-				
-				auto funcName = treeWalker.walkID($$->getChilds()[1]);
-				auto id = symbolTable.lookup(funcName);
-				auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
-				if(funcDeclared.count(funcId) || funcDefined.count(funcId)){
-					printUtil.printError("redeclaration of function", "",yylineno);
-				}
-				else funcDeclared.insert(funcId);
-
-				logout << "func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON" << endl;
-			}
-		;
+	logout << "func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON" << endl;
+}
+;
 		 
-func_definition : func_first_part compound_statement
-			{
-				$$ = new TokenAST(NodeType::FUNC_DEF, "type_specifier ID LPAREN parameter_list RPAREN compound_statement", yylineno);
-				$$->addChild($1->getChilds());
+func_definition : type_specifier ID LPAREN parameter_list RPAREN 
+{
+	handleFunctionDefination($1, $2, treeWalker.walkParameterList($4));
 
-				$1->removeAllChild();
-				delete $1;
-
-				$$->addChild($2);
-
-				// logout << symbolTable;
-				// symbolTable.exitScope();
-				
-				
-				auto types = treeWalker.walkParameterList($$->getChilds()[3]);
-				auto funcName = treeWalker.walkID($$->getChilds()[1]);
-				auto id = symbolTable.lookup(funcName);
-				auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
-
-				if(funcDefined.count(funcId)){
-					printUtil.printError("redefination of function", "",yylineno);
-				}
-				else if(funcDeclared.count(funcId) && !funcId->matchParam(types)){
-					printUtil.printError("Conflicting types for \'" + funcName + "\'", $$->getChilds()[1]->getBeginLine());
-				}
-				else {
-					funcDefined.insert(funcId);
-					funcDeclared.insert(funcId);
-				}
-
-				logout << "func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
-			}
-		| func_first_part2 compound_statement
-			{
-				$$ = new TokenAST(NodeType::FUNC_DEF, "type_specifier ID LPAREN RPAREN compound_statement", yylineno);
-				$$->addChild($1->getChilds());
-
-				$1->removeAllChild();
-				delete $1;
-
-				$$->addChild($2);
-
-				// logout << symbolTable;
-				// symbolTable.exitScope();
-				
-				auto funcName = treeWalker.walkID($$->getChilds()[1]);
-				auto id = symbolTable.lookup(funcName);
-				auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
-				if(funcDefined.count(funcId)){
-					printUtil.printError("redefination of function", "",yylineno);
-				}else if(funcDeclared.count(funcId) && !funcId->matchParam({})){
-					printUtil.printError("defination doesnt match to declaration", "", yylineno);
-				}else funcDeclared.insert(funcId);
-
-				logout << "func_definition : type_specifier ID LPAREN RPAREN compound_statement" << endl;
-			}
- 		;				
-
-
-func_first_part : common_func_first_part LPAREN {symbolTable.enterScope();} parameter_list RPAREN
-	{
-		$$ = new TokenAST(NodeType::TOKEN, "token", yylineno);
-
-		$$->addChild($1->getChilds());
-		$1->removeAllChild();
-		delete $1;
-
-		$$->addChild($2);		
-		$$->addChild($4);
-		$$->addChild($5);
-
-		inFunction = true;
-
-		// setting parameter list the function
-		auto types = treeWalker.walkParameterList($4);
-		auto funcName = treeWalker.walkID($$->getChilds()[1]);
-		auto id = symbolTable.lookup(funcName);
-		auto funcId = dynamic_cast<FunctionSymbolInfo *> (id);
-		if(funcId != nullptr && !funcDeclared.count(funcId)){
-			funcId->setParam(types);
-		}
-	}
-	;
-func_first_part2 : common_func_first_part LPAREN RPAREN 
-	{
-		$$ = new TokenAST(NodeType::TOKEN, "token", yylineno);
-		
-		$$->addChild($1->getChilds());
-		$1->removeAllChild();
-		delete $1;
-
-		$$->addChild($2);		
-		$$->addChild($3);
-
-		inFunction = true;
-		symbolTable.enterScope();
-	}
-	;
-
-common_func_first_part : type_specifier ID 
-	{
-		$$ = new TokenAST(NodeType::TOKEN, "token", yylineno);
-		$$->addChild({$1, $2});
-
-		auto type = treeWalker.walkTypeSpecifier($1);
-		auto name = treeWalker.walkID($2);
-		auto symbol = new FunctionSymbolInfo(name, type, {});
-		auto isInserted = symbolTable.insert(symbol);
-
+	auto params = treeWalker.walkParameterListFindIds($4);
+	for(auto i: params){
+		auto isInserted = symbolTable.insert(i);
 		if(!isInserted){
-			auto prev = symbolTable.lookup(name);
-			if(prev->getType() == "FUNCTION"){
-				auto t = dynamic_cast<FunctionSymbolInfo *> (prev);
-				if(t->getReturnType() != type){
-					printUtil.printError("Conflicting types for \'" + name + "\'" , yylineno);
-				}
-			}else{
-				printUtil.printError("\'" + name + "\' redeclared as different kind of symbol", yylineno);
-			}
-
-			delete symbol;
+			printUtil.printError("Redefinition of parameter \'" + i->getName() + "\'", $4->getBeginLine());
+			delete i;
 		}
-
-		// cout << symbolTable << endl;
+		
 	}
-	;
+}
+compound_statement
+{
+	$$ = new TokenAST(NodeType::FUNC_DEF, "type_specifier ID LPAREN parameter_list RPAREN compound_statement", yylineno);
+	$$->addChild({$1, $2, $3, $4, $5, $7});
+	
+	logout << "func_definition : type_specifier ID LPAREN parameter_list RPAREN compound_statement" << endl;
+}
+| type_specifier ID LPAREN RPAREN 
+{
+	handleFunctionDefination($1, $2, vector<string>());
+}
+compound_statement
+{
+	$$ = new TokenAST(NodeType::FUNC_DEF, "type_specifier ID LPAREN RPAREN compound_statement", yylineno);
+	$$->addChild({$1, $2, $3, $4, $6});
+
+	logout << "func_definition : type_specifier ID LPAREN RPAREN compound_statement" << endl;
+}
+;				
+
 
 parameter_list  : parameter_list COMMA type_specifier ID
 			{
 				$$ = new TokenAST(NodeType::PARAM_LIST, "parameter_list COMMA type_specifier ID", yylineno);
 				$$->addChild({$1, $2, $3, $4});
-				
-				auto type = treeWalker.walkTypeSpecifier($3);
-				auto symbolAST = dynamic_cast<SymbolAST *>($4);
-				auto newSymbl = new SymbolInfo(symbolAST->getSymbol()->getName(), type);
-				auto isInserted = symbolTable.insert(newSymbl);
-				if(!isInserted){
-					printUtil.printError("Redefinition of parameter \'" + newSymbl->getName() + "\'", symbolAST->getBeginLine());
-					delete newSymbl;
-				}
-
-				// cout << symbolTable << endl;
-
 
 				logout << "parameter_list : parameter_list COMMA type_specifier ID" << endl;
 			}
@@ -354,17 +270,6 @@ parameter_list  : parameter_list COMMA type_specifier ID
 				$$ = new TokenAST(NodeType::PARAM_LIST, "type_specifier ID", yylineno);
 				$$->addChild({$1, $2});
 
-				auto type = treeWalker.walkTypeSpecifier($1);
-				auto symbolAST = dynamic_cast<SymbolAST *>($2);
-				auto newSymbl = new SymbolInfo(symbolAST->getSymbol()->getName(), type);
-				auto isInserted = symbolTable.insert(newSymbl);
-				if(!isInserted){
-					printUtil.printError("redefination of parameter \'" + newSymbl->getName() + "\'", "", symbolAST->getBeginLine());
-					delete newSymbl;
-				}
-
-				// cout << symbolTable << endl;
-
 				logout << "parameter_list : type_specifier ID" << endl;
 			}
 		| type_specifier 
@@ -379,8 +284,7 @@ parameter_list  : parameter_list COMMA type_specifier ID
 				$$ = new TokenAST(NodeType::PARAM_LIST, "parameter_list error", yylineno);
 
 				delete $2;
-				$2 = new TokenAST(NodeType::PARAM_LIST, "error", yylineno);
-				$$->addChild({$1, $2});
+				delete $1;
 
 				yyclearin;
 				
@@ -389,29 +293,39 @@ parameter_list  : parameter_list COMMA type_specifier ID
  		;
 
  		
-compound_statement : LCURL {
-		if(!inFunction)
-			symbolTable.enterScope();
-		inFunction = false;
-	} statements RCURL
-			{
-				$$ = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL statement RCURL", yylineno);
-				$$->addChild({$1, $3, $4});
+compound_statement : LCURL 
+{
+	if(!inFunction)
+		symbolTable.enterScope();
+	inFunction = false;
+} 
+statements RCURL
+{
+	$$ = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL statement RCURL", yylineno);
+	$$->addChild({$1, $3, $4});
 
-				logout << "compound_statement: LCURL statements RCURL" << endl;
-				logout << symbolTable;
-				symbolTable.exitScope();
+	logout << "compound_statement: LCURL statements RCURL" << endl;
 
-			}
- 		    | LCURL RCURL
-			{
-				$$ = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL RCURL", yylineno);
-				$$->addChild({$1, $2});
+	logout << symbolTable;
+	symbolTable.exitScope();
 
-				logout << "compound_statement : LCURL RCURL" << endl;	
+}
+| LCURL
+{
+	if(!inFunction)
+		symbolTable.enterScope();
+	inFunction = false;
+}RCURL
+{
+	$$ = new TokenAST(NodeType::COMPOUND_STATEMENT, "LCURL RCURL", yylineno);
+	$$->addChild({$1, $3});
 
-			}
- 		    ;
+	logout << "compound_statement : LCURL RCURL" << endl;	
+
+	logout << symbolTable;
+	symbolTable.exitScope();
+}
+;
 
  		    
 var_declaration : type_specifier declaration_list SEMICOLON 
@@ -537,7 +451,7 @@ statement : var_declaration
 			$$ = new TokenAST(NodeType::STATEMENT, "var_declaration", yylineno);
 			$$->addChild($1);
 
-			logout << "statemenparameter_listt : var_declaration" << endl;
+			logout << "statement : var_declaration" << endl;
 		}
 		| func_declaration
 		{
@@ -862,7 +776,7 @@ unary_expression : ADDOP unary_expression
 			$$ = new ExpressionAST(NodeType::UNARY_EXP, "NOT unary_expression", "INT", yylineno);
 			$$->addChild({$1, $2});
 
-			logout << "NOT unary_expression" << endl;
+			logout << "unary_expression : NOT unary_expression" << endl;
 		}
 		 | factor 
 		{

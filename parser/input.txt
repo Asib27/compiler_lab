@@ -1,7 +1,11 @@
 void abc();
+int abcd(int a);
+int abcde(int a, int b);
 
-int main(int a){
-    int cdde(){
-        
-    }
+int abcd(){
+
+}
+
+int main(){
+
 }

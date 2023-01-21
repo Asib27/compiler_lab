@@ -5,7 +5,7 @@ std::string NodeTypeToString[] = {
     "simple_expression", "term", "unary_expression", "factor",
     "argument_list", "arguments", "", "var_declaration", "type_specifier", "declaration_list",
     "statements", "statement", "expression_statement", "compound_statement", 
-    "func_declaration", "func_defination", "start", "program", "unit", "parameter_list"
+    "func_declaration", "func_definition", "start", "program", "unit", "parameter_list"
 };
 
 std::string getStringofNode(NodeType n){
