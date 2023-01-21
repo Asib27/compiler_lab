@@ -1,12 +1,24 @@
-// int cd(float -);
+void abc();
 
-// int cde(int a, float -);
-// int cde(int a, float -, int c);
-
-int abc(int a){
-    int a, b, c;
-    b ;
-    {
-        a = 10;
+int main(int a){
+    abc();
+    if(abc()){
+        return 1;
     }
+    
+    if(abc()){
+
+    }else{
+
+    }
+
+    while(abc()){
+
+    }
+
+    for(abc();abc();abc()){
+
+    }
+
+    return abc();
 }

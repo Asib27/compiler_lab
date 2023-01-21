@@ -152,7 +152,14 @@ std::string TreeWalker::argumentListChild(std::vector<AST *> childs, AST **rootp
 std::vector<std::string> TreeWalker::walkArgumentList(AST *root){
     std::vector<std::string> ans;
 
+    if(root->getChilds().size() != 1) return ans;
+
     root = root->getChilds()[0];
+
+    if(root->getTokenType() != "arguments"){
+        return ans;
+    }
+
     while(root){
         // root->print(std::cout);
 

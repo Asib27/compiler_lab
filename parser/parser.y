@@ -63,6 +63,15 @@ string getAddopType(string lhs, string rhs){
 	return (lhs == "FLOAT" || rhs == "FLOAT") ? "FLOAT" : "INT";
 }
 
+bool errorIfVoid(AST *exp){
+	auto type = getDataType(exp);
+	if(type == "VOID"){
+		printUtil.printError("Void cannot be used in expression",  exp->getBeginLine());
+		return true;
+	}
+	return false;
+}
+
 %}
 
 %code requires {
@@ -555,6 +564,10 @@ statement : var_declaration
 			$$ = new TokenAST(NodeType::STATEMENT, "FOR LPAREN expression_statement expression_statement expression RPAREN statement", yylineno);
 			$$->addChild({$1, $2, $3, $4, $5, $6, $7});
 
+			errorIfVoid($3->getChilds()[0]);
+			errorIfVoid($4->getChilds()[0]);
+			errorIfVoid($5);
+
 			logout << "statement : FOR LPAREN expression_statement expression_statement expression RPAREN statement" << endl;
 		}
 	  | IF LPAREN expression RPAREN statement	%prec LOWER_THAN_ELSE 
@@ -562,12 +575,16 @@ statement : var_declaration
 			$$ = new TokenAST(NodeType::STATEMENT, "IF LPAREN expression RPAREN statement", yylineno);
 			$$->addChild({$1, $2, $3, $4, $5});
 
+			errorIfVoid($3);
+
 			logout << "statement : IF LPAREN expression RPAREN statement" << endl;
 		}
 	  | IF LPAREN expression RPAREN statement ELSE statement
 	  	{
 			$$ = new TokenAST(NodeType::STATEMENT, "IF LPAREN expression RPAREN statement ELSE statement", yylineno);
 			$$->addChild({$1, $2, $3, $4, $5, $6, $7});
+
+			errorIfVoid($3);
 
 			logout << "statement : IF LPAREN expression RPAREN statement ELSE statement" << endl;
 		}
@@ -577,9 +594,11 @@ statement : var_declaration
 			$$ = new TokenAST(NodeType::STATEMENT, "WHILE LPAREN expression RPAREN statement", yylineno);
 			$$->addChild({$1, $2, $3, $4, $5});
 
+			errorIfVoid($3);
+
 			logout << "statement : WHILE LPAREN expression RPAREN statement" << endl;
 		}
-	  | PRINTLN LPAREN ID RPAREN SEMICOLON
+	  | PRINTLN LPAREN variable RPAREN SEMICOLON
 	  	{
 			$$ = new TokenAST(NodeType::STATEMENT, "PRINTLN LPAREN ID RPAREN SEMICOLON", yylineno);
 			$$->addChild({$1, $2, $3, $4, $5});
@@ -590,6 +609,8 @@ statement : var_declaration
 		{
 			$$ = new TokenAST(NodeType::STATEMENT, "RETURN expression SEMICOLON", yylineno);
 			$$->addChild({$1, $2, $3});
+
+			errorIfVoid($2);
 			
 			logout << "statement : RETURN expression SEMICOLON" << endl;
 		}	
