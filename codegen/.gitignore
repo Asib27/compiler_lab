@@ -1,0 +1,9 @@
+error.txt
+input.txt
+log.txt
+parseTree.txt
+token.txt
+
+gen/lex.yy.c
+gen/parser.tab.c
+gen/test.cpp
