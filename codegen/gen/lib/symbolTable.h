@@ -1,3 +1,6 @@
+#ifndef __SYMBOL_TABLE_H__
+#define __SYMBOL_TABLE_H__
+
 #include"scopeTable.h"
 
 #include<iostream>
@@ -25,3 +28,5 @@ public:
 
     ~SymbolTable();
 };
+
+#endif

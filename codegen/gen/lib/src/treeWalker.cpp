@@ -216,6 +216,51 @@ int TreeWalker::walkUnaryExpressionValue(AST* root){
     return con_value;
 }
 
+std::vector<AST*> TreeWalker::processProgram(AST* root){
+    if(!isNodeType(root, NodeType::PROGRAM)){
+        showError(__LINE__);
+        return std::vector<AST *>();
+    }
+
+    std::vector<AST *> ans;
+
+    auto childs = root->getChilds();
+    if(isNodeType(childs, {NodeType::PROGRAM, NodeType::UNIT})){
+        ans = processProgram(childs[0]);
+        auto childAst = processUnit(childs[1]);
+
+        if(childAst != nullptr){
+            ans.push_back(childAst);
+        }
+    }
+    else if(isNodeType(childs, {NodeType::UNIT})){
+        auto childAst = processUnit(childs[0]);
+
+        if(childAst != nullptr){
+            ans.push_back(childAst);
+        }
+    }
+    else{
+        showError(__LINE__);
+    }
+
+    return ans;
+}
+
+AST* TreeWalker::processUnit(AST* root){
+    if(!isNodeType(root, NodeType::UNIT)){
+        showError(__LINE__);
+        return nullptr;
+    }
+
+    auto childs = root->getChilds();
+    if(!isNodeType(childs, {NodeType::FUNC_DECL})){
+        return childs[0];
+    }else{
+        return nullptr;
+    }
+}
+
 TreeWalker::TreeWalker(/* args */)
 {
 }

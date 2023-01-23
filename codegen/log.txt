@@ -1,0 +1,73 @@
+Line# 1: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 1: Token <ID> Lexeme a found
+Line# 1: Token <COMMA> Lexeme , found
+declaration_list : ID
+Line# 1: Token <ID> Lexeme b found
+Line# 1: Token <COMMA> Lexeme , found
+declaration_list : declaration_list COMMA ID
+Line# 1: Token <ID> Lexeme c found
+Line# 1: Token <SEMICOLON> Lexeme ; found
+declaration_list : declaration_list COMMA ID
+var_declaration : type_specifier declaration_list SEMICOLON
+unit : var_declaration
+program : unit
+Line# 3: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 3: Token <ID> Lexeme abc found
+Line# 3: Token <LPAREN> Lexeme ( found
+Line# 3: Token <RPAREN> Lexeme ) found
+Line# 3: Token <LCURL> Lexeme { found
+Line# 3: Token <RCURL> Lexeme } found
+compound_statement : LCURL RCURL
+	ScopeTable# 2
+	ScopeTable# 1
+	1--> <c, INT> 
+	10--> <a, INT> 
+	11--> <b, INT> <abc, FUNCTION, INT> 
+func_definition : type_specifier ID LPAREN RPAREN compound_statement
+unit : func_definition
+program : program unit
+Line# 4: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 4: Token <ID> Lexeme cde found
+Line# 4: Token <LPAREN> Lexeme ( found
+Line# 4: Token <RPAREN> Lexeme ) found
+Line# 4: Token <SEMICOLON> Lexeme ; found
+func_declaration: type_specifier ID LPAREN RPAREN SEMICOLON
+unit : func_declaration
+program : program unit
+Line# 6: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 6: Token <ID> Lexeme main found
+Line# 6: Token <LPAREN> Lexeme ( found
+Line# 6: Token <RPAREN> Lexeme ) found
+Line# 6: Token <LCURL> Lexeme { found
+Line# 7: Token <INT> Lexeme int found
+type_specifier : INT
+Line# 7: Token <ID> Lexeme a found
+Line# 7: Token <COMMA> Lexeme , found
+declaration_list : ID
+Line# 7: Token <ID> Lexeme c found
+Line# 7: Token <SEMICOLON> Lexeme ; found
+declaration_list : declaration_list COMMA ID
+var_declaration : type_specifier declaration_list SEMICOLON
+statement : var_declaration
+statements : statement
+Line# 8: Token <RCURL> Lexeme } found
+compound_statement: LCURL statements RCURL
+	ScopeTable# 3
+	1--> <c, INT> 
+	10--> <a, INT> 
+	ScopeTable# 1
+	1--> <c, INT> 
+	2--> <main, FUNCTION, INT> 
+	9--> <cde, FUNCTION, INT> 
+	10--> <a, INT> 
+	11--> <b, INT> <abc, FUNCTION, INT> 
+func_definition : type_specifier ID LPAREN RPAREN compound_statement
+unit : func_definition
+program : program unit
+start : program
+Total Lines: 9
+Total Errors: 0

@@ -7,6 +7,7 @@
 #include "lib/ast.h"
 #include "lib/treeWalker.h"
 #include "lib/printUtil.h"
+#include "lib/codegen.h"
 
 using namespace std;
 
@@ -146,6 +147,10 @@ start : program
 
 		logout << "start : program" << endl;
 		$$->print(treeout);
+
+		Codegen codegen($$);
+		codegen.generateCode();
+
 		delete $$;
 
 		logout << "Total Lines: " << yylineno << endl;

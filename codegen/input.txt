@@ -1,11 +1,8 @@
-void abc();
-int abcd(int a);
-int abcde(int a, int b);
+int a,b,c;
 
-int abcd(){
-
-}
+int abc(){}
+int cde();
 
 int main(){
-
+	int a,c;
 }
