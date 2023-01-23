@@ -150,6 +150,7 @@ start : program
 
 		Codegen codegen($$);
 		codegen.generateCode();
+		codegen.printCode(cout);
 
 		delete $$;
 

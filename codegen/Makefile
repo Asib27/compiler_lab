@@ -2,7 +2,7 @@ lib_path := gen/lib/bin
 lib_src := gen/lib/src
 header_path := gen/lib
 gen := gen
-lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o ${lib_path}/symbolTable.o ${lib_path}/printUtil.o ${lib_path}/tokenHelper.o ${lib_path}/ast.o ${lib_path}/functionSymbolInfo.o ${lib_path}/treeWalker.o ${lib_path}/variableSymbolInfo.o ${lib_path}/codegen.o
+lib := ${lib_path}/printer.o ${lib_path}/scopeTable.o ${lib_path}/symbolInfo.o ${lib_path}/symbolTable.o ${lib_path}/printUtil.o ${lib_path}/tokenHelper.o ${lib_path}/ast.o ${lib_path}/functionSymbolInfo.o ${lib_path}/treeWalker.o ${lib_path}/variableSymbolInfo.o ${lib_path}/codegen.o ${lib_path}/codeHelper.o
 
 cc := g++
 cflags := -fpermissive -ggdb3
@@ -61,9 +61,13 @@ ${lib_path}/treeWalker.o:	${lib_src}/treeWalker.cpp ${header_path}/treeWalker.h 
 	${cc} ${cflags} -ggdb3 -c ${lib_src}/treeWalker.cpp
 	mv treeWalker.o ${lib_path}
 
-${lib_path}/codegen.o: ${lib_src}/codegen.cpp ${header_path}/codegen.h ${header_path}/treeWalker.h ${header_path}/ast.h
+${lib_path}/codegen.o: ${lib_src}/codegen.cpp ${header_path}/codegen.h ${header_path}/treeWalker.h ${header_path}/ast.h ${header_path}/codeHelper.h
 	${cc} ${cflags} -ggdb3 -c ${lib_src}/codegen.cpp
 	mv codegen.o ${lib_path}
+
+${lib_path}/codeHelper.o: ${lib_src}/codeHelper.cpp 
+	${cc} ${cflags} -ggdb3 -c ${lib_src}/codeHelper.cpp
+	mv codeHelper.o ${lib_path}
 
 clean:
 	rm ${gen}/lex.yy.c ${gen}/parser.tab.c 

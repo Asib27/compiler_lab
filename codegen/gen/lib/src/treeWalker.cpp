@@ -14,7 +14,7 @@ SymbolAST* TreeWalker::createDeclarationChild(AST* child, bool flag){
 
     SymbolInfo * t = nullptr;
     if(flag){
-        t = new SymbolInfo(symbol->getName(), "");
+        t = new VariableSymbolInfo(symbol->getName(), "", "NORMAL");
     }
     else{
         t = new VariableSymbolInfo(symbol->getName(), "", "ARRAY");
@@ -260,6 +260,39 @@ AST* TreeWalker::processUnit(AST* root){
         return nullptr;
     }
 }
+
+AST* TreeWalker::processStart(AST * root){
+    if(isNodeType(root, NodeType::START)){
+        if(isNodeType(root->getChilds(), {NodeType::PROGRAM})){
+            return root->getChilds()[0];
+        }
+    }
+
+    showError(__LINE__);
+    return nullptr;
+}
+
+std::vector<SymbolAST *> TreeWalker::processVarDeclaration(AST *root){
+        if(!isNodeType(root, NodeType::VAR_DECL)){
+            showError(__LINE__);
+            return std::vector<SymbolAST *>();
+        }
+
+        auto childs = root->getChilds();
+        if(isNodeType(childs, {NodeType::TYPE_SPECIFIER, NodeType::DECL_LIST, NodeType::SYMBOL})){
+            std::string type = walkTypeSpecifier(childs[0]);
+            auto symbols = walkDeclarationList(childs[1]);
+            for(auto i: symbols){
+                i->getSymbol()->setType(type);
+            }
+            return symbols;
+        }
+        else{
+            showError(__LINE__);
+            return std::vector<SymbolAST *>();
+        }
+    }
+
 
 TreeWalker::TreeWalker(/* args */)
 {
