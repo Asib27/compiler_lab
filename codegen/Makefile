@@ -1,4 +1,4 @@
-lib_path := gen/lib/bin
+lib_path := gen/lib/bin/
 lib_src := gen/lib/src
 header_path := gen/lib
 gen := gen
