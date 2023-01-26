@@ -92,9 +92,10 @@ L8:
 	CALL print_output
 	CALL new_line
 L9:
-	MOV AX, [BP-4]
-	MOV DX, AX
-	MOV AX, [BP-6]
+	; line 16
+	MOV AX, [BP-4]	; AX = m
+	MOV DX, AX		; DX = m
+	MOV AX, [BP-6]	; AX = ll
 	CMP AX, DX
 	JLE L10
 	JMP L12
@@ -112,6 +113,7 @@ L13:
 	CALL print_output
 	CALL new_line
 L14:
+	; line 19
 	MOV AX, j
 	MOV DX, AX
 	MOV AX, i
@@ -132,6 +134,7 @@ L18:
 	CALL print_output
 	CALL new_line
 L19:
+	; line 22
 	MOV AX, [BP-8]
 	CMP AX, 0
 	JNE L21
@@ -155,6 +158,7 @@ L24:
 	CALL print_output
 	CALL new_line
 L25:
+	; line 25
 	MOV AX, [BP-8]
 	CMP AX, 0
 	JNE L26
@@ -178,6 +182,7 @@ L30:
 	CALL print_output
 	CALL new_line
 L31:
+	; line 28
 	MOV AX, [BP-12]
 	PUSH AX
 	INC AX
@@ -188,6 +193,7 @@ L32:
 	CALL print_output
 	CALL new_line
 L33:
+	; line 31
 	MOV AX, [BP-12]
 	NEG AX
 	PUSH AX

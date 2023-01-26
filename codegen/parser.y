@@ -556,6 +556,10 @@ expression_statement 	: SEMICOLON
 				$$ = new TokenAST(NodeType::EXPR_STMNT, "expression SEMICOLON", yylineno);
 				$$->addChild({$1, $2});
 
+				auto expST = treeWalker.processExpression($1);
+				if(expST)
+					expST->print(cout);
+
 				logout << "expression_statement : expression SEMICOLON" << endl;
 			}
 			| error SEMICOLON

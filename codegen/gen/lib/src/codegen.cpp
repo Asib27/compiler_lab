@@ -7,8 +7,8 @@ void Codegen::generateCode(){
     
     codeHelper.addToData("; global variable declaration");
     for(auto unit: units){
-        unit->print(std::cout);
-        std::cout << std::endl;
+        // unit->print(std::cout);
+        // std::cout << std::endl;
 
         if(treewalker.isNodeType(unit, NodeType::VAR_DECL)){
             auto vars = treewalker.processVarDeclaration(unit);

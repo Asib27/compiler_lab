@@ -9,6 +9,7 @@
 #include"functionSymbolInfo.h"
 #include"variableSymbolInfo.h"
 #include"ast.h"
+#include"stnode.h"
 
 class TreeWalker
 {
@@ -17,13 +18,23 @@ private:
         std::cerr << line << "," << __FILE__ << " : ast process error" << std::endl;
     }
 
+    bool isNodeType(std::vector<AST *> roots, std::vector<std::string> strings){
+        if(roots.size() != strings.size()) return false;
+
+        for (int i = 0; i < roots.size(); i++)
+        {
+            if(roots[0]->getTokenType() != strings[i]) return false;
+        }
+        return true;   
+    }
 
     SymbolAST* createDeclarationChild(AST* child, bool flag);
     SymbolAST* declarationListChild(std::vector<AST*> childs, AST** rootptr);
-
     std::string parameterListChild(std::vector<AST *> childs, AST** rootptr);
-
     std::string argumentListChild(std::vector<AST *> childs, AST **rootptr);
+ 
+    ExpressionNode* processUnaryExpression(AST * exppression);
+    ExpressionNode* processFactor(AST * exppression);
 public:
 
     bool isNodeType(AST* root, NodeType n){
@@ -56,6 +67,8 @@ public:
     std::vector<AST *> processProgram(AST *);
     AST* processStart(AST * root);
     AST * processUnit(AST *);
+    ExpressionNode* processExpression(AST *expression);
+
     ~TreeWalker();
 };
 

@@ -39,7 +39,6 @@ SymbolAST* TreeWalker::declarationListChild(std::vector<AST*> childs, AST** root
     }
 }
 
-
 std::string TreeWalker::parameterListChild(std::vector<AST *> childs, AST** rootptr){
     if(childs.size() == 0){
         *rootptr = nullptr;
@@ -61,7 +60,6 @@ std::string TreeWalker::parameterListChild(std::vector<AST *> childs, AST** root
     // new SymbolAST is created and returned 
     return type;
 }
-
 
 std::vector<std::string> TreeWalker::walkParameterList(AST* root){
     std::vector<std::string> ans;
@@ -273,26 +271,109 @@ AST* TreeWalker::processStart(AST * root){
 }
 
 std::vector<SymbolAST *> TreeWalker::processVarDeclaration(AST *root){
-        if(!isNodeType(root, NodeType::VAR_DECL)){
-            showError(__LINE__);
-            return std::vector<SymbolAST *>();
-        }
-
-        auto childs = root->getChilds();
-        if(isNodeType(childs, {NodeType::TYPE_SPECIFIER, NodeType::DECL_LIST, NodeType::SYMBOL})){
-            std::string type = walkTypeSpecifier(childs[0]);
-            auto symbols = walkDeclarationList(childs[1]);
-            for(auto i: symbols){
-                i->getSymbol()->setType(type);
-            }
-            return symbols;
-        }
-        else{
-            showError(__LINE__);
-            return std::vector<SymbolAST *>();
-        }
+    if(!isNodeType(root, NodeType::VAR_DECL)){
+        showError(__LINE__);
+        return std::vector<SymbolAST *>();
     }
 
+    auto childs = root->getChilds();
+    if(isNodeType(childs, {NodeType::TYPE_SPECIFIER, NodeType::DECL_LIST, NodeType::SYMBOL})){
+        std::string type = walkTypeSpecifier(childs[0]);
+        auto symbols = walkDeclarationList(childs[1]);
+        for(auto i: symbols){
+            i->getSymbol()->setType(type);
+        }
+        return symbols;
+    }
+    else{
+        showError(__LINE__);
+        return std::vector<SymbolAST *>();
+    }
+}
+
+ExpressionNode* TreeWalker::processUnaryExpression(AST * expression){
+    auto childs = expression->getChilds();
+    if(childs.size() == 2){
+        auto symbol = dynamic_cast<SymbolAST *>(childs[0])->getSymbol();
+        auto child = processExpression(childs[1]);
+        return new UnaryExpressionNode(child, symbol, "");       
+    }
+    else if(childs.size() == 1){
+        return processExpression(childs[0]);
+    }
+    else{
+        showError(__LINE__);
+        return nullptr;
+    }
+}
+
+ExpressionNode* TreeWalker::processFactor(AST * expression){
+    auto childs = expression->getChilds();
+    if(childs.size() == 1){ // factor -> variable | CONST_INT | CONST_FLOAT
+        if(isNodeType(childs[0], NodeType::VARIABLE)){
+            return processExpression(childs[0]);
+        }
+        else{
+            auto symbol = dynamic_cast<SymbolAST *>(childs[0])->getSymbol();
+            return new TerminalExpressionNode(symbol);
+        }
+    }
+    else if(childs.size() == 2){ // factor -> variable INCOP | variable DECOP   
+        auto child = processExpression(childs[0]);
+        auto symbol = dynamic_cast<SymbolAST *>(childs[1])->getSymbol();
+        return new UnaryExpressionNode(child, symbol, "");
+    }
+    else if(childs.size() == 3){  // factor -> LPAREN expression RPAREN
+        return processExpression(childs[1]);
+    }
+    else if(childs.size() == 4){ // factor -> ID LPAREN argument_list RPAREN
+        std::cerr << "Handle Function calls" << std::endl;
+        auto symbol = dynamic_cast<SymbolAST *>(childs[0])->getSymbol();
+        return new TerminalExpressionNode(symbol);
+    }
+    else{
+        showError(__LINE__);
+        return nullptr;
+    }
+
+}
+
+/**
+ * @brief handles all expression and returns an ExpressionNode* 
+ * ExpressionNode* is root of the expression syntax tree.
+ * 
+ * @param expression  
+ * @return ExpressionNode* 
+ */
+ExpressionNode* TreeWalker::processExpression(AST *expression){
+    auto childs = expression->getChilds();
+    if(isNodeType(expression, NodeType::VARIABLE)){ // handles variable rules
+        auto symbol = dynamic_cast<SymbolAST *>(childs[0])->getSymbol();
+        // TODO: Handle array
+        return new TerminalExpressionNode(symbol);
+    }
+    else if(isNodeType(expression, NodeType::UNARY_EXP)){ //handles unary exp rules
+        return processUnaryExpression(expression);
+    }
+    else if(isNodeType(expression, NodeType::FACTOR)){
+        return processFactor(expression);
+    }
+    else if(childs.size() == 1){ // for 'expression -> expression' like rules
+        return processExpression(childs[0]);
+    }
+    else if(childs.size() == 3){ // for 'expression -> expression OP expression' like rules
+        auto symbol = dynamic_cast<SymbolAST *>(childs[1])->getSymbol();
+        auto left = processExpression(childs[0]);
+        auto right = processExpression(childs[2]);
+
+        return new BinaryExpressionNode(left, right, symbol, "");
+    }
+    else{
+        showError(__LINE__);
+        expression->print(std::cerr);
+        return nullptr;
+    }
+}
 
 TreeWalker::TreeWalker(/* args */)
 {
