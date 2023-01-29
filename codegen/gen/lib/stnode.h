@@ -9,10 +9,11 @@ class ExpressionNode{
     const std::string op;
     const std::string type;
     const std::string childOp;
+    const std::string nodeType;
 
 public:
-    ExpressionNode(SymbolInfo *s, std::string childOp)
-        : op(s->getName()), type(s->getType()), childOp(childOp)
+    ExpressionNode(SymbolInfo *s, std::string childOp, std::string nodeType)
+        : op(s->getName()), type(s->getType()), childOp(childOp), nodeType(nodeType)
     {
 
     }
@@ -25,6 +26,10 @@ public:
     }
     std::string getChildOperator(){
         return childOp;
+    }
+
+    std::string getNodeType(){
+        return nodeType;
     }
 
     virtual void print(std::ostream &os, int tab=0){
@@ -51,7 +56,7 @@ public:
     }
 
     BinaryExpressionNode(ExpressionNode *l, ExpressionNode *r, SymbolInfo *s, std::string childOp)
-        : left(l), right(r), ExpressionNode(s, childOp)
+        : left(l), right(r), ExpressionNode(s, childOp, "binary")
      {}
     
     ExpressionNode* getLeft(){
@@ -74,7 +79,7 @@ private:
 
 public:
     UnaryExpressionNode(ExpressionNode *child, SymbolInfo *s, std::string childOp)
-        : child(child), ExpressionNode(s, childOp)
+        : child(child), ExpressionNode(s, childOp, "unary")
      {}
 
     ExpressionNode* getChild(){
@@ -92,7 +97,7 @@ class TerminalExpressionNode : public ExpressionNode
 {
 public:
     TerminalExpressionNode(SymbolInfo* info)
-        : ExpressionNode(info, "")
+        : ExpressionNode(info, "", "terminal")
         {}
 
     std::string getName(){ return getOperator();}

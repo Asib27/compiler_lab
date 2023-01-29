@@ -557,8 +557,14 @@ expression_statement 	: SEMICOLON
 				$$->addChild({$1, $2});
 
 				auto expST = treeWalker.processExpression($1);
-				if(expST)
+				if(expST){
 					expST->print(cout);
+					cout << endl;
+					Codegen codegen($$);
+					codegen.generateExpressionCode(expST);
+					cout << "ashdkas" << endl;
+					codegen.printCode(std::cout);
+				}
 
 				logout << "expression_statement : expression SEMICOLON" << endl;
 			}

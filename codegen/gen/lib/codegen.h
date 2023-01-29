@@ -8,6 +8,7 @@
 #include "treeWalker.h"
 #include "symbolTable.h"
 #include "codeHelper.h"
+#include "stnode.h"
 
 using namespace std;
 
@@ -28,7 +29,10 @@ public:
 
     void generateCode();
     void generateGlobalVariableCode(std::vector<SymbolAST*> vars);
+    // void generateFunctionCode();
 
+    
+    std::string generateExpressionCode(ExpressionNode * exp, int start = 1);
     void printCode(std::ostream &os){
         codeHelper.print(os);
     }
