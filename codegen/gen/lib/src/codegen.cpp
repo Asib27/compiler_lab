@@ -29,7 +29,7 @@ void Codegen::generateGlobalVariableCode(vector<SymbolAST*> vars){
     }
 }
 
-std::string Codegen::generateExpressionCode(ExpressionNode * exp, int start){
+std::string Codegen::generateThreeAdressExpressionCode(ExpressionNode * exp, int start){
         if(exp == nullptr){
             showError(__LINE__);
             return "";
@@ -58,7 +58,7 @@ std::string Codegen::generateExpressionCode(ExpressionNode * exp, int start){
             auto node = dynamic_cast<UnaryExpressionNode *>(exp);
             if(node == nullptr ){ showError(__LINE__); return "";}
 
-            auto nodeVal = generateExpressionCode(node->getChild(), start);
+            auto nodeVal = generateThreeAdressExpressionCode(node->getChild(), start);
             ThreeAdressCode code(nodeVal, "", node->getOperator(), nodeVal, "");
             codeHelper.addToThreeAdressCode(code);
             return nodeVal;
@@ -66,12 +66,12 @@ std::string Codegen::generateExpressionCode(ExpressionNode * exp, int start){
         else if(exp->getNodeType() == "binary"){
             auto node = dynamic_cast<BinaryExpressionNode *>(exp);
             if(node == nullptr ){ showError(__LINE__); return "";}
-            auto lhs = generateExpressionCode(node->getLeft(), start);
+            auto lhs = generateThreeAdressExpressionCode(node->getLeft(), start);
 
             auto backup = lhs;
             lhs.erase(lhs.begin());
 
-            auto rhs = generateExpressionCode(node->getRight(), stoi(lhs) + 1);
+            auto rhs = generateThreeAdressExpressionCode(node->getRight(), stoi(lhs) + 1);
             ThreeAdressCode code(backup, backup, node->getOperator(), rhs, "");
             codeHelper.addToThreeAdressCode(code);
             return backup;

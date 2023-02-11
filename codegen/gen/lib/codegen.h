@@ -32,7 +32,12 @@ public:
     // void generateFunctionCode();
 
     
-    std::string generateExpressionCode(ExpressionNode * exp, int start = 1);
+    std::string generateThreeAdressExpressionCode(ExpressionNode * exp, int start = 1);
+    std::string generateExpressionCode(ExpressionNode *exp){
+        std::vector<bool> registers(4, false);
+        std::string reg = exp->generate(registers, codeHelper);
+        return reg;
+    }
     void printCode(std::ostream &os){
         codeHelper.print(os);
     }

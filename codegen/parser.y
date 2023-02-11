@@ -559,11 +559,12 @@ expression_statement 	: SEMICOLON
 				auto expST = treeWalker.processExpression($1);
 				if(expST){
 					expST->print(cout);
+
 					cout << endl;
 					Codegen codegen($$);
 					codegen.generateExpressionCode(expST);
-					cout << "ashdkas" << endl;
 					codegen.printCode(std::cout);
+					// cout << "adajsa" << endl;
 				}
 
 				logout << "expression_statement : expression SEMICOLON" << endl;

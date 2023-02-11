@@ -3,12 +3,45 @@
 
 #include<iostream>
 #include<string>
+#include<vector>
 #include"symbolInfo.h"
+#include"codeHelper.h"
+
+/*
+c = a && b
+MOV AX, a   ; generating first block
+CMP.0
+AX, 0
+JE first_block
+MOV BX, b  ; FOR generating second block 
+CMP BX, 0
+JE first_block
+MOV AX, 1
+JMP END
+first_block:
+MOV AX, 0
+END:
+*/
+
+/*
+c = a || b
+MOV AX, a   ; first block
+CMP AX, 0 
+JNE first_block
+MOV BX, b   ; second block 
+CMP BX, 0
+JNE first_block
+MOV AX, 0
+JMP END
+first_block:
+MOV AX, 1
+END:
+*/
 
 class ExpressionNode{
     const std::string op;
     const std::string type;
-    const std::string childOp;
+    std::string childOp;
     const std::string nodeType;
 
 public:
@@ -40,6 +73,8 @@ public:
         e.print(os);
         return os;
     }
+
+    virtual std::string generate(std::vector<bool> &registerUse, CodeHelper &code) = 0;
 };
 
 class BinaryExpressionNode : public ExpressionNode
@@ -66,6 +101,13 @@ public:
     ExpressionNode* getRight(){
         return right;
     }
+    
+    std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{
+        std::string reg1 = left->generate(registerUse, code);
+        std::string reg2 = right->generate(registerUse, code);
+        code.addToCode("BIN" , reg1, reg2, "");
+        return reg1;
+    }
 
     ~BinaryExpressionNode() {}
 };
@@ -74,8 +116,6 @@ class UnaryExpressionNode : public ExpressionNode
 {
 private:
     ExpressionNode *child;
-
-
 
 public:
     UnaryExpressionNode(ExpressionNode *child, SymbolInfo *s, std::string childOp)
@@ -90,17 +130,42 @@ public:
         ExpressionNode::print(os, tab);
         child->print(os, tab+1);
     }
+    
+    std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{
+        std::string reg = child->generate(registerUse, code);
+        if(getOperator() == "++"){
+            code.addToCode("INC", reg, "");
+        }
+        else if(getOperator() == "--"){
+            code.addToCode("DEC", reg, "");
+        }
+        else if(getOperator() == "!"){
+            code.addToCode("NEG", reg, "");
+        }
+        else{
+            std::cerr << __LINE__ << " : INVALID OPERAND " << getOperator() << " " << std::endl;
+        }
+        return reg;
+    }
+    
     ~UnaryExpressionNode() {}
 };
 
 class TerminalExpressionNode : public ExpressionNode
 {
+    std::string access;
 public:
-    TerminalExpressionNode(SymbolInfo* info)
-        : ExpressionNode(info, "", "terminal")
+    TerminalExpressionNode(SymbolInfo* info, std::string access)
+        : ExpressionNode(info, "", "terminal"), access(access)
         {}
 
     std::string getName(){ return getOperator();}
+
+    std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{
+        std::string reg = code.getEmptyRegister(registerUse);
+        code.addToCode("MOV", reg, access, "");
+        return reg;
+    }
 };
 
 #endif

@@ -92,7 +92,7 @@ L8:
 	CALL print_output
 	CALL new_line
 L9:
-	; line 16
+	; line 16 n = m <= 11
 	MOV AX, [BP-4]	; AX = m
 	MOV DX, AX		; DX = m
 	MOV AX, [BP-6]	; AX = ll
@@ -113,7 +113,7 @@ L13:
 	CALL print_output
 	CALL new_line
 L14:
-	; line 19
+	; line 19  o = i != j
 	MOV AX, j
 	MOV DX, AX
 	MOV AX, i
@@ -134,7 +134,7 @@ L18:
 	CALL print_output
 	CALL new_line
 L19:
-	; line 22
+	; line 22 p = n || o
 	MOV AX, [BP-8]
 	CMP AX, 0
 	JNE L21
@@ -158,7 +158,7 @@ L24:
 	CALL print_output
 	CALL new_line
 L25:
-	; line 25
+	; line 25  p = n && o
 	MOV AX, [BP-8]
 	CMP AX, 0
 	JNE L26
@@ -182,7 +182,7 @@ L30:
 	CALL print_output
 	CALL new_line
 L31:
-	; line 28
+	; line 28  p++
 	MOV AX, [BP-12]
 	PUSH AX
 	INC AX
@@ -193,7 +193,7 @@ L32:
 	CALL print_output
 	CALL new_line
 L33:
-	; line 31
+	; line 31 k = -p
 	MOV AX, [BP-12]
 	NEG AX
 	PUSH AX

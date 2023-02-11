@@ -315,7 +315,7 @@ ExpressionNode* TreeWalker::processFactor(AST * expression){
         }
         else{
             auto symbol = dynamic_cast<SymbolAST *>(childs[0])->getSymbol();
-            return new TerminalExpressionNode(symbol);
+            return new TerminalExpressionNode(symbol, symbol->getName());
         }
     }
     else if(childs.size() == 2){ // factor -> variable INCOP | variable DECOP   
@@ -329,7 +329,7 @@ ExpressionNode* TreeWalker::processFactor(AST * expression){
     else if(childs.size() == 4){ // factor -> ID LPAREN argument_list RPAREN
         std::cerr << "Handle Function calls" << std::endl;
         auto symbol = dynamic_cast<SymbolAST *>(childs[0])->getSymbol();
-        return new TerminalExpressionNode(symbol);
+        return new TerminalExpressionNode(symbol, symbol->getName());
     }
     else{
         showError(__LINE__);
@@ -350,7 +350,7 @@ ExpressionNode* TreeWalker::processExpression(AST *expression){
     if(isNodeType(expression, NodeType::VARIABLE)){ // handles variable rules
         auto symbol = dynamic_cast<SymbolAST *>(childs[0])->getSymbol();
         // TODO: Handle array
-        return new TerminalExpressionNode(symbol);
+        return new TerminalExpressionNode(symbol, symbol->getName());
     }
     else if(isNodeType(expression, NodeType::UNARY_EXP)){ //handles unary exp rules
         return processUnaryExpression(expression);
