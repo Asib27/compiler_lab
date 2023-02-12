@@ -33,8 +33,9 @@ public:
 
     
     std::string generateThreeAdressExpressionCode(ExpressionNode * exp, int start = 1);
-    std::string generateExpressionCode(ExpressionNode *exp){
+    std::string generateExpressionCode(ExpressionNode *exp, int lineno){
         std::vector<bool> registers(4, false);
+        codeHelper.setCurLabel("Line" + std::to_string(lineno) + "_");
         std::string reg = exp->generate(registers, codeHelper);
         return reg;
     }

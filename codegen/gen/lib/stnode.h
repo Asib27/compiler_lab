@@ -83,6 +83,28 @@ private:
     ExpressionNode *left;
     ExpressionNode *right;
 
+    std::string getOperatorOpcode(){
+        std::string s = getOperator();
+        std::string type = getType();
+        if(s == "+") return "ADD";
+        else if(s == "-") return "SUB";
+        else if(s == "*") return "MUL";
+        else if(s == "/") return "DIV";
+        else if(s == "%") return "DIV";
+        else if(type == "RELOP"){
+            if(s == "<") return "JL";
+            else if(s == "<=") return "JLE";
+            else if(s == ">") return "JG";
+            else if(s == ">=") return "JGE";
+            else if(s == "!=") return "JNZ";
+            else if(s == "==") return "JZ";            
+        }
+        else if(type == "LOGICOP") return "CMPR";
+        else if(s == "=") return "MOV";
+
+        std::cerr << "INVALID OPERATOR " << s << __LINE__ << std::endl;
+        return "BIN";
+    }
 public:
     void print(std::ostream &os, int tab=0){
         ExpressionNode::print(os, tab);
@@ -102,11 +124,46 @@ public:
         return right;
     }
     
-    std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{
-        std::string reg1 = left->generate(registerUse, code);
-        std::string reg2 = right->generate(registerUse, code);
-        code.addToCode("BIN" , reg1, reg2, "");
-        return reg1;
+    std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{        
+        std::string oprtr = getOperator();
+        auto type = getType();
+
+        auto opcode = getOperatorOpcode();
+        if(type == "ADDOP"){
+            std::string reg1 = left->generate(registerUse, code);
+            std::string reg2 = right->generate(registerUse, code);
+            code.addToCode(opcode , reg1, reg2, "");
+            code.setRegister(reg2, registerUse, false);
+            return reg1;
+        }
+        else if(type == "MULOP"){
+            std::string reg1 = left->generate(registerUse, code);
+            std::string reg2 = right->generate(registerUse, code);
+            code.addToCode(opcode , reg1, reg2, "");
+            code.setRegister(reg2, registerUse, false);
+            return reg1;
+            // TODO : handle multiplication   
+        }
+        else if(type == "RELOP"){
+            std::string reg1 = left->generate(registerUse, code);
+            std::string reg2 = right->generate(registerUse, code);
+            code.addToCode("CMP", reg1, reg2, "");
+            std::string label = code.getLabel();
+            code.addToCode(opcode, label + "s", "");
+            code.addToCode("MOV", reg1, "0", "");
+            code.addToCode("JMP", label + "e", "");
+
+            code.addLabel(label + "s");
+            code.addToCode("MOV", reg1, "1", "");
+            code.addLabel(label + "e");
+
+            code.setRegister(reg2, registerUse, false);
+            return reg1;
+        }
+
+        std::cerr << type << " " << oprtr << " " << "doent match " << __LINE__ << std::endl;
+
+        return "AX";
     }
 
     ~BinaryExpressionNode() {}
@@ -164,6 +221,7 @@ public:
     std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{
         std::string reg = code.getEmptyRegister(registerUse);
         code.addToCode("MOV", reg, access, "");
+        code.setRegister(reg, registerUse, true);
         return reg;
     }
 };

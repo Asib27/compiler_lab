@@ -562,7 +562,7 @@ expression_statement 	: SEMICOLON
 
 					cout << endl;
 					Codegen codegen($$);
-					codegen.generateExpressionCode(expST);
+					codegen.generateExpressionCode(expST, yylineno);
 					codegen.printCode(std::cout);
 					// cout << "adajsa" << endl;
 				}

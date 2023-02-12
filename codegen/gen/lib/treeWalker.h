@@ -69,6 +69,10 @@ public:
     AST * processUnit(AST *);
     ExpressionNode* processExpression(AST *expression);
 
+    AST* processFunction(AST* root){
+        
+    }
+
     ~TreeWalker();
 };
 

@@ -31,12 +31,17 @@ private:
     std::vector<std::string> data;
     std::vector<std::string> code;
     std::vector<ThreeAdressCode> threeCode;
+
+    std::string curLabel;
+    int curLabelNo;
         
 public:
-    CodeHelper(/* args */){}
+    CodeHelper(/* args */){
+        curLabel = "generic";
+    }
 
     void addToData(std::string code, std::string comment){
-        data.push_back(code + "\t; " + comment);
+        data.push_back("\t" + code + "\t; " + comment);
     }
     
     void addToData(std::string comment){
@@ -44,19 +49,23 @@ public:
     }
 
     void addToCode(std::string code, std::string comment){
-        this->code.push_back(code + "\t; " + comment);
+        this->code.push_back("\t" + code + "\t; " + comment);
     }
     
     void addToCode(std::string opcode, std::string op1, std::string op2, std::string comment){
-        this->code.push_back(opcode + " " + op1 + "," + op2 + "\t; " + comment);
+        this->code.push_back("\t" + opcode + " " + op1 + "," + op2 + "\t; " + comment);
     }
 
     void addToCode(std::string opcode, std::string op1, std::string comment){
-        this->code.push_back(opcode + " " + op1 + "\t; " + comment);
+        this->code.push_back("\t" + opcode + " " + op1 + "\t; " + comment);
     }
 
     void addToCode(std::string comment){
         this->code.push_back("; " + comment);
+    }
+
+    void addLabel(std::string label){
+        this->code.push_back(label + ":");
     }
 
     void addToThreeAdressCode(ThreeAdressCode t){
@@ -74,9 +83,16 @@ public:
     bool isEmptyRegister(std::string regName, std::vector<bool> &registerUse){
         if(regName == "BX") return registerUse[1];
         else if(regName == "CX") return registerUse[2];
-        else if(regName == "AX") return registerUse[3];
-        else if(regName == "DX") return registerUse[0];
+        else if(regName == "AX") return registerUse[0];
+        else if(regName == "DX") return registerUse[3];
         else return false;
+    }
+
+    void setRegister(std::string regName, std::vector<bool> &registerUse, bool val){
+        if(regName == "BX") registerUse[1] = val;
+        else if(regName == "CX") registerUse[2] = val;
+        else if(regName == "AX") registerUse[0] = val;
+        else if(regName == "DX") registerUse[3] = val;
     }
 
     void print(std::ostream &os){
@@ -96,6 +112,15 @@ public:
         for(auto i: threeCode){
             os << i << std::endl;
         }
+    }
+
+    void setCurLabel(std::string label){
+        this->curLabel = label;
+        this->curLabelNo = 0;
+    }
+
+    std::string getLabel(){
+        return this->curLabel + std::to_string(this->curLabelNo++);
     }
 
     ~CodeHelper(){}

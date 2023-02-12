@@ -10,7 +10,7 @@ cflags := -fpermissive -ggdb3
 codegen.out: ${gen}/parser.o ${gen}/lexer.o ${lib}
 	${cc} ${cflags} ${gen}/parser.o ${gen}/lexer.o ${lib} -o codegen.out
 
-${gen}/parser.o: parser.y ${header_path}/ast.h ${header_path}/functionSymbolInfo.h ${header_path}/variableSymbolInfo.h ${header_path}/printUtil.h 
+${gen}/parser.o: parser.y ${header_path}/ast.h ${header_path}/functionSymbolInfo.h ${header_path}/variableSymbolInfo.h ${header_path}/stnode.h 
 	bison -d parser.y
 	mv parser.tab.c parser.tab.h ${gen}
 	${cc} ${cflags} -c ${gen}/parser.tab.c -o ${gen}/parser.o
