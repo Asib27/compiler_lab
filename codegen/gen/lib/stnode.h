@@ -77,6 +77,25 @@ public:
     virtual std::string generate(std::vector<bool> &registerUse, CodeHelper &code) = 0;
 };
 
+class TerminalExpressionNode : public ExpressionNode
+{
+    std::string access;
+public:
+    TerminalExpressionNode(SymbolInfo* info, std::string access)
+        : ExpressionNode(info, "", "terminal"), access(access)
+        {}
+
+    std::string getName(){ return getOperator();}
+    std::string getAccess(){ return access;}
+
+    std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{
+        std::string reg = code.getEmptyRegister(registerUse);
+        code.addToCode("MOV", reg, access, "");
+        code.setRegister(reg, registerUse, true);
+        return reg;
+    }
+};
+
 class BinaryExpressionNode : public ExpressionNode
 {
 private:
@@ -104,6 +123,15 @@ private:
 
         std::cerr << "INVALID OPERATOR " << s << __LINE__ << std::endl;
         return "BIN";
+    }
+
+    std::string getSymbolAccess(ExpressionNode* exp){
+        auto term = dynamic_cast<TerminalExpressionNode *>(exp);
+        if(!term) {
+            std::cerr << "lhs does not contain reference" << std::endl;
+            return "";
+        }
+        return term->getAccess();
     }
 public:
     void print(std::ostream &os, int tab=0){
@@ -144,6 +172,12 @@ public:
             return reg1;
             // TODO : handle multiplication   
         }
+        else if(type == "ASSIGNOP"){
+            std::string reg = right->generate(registerUse, code);
+            std::string leftAccess = getSymbolAccess(left);
+            code.addToCode(opcode, leftAccess, reg, "");
+            return reg;
+        }
         else if(type == "RELOP"){
             std::string reg1 = left->generate(registerUse, code);
             std::string reg2 = right->generate(registerUse, code);
@@ -159,6 +193,43 @@ public:
 
             code.setRegister(reg2, registerUse, false);
             return reg1;
+        }
+        else if(type == "LOGICOP"){
+            if(oprtr == "&&"){
+                std::string reg1 = left->generate(registerUse, code);
+                std::string label = code.getLabel();
+                code.addToCode("JZ", label + "s", "");
+
+                std::string reg2 = right->generate(registerUse, code);
+                code.addToCode("JZ", label + "s", "");
+
+                code.addToCode("MOV", reg1, "1", "");
+                code.addToCode("JMP", label + "e", "");
+                code.addLabel(label + "s");
+                code.addToCode("MOV", reg1, "0", "");
+                code.addLabel(label + "e");
+
+                code.setRegister(reg2, registerUse, false);
+                return reg1;
+            }
+            else if(oprtr == "||"){
+                std::string reg1 = left->generate(registerUse, code);
+                std::string label = code.getLabel();
+                code.addToCode("JNZ", label + "s", "");
+
+                std::string reg2 = right->generate(registerUse, code);
+                code.addToCode("JNZ", label + "s", "");
+
+                code.addToCode("MOV", reg1, "0", "");
+                code.addToCode("JMP", label + "e", "");
+                code.addLabel(label + "s");
+                code.addToCode("MOV", reg1, "1", "");
+                code.addLabel(label + "e");
+
+                code.setRegister(reg2, registerUse, false);
+                return reg1;
+            }
+
         }
 
         std::cerr << type << " " << oprtr << " " << "doent match " << __LINE__ << std::endl;
@@ -206,24 +277,6 @@ public:
     }
     
     ~UnaryExpressionNode() {}
-};
-
-class TerminalExpressionNode : public ExpressionNode
-{
-    std::string access;
-public:
-    TerminalExpressionNode(SymbolInfo* info, std::string access)
-        : ExpressionNode(info, "", "terminal"), access(access)
-        {}
-
-    std::string getName(){ return getOperator();}
-
-    std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{
-        std::string reg = code.getEmptyRegister(registerUse);
-        code.addToCode("MOV", reg, access, "");
-        code.setRegister(reg, registerUse, true);
-        return reg;
-    }
 };
 
 #endif
