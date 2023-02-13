@@ -167,10 +167,52 @@ public:
         else if(type == "MULOP"){
             std::string reg1 = left->generate(registerUse, code);
             std::string reg2 = right->generate(registerUse, code);
-            code.addToCode(opcode , reg1, reg2, "");
-            code.setRegister(reg2, registerUse, false);
-            return reg1;
-            // TODO : handle multiplication   
+
+            // pushing register
+            // bool AxPushed = code.isEmptyRegister("AX", registerUse) && (reg1 != "AX") && (reg2 != "AX");
+            // bool DxPushed = code.isEmptyRegister("DX", registerUse) && (reg1 != "AX") && (reg2 != "DX");
+            // if(AxPushed){
+            //     code.addToCode("PUSH", "AX", "");
+            // }
+            // if(DxPushed){
+            //     code.addToCode("PUSH", "DX", "");
+            // }
+
+            if(reg1 != "AX"){
+                code.addToCode("MOV", "AX", reg1, "");
+                code.setRegister(reg1, registerUse, false);
+            }
+
+            if(oprtr == "*"){
+                code.addToCode("MUL", reg2, "");
+                code.setRegister(reg2, registerUse, false);
+
+                code.setRegister(reg1, registerUse, true);
+                return "AX";
+            }
+            else if(oprtr == "/" || oprtr == "%"){
+                code.addToCode("CWD", "");
+                
+                code.addToCode("DIV", reg2);
+                code.setRegister(reg2, registerUse, false);
+                
+                if(oprtr == "/"){
+                    code.setRegister("AX", registerUse, true);
+                    return "AX";
+                }else if (oprtr == "$"){
+                    code.setRegister("DX", registerUse, true);
+                    return "DX";                   
+                }
+            }
+
+            // if(DxPushed){
+            //     code.addToCode("POP", "DX", "");
+            //     code.setRegister("DX", registerUse, true);
+            // }
+            // if(AxPushed){
+            //     code.addToCode("POP", "AX", "");
+            //     code.setRegister("AX", registerUse, true);
+            // }
         }
         else if(type == "ASSIGNOP"){
             std::string reg = right->generate(registerUse, code);
