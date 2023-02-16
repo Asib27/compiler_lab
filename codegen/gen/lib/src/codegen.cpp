@@ -7,12 +7,23 @@ void Codegen::generateCode(){
     
     codeHelper.addToData("; global variable declaration");
     for(auto unit: units){
-        // unit->print(std::cout);
-        // std::cout << std::endl;
-
         if(treewalker.isNodeType(unit, NodeType::VAR_DECL)){
             auto vars = treewalker.processVarDeclaration(unit);
             generateGlobalVariableCode(vars);
+        }
+        else if(treewalker.isNodeType(unit, NodeType::FUNC_DEF)){
+            auto func = treewalker.processFunction(unit);
+            auto funcName = get<0>(func);
+            auto params = get<1>(func);
+            auto statement = get<2>(func);
+
+            std::cout<< funcName << std::endl;
+            for(auto i: params){
+                std::cout << *i << std::endl;
+            }
+            for(auto i: statement){
+                i->print(std::cout);
+            }
         }
     }
 }
@@ -28,6 +39,7 @@ void Codegen::generateGlobalVariableCode(vector<SymbolAST*> vars){
         delete var;
     }
 }
+
 
 std::string Codegen::generateThreeAdressExpressionCode(ExpressionNode * exp, int start){
         if(exp == nullptr){
@@ -82,3 +94,7 @@ std::string Codegen::generateThreeAdressExpressionCode(ExpressionNode * exp, int
         }
     }
 
+
+void Codegen::generateFunctionCode(TokenAST *token){
+
+}

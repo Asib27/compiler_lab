@@ -126,6 +126,8 @@ std::string TreeWalker::walkID(AST* root){
 
 std::vector<SymbolInfo *> TreeWalker::walkParameterListFindIds(AST* root){
     std::vector<SymbolInfo *> ids;
+
+    if(root == nullptr) return ids; // if nullptr return empty child list
     auto childs = root->getChilds();
 
     if(childs.size() == 4){
@@ -381,4 +383,71 @@ TreeWalker::TreeWalker(/* args */)
 
 TreeWalker::~TreeWalker()
 {
+}
+
+std::vector<TokenAST*> TreeWalker::walkStatements(AST *root){
+    if(root->getChilds().size() == 1){
+        std::vector<TokenAST*> tokens;
+        tokens.push_back(dynamic_cast<TokenAST*>(root->getChilds()[0]));
+        return tokens;
+    }else if(root->getChilds().size() == 2){
+        auto tokens = walkStatements(root->getChilds()[0]);
+        tokens.push_back(dynamic_cast<TokenAST*>(root->getChilds()[1]));
+        return tokens;
+    }
+    else{
+        std::vector<TokenAST*> tokens;
+        return tokens;
+    }
+}
+
+std::vector<TokenAST*> TreeWalker::walkCompundStatements(AST *root){
+    std::vector<TokenAST*> statements;     
+    if(root == nullptr){
+        showError(__LINE__);
+        return statements;
+    }
+    if(!isNodeType(root, NodeType::COMPOUND_STATEMENT)){
+        showError(__LINE__);
+        return statements;
+    }
+
+    // finding statements node
+    TokenAST* stmnts;
+    if(isNodeType(root->getChilds(), {NodeType::SYMBOL, NodeType::STATEMENTS, NodeType::SYMBOL})){
+        stmnts = dynamic_cast<TokenAST*> (root->getChilds()[1]);
+    }
+
+    return walkStatements(stmnts);
+}
+
+ std::tuple<SymbolInfo, std::vector<SymbolInfo *>, std::vector<TokenAST *>>  TreeWalker::processFunction(AST* root){
+    if(root == nullptr){
+        showError(__LINE__);
+        // return std::make_tuple(SymbolInfo(), std::vector<SymbolInfo*>(), std::vector<TokenAST*>());
+    }
+    if(!isNodeType(root, NodeType::FUNC_DEF)){
+        showError(__LINE__);
+        // return std::make_tuple(SymbolInfo(), std::vector<SymbolInfo*>(), std::vector<TokenAST*>());
+    }
+
+    std::vector<AST *> childs = root->getChilds();
+    std::tuple<SymbolInfo, std::vector<SymbolInfo *>, std::vector<TokenAST *>> ans;
+
+    SymbolInfo s(walkID(childs[1]), walkTypeSpecifier(childs[0]));
+    auto paramList = walkParameterListFindIds(nullptr);
+    std::vector<TokenAST *> statements;
+
+    if(isNodeType(childs, {NodeType::TYPE_SPECIFIER, NodeType::SYMBOL, NodeType::SYMBOL, NodeType::PARAM_LIST, NodeType::SYMBOL, NodeType::COMPOUND_STATEMENT})){
+        paramList = walkParameterListFindIds(childs[3]);
+        statements = walkCompundStatements(childs[5]);
+    }
+    else if(isNodeType(childs, {NodeType::TYPE_SPECIFIER, NodeType::SYMBOL, NodeType::SYMBOL,  NodeType::SYMBOL, NodeType::COMPOUND_STATEMENT})){
+        statements = walkCompundStatements(childs[4]);
+    }
+    else{
+        showError(__LINE__);
+    }
+
+    return std::make_tuple(s, paramList, statements);
 }

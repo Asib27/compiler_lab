@@ -69,9 +69,10 @@ public:
     AST * processUnit(AST *);
     ExpressionNode* processExpression(AST *expression);
 
-    AST* processFunction(AST* root){
-        
-    }
+    std::vector<TokenAST*> walkCompundStatements(AST *root);
+    std::vector<TokenAST*> walkStatements(AST *);
+
+    std::tuple<SymbolInfo, std::vector<SymbolInfo *>, std::vector<TokenAST *>> processFunction(AST* root);
 
     ~TreeWalker();
 };
