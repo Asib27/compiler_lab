@@ -17,6 +17,7 @@ void Codegen::generateCode(){
             auto params = get<1>(func);
             auto statement = get<2>(func);
 
+            codeHelper.startFunction(funcName.getName());
             std::cout<< funcName << std::endl;
             for(auto i: params){
                 std::cout << *i << std::endl;
@@ -24,6 +25,7 @@ void Codegen::generateCode(){
             for(auto i: statement){
                 i->print(std::cout);
             }
+            codeHelper.endFunction(funcName.getName());
         }
     }
 }

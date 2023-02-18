@@ -556,16 +556,16 @@ expression_statement 	: SEMICOLON
 				$$ = new TokenAST(NodeType::EXPR_STMNT, "expression SEMICOLON", yylineno);
 				$$->addChild({$1, $2});
 
-				auto expST = treeWalker.processExpression($1);
-				if(expST){
-					expST->print(cout);
+				// auto expST = treeWalker.processExpression($1);
+				// if(expST){
+				// 	expST->print(cout);
 
-					cout << endl;
-					Codegen codegen($$);
-					codegen.generateExpressionCode(expST, yylineno);
-					codegen.printCode(std::cout);
-					// cout << "adajsa" << endl;
-				}
+				// 	cout << endl;
+				// 	Codegen codegen($$);
+				// 	codegen.generateExpressionCode(expST, yylineno);
+				// 	codegen.printCode(std::cout);
+				// 	// cout << "adajsa" << endl;
+				// }
 
 				logout << "expression_statement : expression SEMICOLON" << endl;
 			}

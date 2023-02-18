@@ -34,34 +34,37 @@ private:
 
     std::string curLabel;
     int curLabelNo;
-        
+
+    std::string getComment(std::string cmnt){
+        return cmnt == ""? "" : "\t; " + cmnt; 
+    }   
 public:
     CodeHelper(/* args */){
         curLabel = "generic";
     }
 
     void addToData(std::string code, std::string comment){
-        data.push_back("\t" + code + "\t; " + comment);
+        data.push_back("\t" + code + getComment(comment));
     }
     
     void addToData(std::string comment){
-        data.push_back("; " + comment);
+        data.push_back( getComment(comment));
     }
 
     void addToCode(std::string code, std::string comment){
-        this->code.push_back("\t" + code + "\t; " + comment);
+        this->code.push_back("\t" + code + getComment(comment));
     }
     
     void addToCode(std::string opcode, std::string op1, std::string op2, std::string comment){
-        this->code.push_back("\t" + opcode + " " + op1 + "," + op2 + "\t; " + comment);
+        this->code.push_back("\t" + opcode + " " + op1 + "," + op2 + getComment(comment));
     }
 
     void addToCode(std::string opcode, std::string op1, std::string comment){
-        this->code.push_back("\t" + opcode + " " + op1 + "\t; " + comment);
+        this->code.push_back("\t" + opcode + " " + op1 + getComment(comment));
     }
 
     void addToCode(std::string comment){
-        this->code.push_back("; " + comment);
+        this->code.push_back("; " + getComment(comment));
     }
 
     void addLabel(std::string label){
@@ -70,6 +73,21 @@ public:
 
     void addToThreeAdressCode(ThreeAdressCode t){
         threeCode.push_back(t);
+    }
+
+    void startFunction(std::string funcname){
+        this->code.push_back(funcname + " PROC");
+
+        if(funcname == "main"){
+            addToCode("MOV", "AX", "@DATA", "");
+            addToCode("MOV", "DX", "AX", "");
+            addToCode("PUSH", "BP", "");
+            addToCode("MOV", "BP", "SP", "");
+        }
+    }
+
+    void endFunction(std::string funcname){
+        this->code.push_back(funcname + " ENDP");
     }
 
     std::string getEmptyRegister(std::vector<bool> &registerUse){
@@ -109,9 +127,7 @@ public:
             os << i << std::endl;
         }
 
-        for(auto i: threeCode){
-            os << i << std::endl;
-        }
+        os << "END MAIN" << std::endl;
     }
 
     void setCurLabel(std::string label){
