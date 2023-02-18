@@ -134,12 +134,12 @@ std::vector<SymbolInfo *> TreeWalker::walkParameterListFindIds(AST* root){
         ids = walkParameterListFindIds(childs[0]);
         auto type = walkTypeSpecifier(childs[2]);
         auto id = walkID(childs[3]);
-        ids.push_back(new SymbolInfo(id, type));
+        ids.push_back(new VariableSymbolInfo(id, type, "normal"));
     }
     else if(childs.size() == 2 && childs[0]->getTokenType() != "parameter_list"){
         auto type = walkTypeSpecifier(childs[0]);
         auto id = walkID(childs[1]);
-        ids.push_back(new SymbolInfo(id, type));
+        ids.push_back(new VariableSymbolInfo(id, type, "normal"));
     }
     
     return ids;
@@ -293,15 +293,15 @@ std::vector<SymbolAST *> TreeWalker::processVarDeclaration(AST *root){
     }
 }
 
-ExpressionNode* TreeWalker::processUnaryExpression(AST * expression){
+ExpressionNode* TreeWalker::processUnaryExpression(AST * expression,  SymbolTable &symbolTable){
     auto childs = expression->getChilds();
     if(childs.size() == 2){
         auto symbol = dynamic_cast<SymbolAST *>(childs[0])->getSymbol();
-        auto child = processExpression(childs[1]);
+        auto child = processExpression(childs[1], symbolTable);
         return new UnaryExpressionNode(child, symbol, "");       
     }
     else if(childs.size() == 1){
-        return processExpression(childs[0]);
+        return processExpression(childs[0], symbolTable);
     }
     else{
         showError(__LINE__);
@@ -309,11 +309,11 @@ ExpressionNode* TreeWalker::processUnaryExpression(AST * expression){
     }
 }
 
-ExpressionNode* TreeWalker::processFactor(AST * expression){
+ExpressionNode* TreeWalker::processFactor(AST * expression, SymbolTable &symbolTable){
     auto childs = expression->getChilds();
     if(childs.size() == 1){ // factor -> variable | CONST_INT | CONST_FLOAT
         if(isNodeType(childs[0], NodeType::VARIABLE)){
-            return processExpression(childs[0]);
+            return processExpression(childs[0], symbolTable);
         }
         else{
             auto symbol = dynamic_cast<SymbolAST *>(childs[0])->getSymbol();
@@ -321,12 +321,12 @@ ExpressionNode* TreeWalker::processFactor(AST * expression){
         }
     }
     else if(childs.size() == 2){ // factor -> variable INCOP | variable DECOP   
-        auto child = processExpression(childs[0]);
+        auto child = processExpression(childs[0], symbolTable);
         auto symbol = dynamic_cast<SymbolAST *>(childs[1])->getSymbol();
         return new UnaryExpressionNode(child, symbol, "");
     }
     else if(childs.size() == 3){  // factor -> LPAREN expression RPAREN
-        return processExpression(childs[1]);
+        return processExpression(childs[1], symbolTable);
     }
     else if(childs.size() == 4){ // factor -> ID LPAREN argument_list RPAREN
         std::cerr << "Handle Function calls" << std::endl;
@@ -347,26 +347,33 @@ ExpressionNode* TreeWalker::processFactor(AST * expression){
  * @param expression  
  * @return ExpressionNode* 
  */
-ExpressionNode* TreeWalker::processExpression(AST *expression){
+ExpressionNode* TreeWalker::processExpression(AST *expression, SymbolTable &symbolTable){
     auto childs = expression->getChilds();
     if(isNodeType(expression, NodeType::VARIABLE)){ // handles variable rules
         auto symbol = dynamic_cast<SymbolAST *>(childs[0])->getSymbol();
         // TODO: Handle array
-        return new TerminalExpressionNode(symbol, symbol->getName());
+        auto varSymbol = dynamic_cast<VariableSymbolInfo *>(symbolTable.lookup(symbol->getName()));
+        if(varSymbol == nullptr){
+            std::cerr << *symbol << std::endl;
+            return new TerminalExpressionNode(symbol, symbol->getName());
+        }
+        else{
+            return new TerminalExpressionNode(symbol, varSymbol->getAccessBy());
+        }
     }
     else if(isNodeType(expression, NodeType::UNARY_EXP)){ //handles unary exp rules
-        return processUnaryExpression(expression);
+        return processUnaryExpression(expression, symbolTable);
     }
     else if(isNodeType(expression, NodeType::FACTOR)){
-        return processFactor(expression);
+        return processFactor(expression, symbolTable);
     }
     else if(childs.size() == 1){ // for 'expression -> expression' like rules
-        return processExpression(childs[0]);
+        return processExpression(childs[0], symbolTable);
     }
     else if(childs.size() == 3){ // for 'expression -> expression OP expression' like rules
         auto symbol = dynamic_cast<SymbolAST *>(childs[1])->getSymbol();
-        auto left = processExpression(childs[0]);
-        auto right = processExpression(childs[2]);
+        auto left = processExpression(childs[0], symbolTable);
+        auto right = processExpression(childs[2], symbolTable);
 
         return new BinaryExpressionNode(left, right, symbol, "");
     }

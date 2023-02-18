@@ -10,6 +10,7 @@
 #include"variableSymbolInfo.h"
 #include"ast.h"
 #include"stnode.h"
+#include"symbolTable.h"
 
 class TreeWalker
 {
@@ -33,8 +34,8 @@ private:
     std::string parameterListChild(std::vector<AST *> childs, AST** rootptr);
     std::string argumentListChild(std::vector<AST *> childs, AST **rootptr);
  
-    ExpressionNode* processUnaryExpression(AST * exppression);
-    ExpressionNode* processFactor(AST * exppression);
+    ExpressionNode* processUnaryExpression(AST * exppression,  SymbolTable &symbolTable);
+    ExpressionNode* processFactor(AST * exppression, SymbolTable &symbolTable);
 public:
 
     bool isNodeType(AST* root, NodeType n){
@@ -67,7 +68,7 @@ public:
     std::vector<AST *> processProgram(AST *);
     AST* processStart(AST * root);
     AST * processUnit(AST *);
-    ExpressionNode* processExpression(AST *expression);
+    ExpressionNode* processExpression(AST *expression, SymbolTable &symbolTable);
 
     std::vector<TokenAST*> walkCompundStatements(AST *root);
     std::vector<TokenAST*> walkStatements(AST *);

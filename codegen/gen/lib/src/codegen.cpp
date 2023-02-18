@@ -18,14 +18,26 @@ void Codegen::generateCode(){
             auto statement = get<2>(func);
 
             codeHelper.startFunction(funcName.getName());
-            std::cout<< funcName << std::endl;
+            int offset = 0;
+
+            symbolTable.enterScope();
             for(auto i: params){
-                std::cout << *i << std::endl;
+                auto symbol = dynamic_cast<VariableSymbolInfo *> (i);
+                symbol->setAccessBy("[BP-" + std::to_string(offset+2) + "]");
+                symbolTable.insert(symbol);
+                offset += 2;
             }
+
+            if(offset != 0)
+                codeHelper.addToCode("SUB", "SP", std::to_string(offset), "");
             for(auto i: statement){
-                i->print(std::cout);
+                codeHelper.addToCode("");
+                codeHelper.addToCode( "line " + std::to_string(i->getBeginLine()));
+                generateStatementCode(i, offset);
             }
             codeHelper.endFunction(funcName.getName());
+            std::cout << symbolTable << std::endl;
+            symbolTable.exitScope();
         }
     }
 }
@@ -97,6 +109,34 @@ std::string Codegen::generateThreeAdressExpressionCode(ExpressionNode * exp, int
     }
 
 
-void Codegen::generateFunctionCode(TokenAST *token){
+void Codegen::generateStatementCode(TokenAST *token, int offset){
+    if(treewalker.isNodeType(token, NodeType::EXPR_STMNT)){
+        showError(__LINE__);
+    }
 
+    auto childs = token->getChilds();
+    if(treewalker.isNodeType(childs, {NodeType::VAR_DECL})){
+        auto vars = treewalker.processVarDeclaration(childs[0]);
+
+        for(auto i: vars){
+            auto symbol = dynamic_cast<VariableSymbolInfo*> (i->getSymbol());
+            i->setSymbol(nullptr);
+            
+            symbol->setAccessBy("[BP-" + std::to_string(offset+2) + "]");
+            symbolTable.insert(symbol);
+            offset += 2;
+        }
+            
+        if(offset != 0)
+            codeHelper.addToCode("SUB", "SP", std::to_string(offset), "");
+    }
+    else if(treewalker.isNodeType(childs, {NodeType::EXPR_STMNT})){
+        if(childs[0]->getChilds().size() == 1) return ;
+
+        auto exp = childs[0]->getChilds()[0];
+        auto expSt = treewalker.processExpression(exp, symbolTable);
+
+        vector<bool> registers(4, false);
+        expSt->generate(registers, codeHelper);  
+    }
 }
