@@ -207,7 +207,7 @@ L34:
 	CALL new_line
 L35:
 	MOV AX, 0
-	JMP L36
+	JMP L37
 L36:
 	ADD SP, 12
 	POP BP

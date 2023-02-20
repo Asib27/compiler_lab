@@ -35,7 +35,7 @@ void Codegen::generateCode(){
                 codeHelper.addToCode( "line " + std::to_string(i->getBeginLine()));
                 generateStatementCode(i, offset);
             }
-            codeHelper.endFunction(funcName.getName());
+            codeHelper.endFunction(funcName.getName(), offset);
             std::cout << symbolTable << std::endl;
             symbolTable.exitScope();
         }
@@ -142,8 +142,8 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
     }
 
     // For println
-    else if(treewalker.isNodeType(childs, {NodeType::SYMBOL, NodeType::SYMBOL, NodeType::SYMBOL, NodeType::SYMBOL, NodeType::SYMBOL})){
-        std::string id = treewalker.walkID(childs[2]);
+    else if(treewalker.isNodeType(childs, {NodeType::SYMBOL, NodeType::SYMBOL, NodeType::VARIABLE, NodeType::SYMBOL, NodeType::SYMBOL})){
+        std::string id = treewalker.walkID(childs[2]->getChilds()[0]);
 
         // extracting symbol access string
         auto symbol = dynamic_cast<VariableSymbolInfo *> (symbolTable.lookup(id));

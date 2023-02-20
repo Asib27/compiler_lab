@@ -52,16 +52,59 @@ public:
                         "\tpush dx\n" + "\tmov ah,2\n" + "\tmov dl,cr\n" + "\tint 21h\n" +
                         "\tmov ah,2\n" + "\tmov dl,lf\n" + "\tint 21h\n" + "\tpop dx\n" +
                         "\tpop ax\n" + "\tret\n" + "new_line endp\n";
-        print_output =  std::string("PRINT_OUTPUT proc  ;print what is in ax\n") + "\tpush ax\n" +
-                        "\tpush bx\n" + "\tpush cx\n" + "\tpush dx\n" + "\tpush si\n" +
-                        "\tlea si,number\n" + "\tmov bx,10\n" + "\tadd si,4\n" +
-                        "\tcmp ax,0\n" + "\tjnge negate\n" + "print:\n" + "\txor dx,dx\n" +
-                        "\tdiv bx\n" + "\tmov [si],dl\n" + "\tadd [si],'0'\n" + "\tdec si\n" +
-                        "\tcmp ax,0\n" + "\tjne print\n" + "\tinc si\n" + "\tlea dx,si\n" +
-                        "\tmov ah,9\n" + "\tint 21h\n" + "\tpop si\n" + "\tpop dx\n" + "\tpop cx\n" +
-                        "\tpop bx\n" + "\tpop ax\n" + "\tret\n" + "negate:\n" + "\tpush ax\n" +
-                        "\tmov ah,2\n" + "\tmov dl,'-'\n" + "\tint 21h\n" + "\tpop ax\n" +"\tneg ax\n" +
-                        "\tjmp print\n"+ "print_output endp\n";
+
+        // indentation is not maintained to keep good indentation in output asm code
+        print_output =  std::string("\
+PRINT_OUTPUT PROC\n\
+    PUSH AX\n\
+    PUSH BX\n\
+    PUSH CX\n\
+    PUSH DX\n\
+\n\
+    ; if AX < 0\n\
+    OR AX, AX\n\
+    JGE @END_IF1\n\
+\n\
+    ; then\n\
+    PUSH AX         ; save number\n\
+    MOV DL, '-'     ; get '-'\n\
+    MOV AH, 2       ; print char function\n\
+    INT 21H         \n\
+    POP AX          ; get AX back\n\
+    NEG AX          ; AX = - AX\n\
+@END_IF1:\n\
+    \n\
+    ; get decimal digits                   \n\
+    XOR CX, CX      ; CX counts digits\n\
+    MOV BX, 10D     ; BX has divisor\n\
+                                \n\
+DEC_OUTPUT_WHILE:\n\
+    XOR DX, DX      ; prepare high word of dividend\n\
+    DIV BX          ; AX = quotient, DX = remainder\n\
+    PUSH DX         ; save remainder on stack\n\
+    INC CX          ; count = count + 1\n\
+    \n\
+    ; until\n\
+    OR AX,  AX      ; quotient = 0?\n\
+    JNE DEC_OUTPUT_WHILE      \n\
+    \n\
+    ; convert digit to char and print\n\
+    MOV AH, 2       ; print char function\n\
+DEC_PRINT_LOOP:\n\
+    POP DX          ; digit in DL\n\
+    OR DL, 30H      ; convert to char\n\
+    INT 21H         ; print digit\n\
+    LOOP DEC_PRINT_LOOP\n\
+    \n\
+    ; end for\n\
+    \n\
+    POP DX  \n\
+    POP CX     \n\
+    POP BX\n\
+    POP AX       \n\
+    RET\n\
+PRINT_OUTPUT ENDP\n"
+);
 
     }
 
@@ -108,7 +151,15 @@ public:
         }
     }
 
-    void endFunction(std::string funcname){
+    void endFunction(std::string funcname, int offset){
+        addToCode("ADD", "SP", std::to_string(offset), "");
+        if(funcname == "main"){
+            addToCode("MOV", "AX", "4CH", "");
+            addToCode("INT", "21H", "");
+        }
+        else{
+            this->code.push_back("\tRET");
+        }
         this->code.push_back(funcname + " ENDP");
     }
 
