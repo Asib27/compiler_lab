@@ -29,7 +29,7 @@ public:
 
     void generateCode();
     void generateGlobalVariableCode(std::vector<SymbolAST*> vars);
-    void generateStatementCode(TokenAST *token, int offset);
+    void generateStatementCode(TokenAST *token, int &offset);
 
     
     std::string generateThreeAdressExpressionCode(ExpressionNode * exp, int start = 1);

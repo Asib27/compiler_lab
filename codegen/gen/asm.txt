@@ -1,0 +1,24 @@
+"NEW_LINE proc\n"
+"\tpush ax"
+"\tpush dx"
+"\tmov ah,2"
+"\tmov dl,cr"
+"\tint 21h"
+"\tmov ah,2"
+"\tmov dl,lf"
+"\tint 21h"
+"\tpop dx"
+"\tpop ax"
+"\tret"
+"new_line endp"
+
+"PRINT_OUTPUT proc  ;print what is in ax\n" + "\tpush ax]n" +
+"\tpush bx\n" + "\tpush cx\n" + "\tpush dx\n" + "\tpush si\n" +
+"\tlea si,number\n" + "\tmov bx,10\n" + "\tadd si,4\n" +
+"\tcmp ax,0\n" + "\tjnge negate\n" + "\tprint:\n" + "\txor dx,dx\n" +
+"\tdiv bx\n" + "\tmov [si],dl\n" + "\tadd [si],'0'\n" + "\tdec si\n" +
+"\tcmp ax,0\n" + "\tjne print\n" + "\tinc si\n" + "\tlea dx,si\n" +
+"\tmov ah,9\n" + "\tint 21h\n" + "\tpop si\n" + "\tpop dx\n" + "\tpop cx\n" +
+"\tpop bx\n" + "\tpop ax\n" + "\tret\n" + "negate:\n" + "\tpush ax\n" +
+"\tmov ah,2\n" + "\tmov dl,'-'\n" + "\tint 21h\n" + "\tpop ax\n" +"\tneg ax\n" +
+"\tjmp print\n"+ "print_output endp\n"

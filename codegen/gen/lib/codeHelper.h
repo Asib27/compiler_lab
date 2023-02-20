@@ -2,8 +2,11 @@
 #define __CODE_HELPER_H__
 
 #include<iostream>
+#include<fstream>
 #include<vector>
 #include<string>
+
+
 
 class ThreeAdressCode
 {
@@ -35,12 +38,31 @@ private:
     std::string curLabel;
     int curLabelNo;
 
+    std::string print_output;
+    std::string new_line;
+
     std::string getComment(std::string cmnt){
         return cmnt == ""? "" : "\t; " + cmnt; 
     }   
 public:
     CodeHelper(/* args */){
         curLabel = "generic";
+
+        new_line = std::string("NEW_LINE proc\n") + std::string("\tpush ax\n") +
+                        "\tpush dx\n" + "\tmov ah,2\n" + "\tmov dl,cr\n" + "\tint 21h\n" +
+                        "\tmov ah,2\n" + "\tmov dl,lf\n" + "\tint 21h\n" + "\tpop dx\n" +
+                        "\tpop ax\n" + "\tret\n" + "new_line endp\n";
+        print_output =  std::string("PRINT_OUTPUT proc  ;print what is in ax\n") + "\tpush ax\n" +
+                        "\tpush bx\n" + "\tpush cx\n" + "\tpush dx\n" + "\tpush si\n" +
+                        "\tlea si,number\n" + "\tmov bx,10\n" + "\tadd si,4\n" +
+                        "\tcmp ax,0\n" + "\tjnge negate\n" + "print:\n" + "\txor dx,dx\n" +
+                        "\tdiv bx\n" + "\tmov [si],dl\n" + "\tadd [si],'0'\n" + "\tdec si\n" +
+                        "\tcmp ax,0\n" + "\tjne print\n" + "\tinc si\n" + "\tlea dx,si\n" +
+                        "\tmov ah,9\n" + "\tint 21h\n" + "\tpop si\n" + "\tpop dx\n" + "\tpop cx\n" +
+                        "\tpop bx\n" + "\tpop ax\n" + "\tret\n" + "negate:\n" + "\tpush ax\n" +
+                        "\tmov ah,2\n" + "\tmov dl,'-'\n" + "\tint 21h\n" + "\tpop ax\n" +"\tneg ax\n" +
+                        "\tjmp print\n"+ "print_output endp\n";
+
     }
 
     void addToData(std::string code, std::string comment){
@@ -64,7 +86,7 @@ public:
     }
 
     void addToCode(std::string comment){
-        this->code.push_back("; " + getComment(comment));
+        this->code.push_back( getComment(comment));
     }
 
     void addLabel(std::string label){
@@ -118,6 +140,11 @@ public:
         os << ".STACK 1000H" << std::endl;
         os << ".DATA" << std::endl;
 
+        os << "\tCR EQU 0DH" << std::endl;
+        os << "\tLF EQU 0AH" << std::endl;
+        os << "\tnumber DB \"00000$\"" << std::endl;
+        os << "" << std::endl;
+
         for(auto i : data){
             os << i << std::endl;
         }
@@ -126,6 +153,9 @@ public:
         for(auto i: code){
             os << i << std::endl;
         }
+
+        os << new_line << std::endl;
+        os << print_output << std::endl;
 
         os << "END MAIN" << std::endl;
     }

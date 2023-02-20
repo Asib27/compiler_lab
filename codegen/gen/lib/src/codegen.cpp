@@ -109,7 +109,7 @@ std::string Codegen::generateThreeAdressExpressionCode(ExpressionNode * exp, int
     }
 
 
-void Codegen::generateStatementCode(TokenAST *token, int offset){
+void Codegen::generateStatementCode(TokenAST *token, int &offset){
     if(treewalker.isNodeType(token, NodeType::EXPR_STMNT)){
         showError(__LINE__);
     }
@@ -118,6 +118,7 @@ void Codegen::generateStatementCode(TokenAST *token, int offset){
     if(treewalker.isNodeType(childs, {NodeType::VAR_DECL})){
         auto vars = treewalker.processVarDeclaration(childs[0]);
 
+        int prev = offset;
         for(auto i: vars){
             auto symbol = dynamic_cast<VariableSymbolInfo*> (i->getSymbol());
             i->setSymbol(nullptr);
@@ -127,8 +128,8 @@ void Codegen::generateStatementCode(TokenAST *token, int offset){
             offset += 2;
         }
             
-        if(offset != 0)
-            codeHelper.addToCode("SUB", "SP", std::to_string(offset), "");
+        if(offset != prev)
+            codeHelper.addToCode("SUB", "SP", std::to_string(offset), "initializing local variables");
     }
     else if(treewalker.isNodeType(childs, {NodeType::EXPR_STMNT})){
         if(childs[0]->getChilds().size() == 1) return ;
@@ -138,5 +139,20 @@ void Codegen::generateStatementCode(TokenAST *token, int offset){
 
         vector<bool> registers(4, false);
         expSt->generate(registers, codeHelper);  
+    }
+
+    // For println
+    else if(treewalker.isNodeType(childs, {NodeType::SYMBOL, NodeType::SYMBOL, NodeType::SYMBOL, NodeType::SYMBOL, NodeType::SYMBOL})){
+        std::string id = treewalker.walkID(childs[2]);
+
+        // extracting symbol access string
+        auto symbol = dynamic_cast<VariableSymbolInfo *> (symbolTable.lookup(id));
+        std::string accessId = symbol->getAccessBy();
+
+        codeHelper.addToCode("");
+        codeHelper.addToCode(std::to_string(root->getBeginLine()));
+        codeHelper.addToCode("MOV", "AX", accessId, "saving to register for printing");
+        codeHelper.addToCode("CALL", "PRINT_OUTPUT", "");
+        codeHelper.addToCode("CALL", "NEW_LINE", "");
     }
 }
