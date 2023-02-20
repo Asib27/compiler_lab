@@ -43,6 +43,8 @@ public:
         codeHelper.print(os);
     }
 
+    void generateCompoundStatementCode(AST* root, int &offset);
+
     ~Codegen() {}
 };
 

@@ -35,8 +35,8 @@ void Codegen::generateCode(){
                 codeHelper.addToCode( "line " + std::to_string(i->getBeginLine()));
                 generateStatementCode(i, offset);
             }
+
             codeHelper.endFunction(funcName.getName(), offset);
-            std::cout << symbolTable << std::endl;
             symbolTable.exitScope();
         }
     }
@@ -153,4 +153,26 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
         codeHelper.addToCode("CALL", "PRINT_OUTPUT", "");
         codeHelper.addToCode("CALL", "NEW_LINE", "");
     }
+
+    // for compound statement
+    else if(treewalker.isNodeType(childs, {NodeType::COMPOUND_STATEMENT})){
+        generateCompoundStatementCode(childs[0], offset);
+    }
+}
+    
+void Codegen::generateCompoundStatementCode(AST* root, int &offset){
+    symbolTable.enterScope();
+
+    if(offset != 0)
+        codeHelper.addToCode("SUB", "SP", std::to_string(offset), "");
+
+    
+    auto statements = treewalker.walkCompundStatements(root);
+    for(auto i: statements){
+        codeHelper.addToCode("");
+        codeHelper.addToCode( "line " + std::to_string(i->getBeginLine()));
+        generateStatementCode(i, offset);
+    }
+
+    symbolTable.exitScope();
 }
