@@ -115,6 +115,8 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
     }
 
     auto childs = token->getChilds();
+
+    // var declaration
     if(treewalker.isNodeType(childs, {NodeType::VAR_DECL})){
         auto vars = treewalker.processVarDeclaration(childs[0]);
 
@@ -131,6 +133,8 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
         if(offset != prev)
             codeHelper.addToCode("SUB", "SP", std::to_string(offset), "initializing local variables");
     }
+
+    // expression statment
     else if(treewalker.isNodeType(childs, {NodeType::EXPR_STMNT})){
         if(childs[0]->getChilds().size() == 1) return ;
 
@@ -168,6 +172,22 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
         codeHelper.addToCode("IF starts");
         generateStatementCode(dynamic_cast<TokenAST *>(childs[4]), offset);
         codeHelper.addLabel(endLabel);
+    }
+
+    // for if (expr) stmnt else stmnt
+    else if(treewalker.isNodeType(childs, {NodeType::SYMBOL, NodeType::SYMBOL, NodeType::EXP, NodeType::SYMBOL, NodeType::STATEMENT, NodeType::SYMBOL, NodeType::STATEMENT})){
+        std::string reg = generateExpressionCode(childs[2]);
+        std::string endLabel = codeHelper.getLabel() + "_if";
+
+        codeHelper.addToCode("CMP", reg, "0", "");
+        codeHelper.addToCode("JE", endLabel + "s", "do not enter if");
+        codeHelper.addToCode("If starts");
+        generateStatementCode(dynamic_cast<TokenAST *>(childs[4]), offset);
+        codeHelper.addToCode("JMP", endLabel + "e", "");
+        codeHelper.addLabel(endLabel + "s");
+        codeHelper.addToCode("else block starts");
+        generateStatementCode(dynamic_cast<TokenAST *>(childs[6]), offset);
+        codeHelper.addLabel(endLabel + "e");
     }
 }
     
