@@ -48,10 +48,20 @@ public:
     CodeHelper(/* args */){
         curLabel = "generic";
 
-        new_line = std::string("NEW_LINE proc\n") + std::string("\tpush ax\n") +
-                        "\tpush dx\n" + "\tmov ah,2\n" + "\tmov dl,cr\n" + "\tint 21h\n" +
-                        "\tmov ah,2\n" + "\tmov dl,lf\n" + "\tint 21h\n" + "\tpop dx\n" +
-                        "\tpop ax\n" + "\tret\n" + "new_line endp\n";
+        new_line = std::string("NEW_LINE PROC\n\
+    PUSH AX\n\
+    PUSH DX\n\
+    \n\
+    MOV AH, 2       ; output a char\n\
+    MOV DL, 0DH     \n\
+    INT 21H         ; print CR\n\
+    MOV DL, 0AH     \n\
+    INT 21H         ; print LF\n\
+    \n\
+    POP DX                    \n\
+    POP AX                    \n\
+    RET\n\
+NEW_LINE ENDP\n");
 
         // indentation is not maintained to keep good indentation in output asm code
         print_output =  std::string("\
@@ -191,9 +201,6 @@ PRINT_OUTPUT ENDP\n"
         os << ".STACK 1000H" << std::endl;
         os << ".DATA" << std::endl;
 
-        os << "\tCR EQU 0DH" << std::endl;
-        os << "\tLF EQU 0AH" << std::endl;
-        os << "\tnumber DB \"00000$\"" << std::endl;
         os << "" << std::endl;
 
         for(auto i : data){

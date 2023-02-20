@@ -136,9 +136,7 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
 
         auto exp = childs[0]->getChilds()[0];
         auto expSt = treewalker.processExpression(exp, symbolTable);
-
-        vector<bool> registers(4, false);
-        expSt->generate(registers, codeHelper);  
+        generateExpressionCode(expSt, exp->getBeginLine());
     }
 
     // For println
@@ -150,7 +148,7 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
         std::string accessId = symbol->getAccessBy();
 
         codeHelper.addToCode("");
-        codeHelper.addToCode(std::to_string(root->getBeginLine()));
+        codeHelper.addToCode("Line " + std::to_string(root->getBeginLine()));
         codeHelper.addToCode("MOV", "AX", accessId, "saving to register for printing");
         codeHelper.addToCode("CALL", "PRINT_OUTPUT", "");
         codeHelper.addToCode("CALL", "NEW_LINE", "");

@@ -193,13 +193,13 @@ public:
             else if(oprtr == "/" || oprtr == "%"){
                 code.addToCode("CWD", "");
                 
-                code.addToCode("DIV", reg2);
+                code.addToCode("DIV", reg2, "");
                 code.setRegister(reg2, registerUse, false);
                 
                 if(oprtr == "/"){
                     code.setRegister("AX", registerUse, true);
                     return "AX";
-                }else if (oprtr == "$"){
+                }else if (oprtr == "%"){
                     code.setRegister("DX", registerUse, true);
                     return "DX";                   
                 }
@@ -240,9 +240,11 @@ public:
             if(oprtr == "&&"){
                 std::string reg1 = left->generate(registerUse, code);
                 std::string label = code.getLabel();
+                code.addToCode("CMP", reg1, "0", "");
                 code.addToCode("JZ", label + "s", "");
 
                 std::string reg2 = right->generate(registerUse, code);
+                code.addToCode("CMP", reg2, "0", "");
                 code.addToCode("JZ", label + "s", "");
 
                 code.addToCode("MOV", reg1, "1", "");
@@ -304,12 +306,16 @@ public:
     std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{
         std::string reg = child->generate(registerUse, code);
         if(getOperator() == "++"){
+            auto acess = dynamic_cast<TerminalExpressionNode*>(child)->getAccess();
             code.addToCode("INC", reg, "");
+            code.addToCode("MOV", acess, reg, "");
         }
         else if(getOperator() == "--"){
+            auto acess = dynamic_cast<TerminalExpressionNode*>(child)->getAccess();
             code.addToCode("DEC", reg, "");
+            code.addToCode("MOV", acess, reg, "");
         }
-        else if(getOperator() == "!"){
+        else if(getOperator() == "-"){
             code.addToCode("NEG", reg, "");
         }
         else{
