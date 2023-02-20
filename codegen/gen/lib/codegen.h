@@ -33,10 +33,12 @@ public:
 
     
     std::string generateThreeAdressExpressionCode(ExpressionNode * exp, int start = 1);
-    std::string generateExpressionCode(ExpressionNode *exp, int lineno){
+    std::string generateExpressionCode(AST *exp){
         std::vector<bool> registers(4, false);
-        codeHelper.setCurLabel("Line" + std::to_string(lineno) + "_");
-        std::string reg = exp->generate(registers, codeHelper);
+        codeHelper.setCurLabel("Line" + std::to_string(exp->getBeginLine()) + "_");
+        
+        auto expSt = treewalker.processExpression(exp, symbolTable);
+        std::string reg = expSt->generate(registers, codeHelper);
         return reg;
     }
     void printCode(std::ostream &os){

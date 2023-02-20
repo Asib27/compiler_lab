@@ -135,8 +135,7 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
         if(childs[0]->getChilds().size() == 1) return ;
 
         auto exp = childs[0]->getChilds()[0];
-        auto expSt = treewalker.processExpression(exp, symbolTable);
-        generateExpressionCode(expSt, exp->getBeginLine());
+        generateExpressionCode(exp);
     }
 
     // For println
@@ -158,14 +157,22 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
     else if(treewalker.isNodeType(childs, {NodeType::COMPOUND_STATEMENT})){
         generateCompoundStatementCode(childs[0], offset);
     }
+
+    // for IF LPAREN expression RPAREN statement
+    else if(treewalker.isNodeType(childs, {NodeType::SYMBOL, NodeType::SYMBOL, NodeType::EXP, NodeType::SYMBOL, NodeType::STATEMENT})){
+        std::string reg = generateExpressionCode(childs[2]);
+        std::string endLabel = codeHelper.getLabel() + "_if";
+
+        codeHelper.addToCode("CMP", reg, "0", "");
+        codeHelper.addToCode("JE", endLabel, "do not enter if");
+        codeHelper.addToCode("IF starts");
+        generateStatementCode(dynamic_cast<TokenAST *>(childs[4]), offset);
+        codeHelper.addLabel(endLabel);
+    }
 }
     
 void Codegen::generateCompoundStatementCode(AST* root, int &offset){
     symbolTable.enterScope();
-
-    if(offset != 0)
-        codeHelper.addToCode("SUB", "SP", std::to_string(offset), "");
-
     
     auto statements = treewalker.walkCompundStatements(root);
     for(auto i: statements){
