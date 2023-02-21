@@ -151,26 +151,8 @@ private:
         }
         return term->getAccess();
     }
-public:
-    void print(std::ostream &os, int tab=0){
-        ExpressionNode::print(os, tab);
-        left->print(os, tab+1);
-        right->print(os, tab+1);
-    }
 
-    BinaryExpressionNode(ExpressionNode *l, ExpressionNode *r, SymbolInfo *s, std::string childOp)
-        : left(l), right(r), ExpressionNode(s, childOp, "binary")
-     {}
-    
-    ExpressionNode* getLeft(){
-        return left;
-    }
-
-    ExpressionNode* getRight(){
-        return right;
-    }
-    
-    std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{        
+    std::string generateHelper(std::vector<bool> registerUse, CodeHelper &code){
         std::string oprtr = getOperator();
         auto type = getType();
 
@@ -296,7 +278,58 @@ public:
 
         std::cerr << type << " " << oprtr << " " << "doent match " << __LINE__ << std::endl;
 
-        return "AX";
+        return "AX";       
+    }
+public:
+    void print(std::ostream &os, int tab=0){
+        ExpressionNode::print(os, tab);
+        left->print(os, tab+1);
+        right->print(os, tab+1);
+    }
+
+    BinaryExpressionNode(ExpressionNode *l, ExpressionNode *r, SymbolInfo *s, std::string childOp)
+        : left(l), right(r), ExpressionNode(s, childOp, "binary")
+     {}
+    
+    ExpressionNode* getLeft(){
+        return left;
+    }
+
+    ExpressionNode* getRight(){
+        return right;
+    }
+    
+    std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{   
+        if(code.getNoOfFreeRegister(registerUse) > 2){
+            if(code.isEmptyRegister("AX", registerUse))
+                code.addToCode("PUSH", "AX", "");
+            if(code.isEmptyRegister("BX", registerUse))
+                code.addToCode("PUSH", "BX", "");
+            if(code.isEmptyRegister("CX", registerUse))
+                code.addToCode("PUSH", "CX", "");
+            if(code.isEmptyRegister("DX", registerUse))
+                code.addToCode("PUSH", "DX", "");
+        
+            std::vector<bool> registers;
+            std::string res = generateHelper(registers, code);
+            std::string fr = code.getEmptyRegister(registerUse);
+            if(fr != res){
+                code.addToCode("MOV", fr, res, "");
+            }
+
+            if(code.isEmptyRegister("DX", registerUse))
+                code.addToCode("POP", "DX", "");
+            if(code.isEmptyRegister("CX", registerUse))
+                code.addToCode("POP", "CX", "");
+            if(code.isEmptyRegister("BX", registerUse))
+                code.addToCode("POP", "BX", "");
+            if(code.isEmptyRegister("AX", registerUse))
+                code.addToCode("POP", "AX", "");
+
+            code.setRegister(fr, registerUse, true);
+            return fr;
+        }
+        return generateHelper(registerUse, code);
     }
 
     ~BinaryExpressionNode() {}

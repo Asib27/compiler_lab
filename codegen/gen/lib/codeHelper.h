@@ -202,6 +202,10 @@ PRINT_OUTPUT ENDP\n"
         else if(regName == "DX") registerUse[3] = val;
     }
 
+    int getNoOfFreeRegister(std::vector<bool> &registerUse){
+        return registerUse[0] + registerUse[1] + registerUse[2] + registerUse[3];
+    }
+
     void print(std::ostream &os){
         os << ".MODEL SMALL" << std::endl;
         os << ".STACK 1000H" << std::endl;

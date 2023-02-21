@@ -3,62 +3,158 @@
 .DATA
 
 	; ; global variable declaration
+	c DW 1 DUP (0000H)	; declared at line 1
 	b DW 1 DUP (0000H)	; declared at line 1
 	a DW 1 DUP (0000H)	; declared at line 1
-	j DW 1 DUP (0000H)	; declared at line 3
-	i DW 1 DUP (0000H)	; declared at line 3
 .CODE
-abc PROC
+func_a PROC
 	PUSH BP
 	MOV BP,SP
 
-	; line 6
-	MOV BX,[BP+6]
-	MOV CX,[BP+4]
-	ADD BX,CX
-	MOV [BP+6],BX
-
-	; line 7
-
-	; Line 7
-	MOV AX,[BP+6]	; saving to register for printing
-	CALL PRINT_OUTPUT
-	CALL NEW_LINE
+	; line 4
+	MOV BX,7
+	MOV a,BX
+	POP BP
+	RET
+func_a ENDP
+foo PROC
+	PUSH BP
+	MOV BP,SP
 
 	; line 8
-	MOV BX,[BP+6]
+	MOV BX,[BP+4]
+	MOV CX,3
+	ADD BX,CX
+	MOV [BP+4],BX
+
+	; line 9
+	MOV BX,[BP+4]
 	MOV AX,BX
 	POP BP
 	RET
-abc ENDP
+foo ENDP
+bar PROC
+	PUSH BP
+	MOV BP,SP
+
+	; line 14
+	MOV BX,4
+	MOV CX,[BP+6]
+	MOV AX,BX
+	MUL CX
+	MOV BX,2
+	MOV CX,[BP+4]
+	MOV AX,BX
+	MUL CX
+	ADD AX,AX
+	MOV c,AX
+
+	; line 15
+	MOV BX,c
+	MOV AX,BX
+	POP BP
+	RET
+bar ENDP
 main PROC
 	MOV AX,@DATA
 	MOV DX,AX
 	PUSH BP
 	MOV BP,SP
 
-	; line 12
-	MOV BX,10
-	PUSH BX
-	MOV BX,10
-	PUSH BX
-	MOV BX,30
-	MOV CX,60
-	ADD BX,CX
-	PUSH BX
-	CALL abc
-	ADD SP,4
-	MOV CX,AX	; moving the result to empty register
-	POP BX
-	ADD BX,CX
-	MOV a,BX
+	; line 20
+	SUB SP,8	; initializing local variables
 
-	; line 13
+	; line 22
+	MOV BX,5
+	MOV [BP-8],BX
 
-	; Line 13
+	; line 23
+	MOV BX,6
+	MOV [BP-6],BX
+
+	; line 25
+	CALL func_a
+	ADD SP,0
+	MOV BX,AX	; moving the result to empty register
+
+	; line 26
+
+	; Line 26
 	MOV AX,a	; saving to register for printing
 	CALL PRINT_OUTPUT
 	CALL NEW_LINE
+
+	; line 28
+	MOV BX,[BP-8]
+	PUSH BX
+	CALL foo
+	ADD SP,2
+	MOV BX,AX	; moving the result to empty register
+	MOV [BP-4],BX
+
+	; line 29
+
+	; Line 29
+	MOV AX,[BP-4]	; saving to register for printing
+	CALL PRINT_OUTPUT
+	CALL NEW_LINE
+
+	; line 31
+	MOV BX,[BP-8]
+	PUSH BX
+	MOV BX,[BP-6]
+	PUSH BX
+	CALL bar
+	ADD SP,4
+	MOV BX,AX	; moving the result to empty register
+	MOV [BP-2],BX
+
+	; line 32
+
+	; Line 32
+	MOV AX,[BP-2]	; saving to register for printing
+	CALL PRINT_OUTPUT
+	CALL NEW_LINE
+
+	; line 34
+	MOV BX,6
+	PUSH BX
+	MOV BX,[BP-8]
+	PUSH BX
+	MOV BX,[BP-6]
+	PUSH BX
+	CALL bar
+	ADD SP,4
+	MOV CX,AX	; moving the result to empty register
+	POP BX
+	MOV AX,BX
+	MUL CX
+	MOV BX,2
+	ADD AX,BX
+	MOV BX,3
+	PUSH BX
+	MOV BX,[BP-8]
+	PUSH BX
+	CALL foo
+	ADD SP,2
+	MOV CX,AX	; moving the result to empty register
+	POP BX
+	MOV AX,BX
+	MUL CX
+	SUB AX,AX
+	MOV [BP-6],AX
+
+	; line 35
+
+	; Line 35
+	MOV AX,[BP-6]	; saving to register for printing
+	CALL PRINT_OUTPUT
+	CALL NEW_LINE
+
+	; line 38
+	MOV BX,0
+	MOV AX,BX
+	ADD SP,8
 	POP BP
 	MOV AX,4CH
 	INT 21H
