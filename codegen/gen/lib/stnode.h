@@ -88,7 +88,7 @@ public:
         int size  = args.size();
         for(auto i: args){
             std::vector<bool> registers(4, false);
-            std::string res = i->generate(registerUse, code);
+            std::string res = i->generate(registers, code);
             code.addToCode("PUSH", res, "");
         }
 
