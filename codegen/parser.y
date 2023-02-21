@@ -17,7 +17,7 @@ int yylex(void);
 extern FILE *yyin;
 extern int yylineno;
 
-ofstream logout("log.txt"), tokenout("token.txt"), errorout("error.txt");
+ofstream logout("log.txt"), tokenout("token.txt"), errorout("error.txt"), codeout("code.asm");
 ofstream treeout("parseTree.txt");
 PrintUtil printUtil(tokenout, logout, errorout);
 Printer printer(logout, false);
@@ -150,7 +150,7 @@ start : program
 
 		Codegen codegen($$);
 		codegen.generateCode();
-		codegen.printCode(cout);
+		codegen.printCode(codeout);
 
 		delete $$;
 
