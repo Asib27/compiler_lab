@@ -329,9 +329,11 @@ ExpressionNode* TreeWalker::processFactor(AST * expression, SymbolTable &symbolT
         return processExpression(childs[1], symbolTable);
     }
     else if(childs.size() == 4){ // factor -> ID LPAREN argument_list RPAREN
-        std::cerr << "Handle Function calls" << std::endl;
+        auto argumentList = dynamic_cast<TokenAST*>(childs[2])->getChilds()[0];
+        auto args = processArgumentList(argumentList, symbolTable);
+        
         auto symbol = dynamic_cast<SymbolAST *>(childs[0])->getSymbol();
-        return new TerminalExpressionNode(symbol, symbol->getName());
+        return new FunctionExpressionNode(symbol, args);
     }
     else{
         showError(__LINE__);

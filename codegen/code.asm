@@ -8,6 +8,26 @@
 	j DW 1 DUP (0000H)	; declared at line 3
 	i DW 1 DUP (0000H)	; declared at line 3
 .CODE
+abc PROC
+	PUSH BP
+	MOV BP,SP
+
+	; line 6
+	MOV BX,[BP+6]
+	MOV CX,[BP+4]
+	ADD BX,CX
+	MOV [BP+6],BX
+
+	; line 7
+
+	; Line 7
+	MOV AX,[BP+6]	; saving to register for printing
+	CALL PRINT_OUTPUT
+	CALL NEW_LINE
+	ADD SP,0
+	POP BP
+	RET
+abc ENDP
 main PROC
 	MOV AX,@DATA
 	MOV DX,AX
@@ -40,13 +60,27 @@ main PROC
 	ADD BX,CX
 	MOV a,BX
 
-	; line 16
+	; line 17
+	MOV BX,10
+	PUSH BX
+	MOV CX,30
+	MOV DX,60
+	ADD CX,DX
+	PUSH CX
+	CALL abc
+	ADD SP,4
+	MOV DX,AX
+	POP CX
+	POP BX
 
-	; Line 16
+	; line 18
+
+	; Line 18
 	MOV AX,a	; saving to register for printing
 	CALL PRINT_OUTPUT
 	CALL NEW_LINE
 	ADD SP,0
+	POP BP
 	MOV AX,4CH
 	INT 21H
 main ENDP

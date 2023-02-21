@@ -159,10 +159,15 @@ PRINT_OUTPUT ENDP\n"
             addToCode("PUSH", "BP", "");
             addToCode("MOV", "BP", "SP", "");
         }
+        else{
+            addToCode("PUSH", "BP", "");
+            addToCode("MOV", "BP", "SP", "");
+        }
     }
 
     void endFunction(std::string funcname, int offset){
         addToCode("ADD", "SP", std::to_string(offset), "");
+        addToCode("POP", "BP", "");
         if(funcname == "main"){
             addToCode("MOV", "AX", "4CH", "");
             addToCode("INT", "21H", "");

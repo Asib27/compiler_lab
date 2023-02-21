@@ -19,13 +19,14 @@ void Codegen::generateCode(){
 
             codeHelper.startFunction(funcName.getName());
             int offset = 0;
+            int param = 2 + params.size() * 2;
 
             symbolTable.enterScope();
             for(auto i: params){
                 auto symbol = dynamic_cast<VariableSymbolInfo *> (i);
-                symbol->setAccessBy("[BP-" + std::to_string(offset+2) + "]");
+                symbol->setAccessBy("[BP+" + std::to_string(param) + "]");
                 symbolTable.insert(symbol);
-                offset += 2;
+                param -= 2;
             }
 
             if(offset != 0)

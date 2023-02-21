@@ -69,6 +69,22 @@ public:
     AST* processStart(AST * root);
     AST * processUnit(AST *);
     ExpressionNode* processExpression(AST *expression, SymbolTable &symbolTable);
+    std::vector<ExpressionNode *> processArgumentList(AST * argList, SymbolTable &symbolTable){
+        auto childs = dynamic_cast<TokenAST*>(argList)->getChilds();
+
+        std::vector<ExpressionNode *> ans;
+        if(childs.size() == 1){
+            auto expST = processExpression(childs[0], symbolTable);
+            ans.push_back(expST);
+        }
+        else{
+            ans = processArgumentList(childs[0], symbolTable);
+            auto expST = processExpression(childs[2], symbolTable);
+            ans.push_back(expST);
+        }
+        return ans;
+    }
+
 
     std::vector<TokenAST*> walkCompundStatements(AST *root);
     std::vector<TokenAST*> walkStatements(AST *);

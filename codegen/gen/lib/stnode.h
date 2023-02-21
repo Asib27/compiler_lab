@@ -7,36 +7,6 @@
 #include"symbolInfo.h"
 #include"codeHelper.h"
 
-/*
-c = a && b
-MOV AX, a   ; generating first block
-CMP.0
-AX, 0
-JE first_block
-MOV BX, b  ; FOR generating second block 
-CMP BX, 0
-JE first_block
-MOV AX, 1
-JMP END
-first_block:
-MOV AX, 0
-END:
-*/
-
-/*
-c = a || b
-MOV AX, a   ; first block
-CMP AX, 0 
-JNE first_block
-MOV BX, b   ; second block 
-CMP BX, 0
-JNE first_block
-MOV AX, 0
-JMP END
-first_block:
-MOV AX, 1
-END:
-*/
 
 class ExpressionNode{
     const std::string op;
@@ -93,6 +63,52 @@ public:
         code.addToCode("MOV", reg, access, "");
         code.setRegister(reg, registerUse, true);
         return reg;
+    }
+};
+
+class FunctionExpressionNode : public ExpressionNode
+{
+    std::vector<ExpressionNode *> args;
+public:
+    FunctionExpressionNode(SymbolInfo* info, std::vector<ExpressionNode *> args)
+        : ExpressionNode(info, "", "function"), args(args)
+    {
+    }
+
+    std::string generate(std::vector<bool> &registerUse, CodeHelper &code) override{
+        if(code.isEmptyRegister("AX", registerUse))
+            code.addToCode("PUSH", "AX", "");
+        if(code.isEmptyRegister("BX", registerUse))
+            code.addToCode("PUSH", "BX", "");
+        if(code.isEmptyRegister("CX", registerUse))
+            code.addToCode("PUSH", "CX", "");
+        if(code.isEmptyRegister("DX", registerUse))
+            code.addToCode("PUSH", "DX", "");
+        
+        int size  = args.size();
+        for(auto i: args){
+            std::vector<bool> registers(4, false);
+            std::string res = i->generate(registerUse, code);
+            code.addToCode("PUSH", res, "");
+        }
+
+        code.addToCode("CALL", getOperator(), "");
+
+        code.addToCode("ADD", "SP", std::to_string(2*size), "");
+        std::string res = code.getEmptyRegister(registerUse);
+        code.addToCode("MOV", res, "AX", "");
+        
+        if(code.isEmptyRegister("DX", registerUse))
+            code.addToCode("POP", "DX", "");
+        if(code.isEmptyRegister("CX", registerUse))
+            code.addToCode("POP", "CX", "");
+        if(code.isEmptyRegister("BX", registerUse))
+            code.addToCode("POP", "BX", "");
+        if(code.isEmptyRegister("AX", registerUse))
+            code.addToCode("POP", "AX", "");
+
+        code.setRegister(res, registerUse, true);
+        return res;
     }
 };
 
