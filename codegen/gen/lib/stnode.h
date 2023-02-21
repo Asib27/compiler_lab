@@ -307,16 +307,19 @@ public:
         std::string reg = child->generate(registerUse, code);
         if(getOperator() == "++"){
             auto acess = dynamic_cast<TerminalExpressionNode*>(child)->getAccess();
-            code.addToCode("INC", reg, "");
-            code.addToCode("MOV", acess, reg, "");
+            code.addToCode("INC", acess, "");
+            // code.addToCode("MOV", acess, reg, "");
         }
         else if(getOperator() == "--"){
             auto acess = dynamic_cast<TerminalExpressionNode*>(child)->getAccess();
-            code.addToCode("DEC", reg, "");
-            code.addToCode("MOV", acess, reg, "");
+            code.addToCode("DEC", acess, "");
+            // code.addToCode("MOV", acess, reg, "");
         }
         else if(getOperator() == "-"){
             code.addToCode("NEG", reg, "");
+        }
+        else if(getOperator() == "+"){
+            
         }
         else{
             std::cerr << __LINE__ << " : INVALID OPERAND " << getOperator() << " " << std::endl;
