@@ -246,6 +246,11 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
         codeHelper.addLabel(label+"e");
     }
 
+    else if(treewalker.isNodeType(childs, {NodeType::SYMBOL, NodeType::EXP, NodeType::SYMBOL})){
+        std::string res = generateExpressionCode(childs[1]);
+        codeHelper.addToCode("MOV", "AX", res, "");
+    }
+
 }
     
 void Codegen::generateCompoundStatementCode(AST* root, int &offset){

@@ -24,6 +24,10 @@ abc PROC
 	MOV AX,[BP+6]	; saving to register for printing
 	CALL PRINT_OUTPUT
 	CALL NEW_LINE
+
+	; line 8
+	MOV BX,[BP+6]
+	MOV AX,BX
 	ADD SP,0
 	POP BP
 	RET
@@ -34,33 +38,7 @@ main PROC
 	PUSH BP
 	MOV BP,SP
 
-	; line 11
-	MOV BX,1
-	MOV a,BX
-
 	; line 12
-	MOV BX,2
-	MOV b,BX
-
-	; line 13
-	MOV BX,3
-	MOV i,BX
-
-	; line 14
-	MOV BX,4
-	MOV j,BX
-
-	; line 15
-	MOV BX,a
-	MOV CX,b
-	MOV DX,i
-	MOV AX,j
-	ADD DX,AX
-	ADD CX,DX
-	ADD BX,CX
-	MOV a,BX
-
-	; line 17
 	MOV BX,10
 	PUSH BX
 	MOV CX,30
@@ -72,10 +50,11 @@ main PROC
 	MOV DX,AX
 	POP CX
 	POP BX
+	MOV a,DX
 
-	; line 18
+	; line 13
 
-	; Line 18
+	; Line 13
 	MOV AX,a	; saving to register for printing
 	CALL PRINT_OUTPUT
 	CALL NEW_LINE
