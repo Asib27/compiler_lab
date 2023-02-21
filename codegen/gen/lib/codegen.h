@@ -46,6 +46,15 @@ public:
     }
 
     void generateCompoundStatementCode(AST* root, int &offset);
+    std::string generateExpressionStatementCode(AST* root){
+        auto child = root->getChilds();
+        if(child.size() == 1) return "";
+        if(child.size() == 2){
+            return generateExpressionCode(child[0]);
+        }
+
+        return "";
+    }
 
     ~Codegen() {}
 };

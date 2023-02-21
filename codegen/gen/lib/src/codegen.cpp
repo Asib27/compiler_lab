@@ -219,6 +219,32 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
         codeHelper.addLabel(label+"e"); // end of while label
     }
 
+    // for loop code
+    else if(treewalker.isNodeType(
+        childs,
+        {
+            NodeType::SYMBOL, NodeType::SYMBOL, NodeType::EXPR_STMNT,
+            NodeType::EXPR_STMNT, NodeType::EXP, NodeType::SYMBOL, NodeType::STATEMENT
+        }
+    )){
+        codeHelper.addToCode("FOR loop of line" + childs[0]->getBeginLine());
+
+        // initialization
+        generateExpressionStatementCode(childs[2]);
+
+        // checking
+        std::string label = "line_" + std::to_string(childs[0]->getBeginLine()) + "_for_";
+        codeHelper.addLabel(label+"s"); // label to loopback
+        std::string reg = generateExpressionStatementCode(childs[3]);
+        codeHelper.addToCode("CMP", reg, "0", "");
+        codeHelper.addToCode("JZ", label+"e", ""); // if condition false
+        codeHelper.addToCode(" for loop body starts");
+        generateStatementCode(dynamic_cast<TokenAST *>(childs[6]), offset);
+        generateExpressionCode(childs[4]);
+        codeHelper.addToCode("JMP", label+"s", ""); // go back to loop start
+        codeHelper.addLabel(label+"e");
+    }
+
 }
     
 void Codegen::generateCompoundStatementCode(AST* root, int &offset){
