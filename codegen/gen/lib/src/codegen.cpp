@@ -151,7 +151,7 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
         std::string accessId = symbol->getAccessBy();
 
         codeHelper.addToCode("");
-        codeHelper.addToCode("Line " + std::to_string(root->getBeginLine()));
+        codeHelper.addToCode("Line " + std::to_string(childs[0]->getBeginLine()));
         codeHelper.addToCode("MOV", "AX", accessId, "saving to register for printing");
         codeHelper.addToCode("CALL", "PRINT_OUTPUT", "");
         codeHelper.addToCode("CALL", "NEW_LINE", "");
@@ -163,7 +163,13 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
     }
 
     // for IF LPAREN expression RPAREN statement
-    else if(treewalker.isNodeType(childs, {NodeType::SYMBOL, NodeType::SYMBOL, NodeType::EXP, NodeType::SYMBOL, NodeType::STATEMENT})){
+    else if(
+        treewalker.isNodeType(
+            childs, 
+            {NodeType::SYMBOL, NodeType::SYMBOL, NodeType::EXP, NodeType::SYMBOL, NodeType::STATEMENT}
+        ) && treewalker.walkID(childs[0]) == "if"
+        )
+    {
         std::string reg = generateExpressionCode(childs[2]);
         std::string endLabel = codeHelper.getLabel() + "_if";
 
@@ -174,8 +180,13 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
         codeHelper.addLabel(endLabel);
     }
 
-    // for if (expr) stmnt else stmnt
-    else if(treewalker.isNodeType(childs, {NodeType::SYMBOL, NodeType::SYMBOL, NodeType::EXP, NodeType::SYMBOL, NodeType::STATEMENT, NodeType::SYMBOL, NodeType::STATEMENT})){
+    // if (expr) stmnt else stmnt
+    else if(treewalker.isNodeType(
+            childs, 
+            {NodeType::SYMBOL, NodeType::SYMBOL, NodeType::EXP, NodeType::SYMBOL, NodeType::STATEMENT, NodeType::SYMBOL, NodeType::STATEMENT}
+            ) &&
+            treewalker.walkID(childs[0]) == "if"
+    ){ 
         std::string reg = generateExpressionCode(childs[2]);
         std::string endLabel = codeHelper.getLabel() + "_if";
 
@@ -189,6 +200,25 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
         generateStatementCode(dynamic_cast<TokenAST *>(childs[6]), offset);
         codeHelper.addLabel(endLabel + "e");
     }
+
+    // while ( expr ) stmnt
+    else if(treewalker.isNodeType(
+        childs, 
+        {NodeType::SYMBOL, NodeType::SYMBOL, NodeType::EXP, NodeType::SYMBOL, NodeType::STATEMENT}
+        ) &&
+        treewalker.walkID(childs[0]) == "while"
+    ){
+        std::string label = "line_" + std::to_string(childs[0]->getBeginLine()) + "_while_"; 
+        codeHelper.addLabel(label + "s");
+        std::string reg = generateExpressionCode(childs[2]);
+        codeHelper.addToCode("CMP", reg, "0", "");
+        codeHelper.addToCode("JZ", label+"e", ""); // if false go to end of while
+        codeHelper.addToCode("While starts");
+        generateStatementCode(dynamic_cast<TokenAST *>(childs[4]), offset);
+        codeHelper.addToCode("JMP", label+"s", ""); //uncondition jump to go back to top of the loop
+        codeHelper.addLabel(label+"e"); // end of while label
+    }
+
 }
     
 void Codegen::generateCompoundStatementCode(AST* root, int &offset){
