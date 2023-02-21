@@ -96,7 +96,9 @@ public:
 
         code.addToCode("ADD", "SP", std::to_string(2*size), "");
         std::string res = code.getEmptyRegister(registerUse);
-        code.addToCode("MOV", res, "AX", "");
+
+        if(res != "AX")
+            code.addToCode("MOV", res, "AX", "moving the result to empty register");
         
         if(code.isEmptyRegister("DX", registerUse))
             code.addToCode("POP", "DX", "");

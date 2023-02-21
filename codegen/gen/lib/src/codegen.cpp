@@ -248,7 +248,8 @@ void Codegen::generateStatementCode(TokenAST *token, int &offset){
 
     else if(treewalker.isNodeType(childs, {NodeType::SYMBOL, NodeType::EXP, NodeType::SYMBOL})){
         std::string res = generateExpressionCode(childs[1]);
-        codeHelper.addToCode("MOV", "AX", res, "");
+        if(res != "AX")
+            codeHelper.addToCode("MOV", "AX", res, "");
     }
 
 }

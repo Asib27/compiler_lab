@@ -166,7 +166,8 @@ PRINT_OUTPUT ENDP\n"
     }
 
     void endFunction(std::string funcname, int offset){
-        addToCode("ADD", "SP", std::to_string(offset), "");
+        if(offset != 0)
+            addToCode("ADD", "SP", std::to_string(offset), "");
         addToCode("POP", "BP", "");
         if(funcname == "main"){
             addToCode("MOV", "AX", "4CH", "");

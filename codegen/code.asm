@@ -28,7 +28,6 @@ abc PROC
 	; line 8
 	MOV BX,[BP+6]
 	MOV AX,BX
-	ADD SP,0
 	POP BP
 	RET
 abc ENDP
@@ -41,16 +40,18 @@ main PROC
 	; line 12
 	MOV BX,10
 	PUSH BX
-	MOV CX,30
-	MOV DX,60
-	ADD CX,DX
-	PUSH CX
+	MOV BX,10
+	PUSH BX
+	MOV BX,30
+	MOV CX,60
+	ADD BX,CX
+	PUSH BX
 	CALL abc
 	ADD SP,4
-	MOV DX,AX
-	POP CX
+	MOV CX,AX	; moving the result to empty register
 	POP BX
-	MOV a,DX
+	ADD BX,CX
+	MOV a,BX
 
 	; line 13
 
@@ -58,7 +59,6 @@ main PROC
 	MOV AX,a	; saving to register for printing
 	CALL PRINT_OUTPUT
 	CALL NEW_LINE
-	ADD SP,0
 	POP BP
 	MOV AX,4CH
 	INT 21H
