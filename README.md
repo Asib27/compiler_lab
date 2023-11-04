@@ -1,4 +1,7 @@
-# Compiler_lab
+# Compiler
+
+This repo contains a simplified C compiler. It supports basic feature of C language.
+
 ## Symbol Table
 contains implementation of Symbol Table
 
