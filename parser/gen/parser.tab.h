@@ -1,8 +1,8 @@
-/* A Bison parser, made by GNU Bison 3.5.1.  */
+/* A Bison parser, made by GNU Bison 3.8.2.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2021 Free Software Foundation,
    Inc.
 
    This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
    GNU General Public License for more details.
 
    You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.  */
+   along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
 
 /* As a special exception, you may create a larger work that contains
    part or all of the Bison parser skeleton and distribute that work
@@ -31,8 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
+/* DO NOT RELY ON FEATURES THAT ARE NOT DOCUMENTED in the manual,
+   especially those whose name start with YY_ or yy_.  They are
+   private implementation details that can be changed or removed.  */
 
 #ifndef YY_YY_PARSER_TAB_H_INCLUDED
 # define YY_YY_PARSER_TAB_H_INCLUDED
@@ -44,58 +45,63 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 127 "parser.y"
+#line 123 "parser.y"
 
 	#include "lib/ast.h"
 
-#line 52 "parser.tab.h"
+#line 53 "parser.tab.h"
 
-/* Token type.  */
+/* Token kinds.  */
 #ifndef YYTOKENTYPE
 # define YYTOKENTYPE
   enum yytokentype
   {
-    IF = 258,
-    FOR = 259,
-    DO = 260,
-    INT = 261,
-    FLOAT = 262,
-    VOID = 263,
-    SWITCH = 264,
-    DEFAULT = 265,
-    ELSE = 266,
-    WHILE = 267,
-    BREAK = 268,
-    CHAR = 269,
-    DOUBLE = 270,
-    RETURN = 271,
-    CASE = 272,
-    CONTINUE = 273,
-    MAIN = 274,
-    CONST_INT = 275,
-    CONST_FLOAT = 276,
-    CONST_CHAR = 277,
-    ASSIGNOP = 278,
-    NOT = 279,
-    LPAREN = 280,
-    RPAREN = 281,
-    LTHIRD = 282,
-    RTHIRD = 283,
-    LCURL = 284,
-    RCURL = 285,
-    COMMA = 286,
-    SEMICOLON = 287,
-    ADDOP = 288,
-    MULOP = 289,
-    INCOP = 290,
-    DECOP = 291,
-    RELOP = 292,
-    LOGICOP = 293,
-    BITOP = 294,
-    ID = 295,
-    PRINTLN = 296,
-    LOWER_THAN_ELSE = 297
+    YYEMPTY = -2,
+    YYEOF = 0,                     /* "end of file"  */
+    YYerror = 256,                 /* error  */
+    YYUNDEF = 257,                 /* "invalid token"  */
+    IF = 258,                      /* IF  */
+    FOR = 259,                     /* FOR  */
+    DO = 260,                      /* DO  */
+    INT = 261,                     /* INT  */
+    FLOAT = 262,                   /* FLOAT  */
+    VOID = 263,                    /* VOID  */
+    SWITCH = 264,                  /* SWITCH  */
+    DEFAULT = 265,                 /* DEFAULT  */
+    ELSE = 266,                    /* ELSE  */
+    WHILE = 267,                   /* WHILE  */
+    BREAK = 268,                   /* BREAK  */
+    CHAR = 269,                    /* CHAR  */
+    DOUBLE = 270,                  /* DOUBLE  */
+    RETURN = 271,                  /* RETURN  */
+    CASE = 272,                    /* CASE  */
+    CONTINUE = 273,                /* CONTINUE  */
+    MAIN = 274,                    /* MAIN  */
+    CONST_INT = 275,               /* CONST_INT  */
+    CONST_FLOAT = 276,             /* CONST_FLOAT  */
+    CONST_CHAR = 277,              /* CONST_CHAR  */
+    ASSIGNOP = 278,                /* ASSIGNOP  */
+    NOT = 279,                     /* NOT  */
+    LPAREN = 280,                  /* LPAREN  */
+    RPAREN = 281,                  /* RPAREN  */
+    LTHIRD = 282,                  /* LTHIRD  */
+    RTHIRD = 283,                  /* RTHIRD  */
+    LCURL = 284,                   /* LCURL  */
+    RCURL = 285,                   /* RCURL  */
+    COMMA = 286,                   /* COMMA  */
+    SEMICOLON = 287,               /* SEMICOLON  */
+    ADDOP = 288,                   /* ADDOP  */
+    MULOP = 289,                   /* MULOP  */
+    INCOP = 290,                   /* INCOP  */
+    DECOP = 291,                   /* DECOP  */
+    RELOP = 292,                   /* RELOP  */
+    LOGICOP = 293,                 /* LOGICOP  */
+    BITOP = 294,                   /* BITOP  */
+    ID = 295,                      /* ID  */
+    PRINTLN = 296,                 /* PRINTLN  */
+    LOWER_THAN_ELSE = 297          /* LOWER_THAN_ELSE  */
   };
+  typedef enum yytokentype yytoken_kind_t;
 #endif
 
 /* Value type.  */
@@ -108,6 +114,8 @@ typedef  AST*  YYSTYPE;
 
 extern YYSTYPE yylval;
 
+
 int yyparse (void);
+
 
 #endif /* !YY_YY_PARSER_TAB_H_INCLUDED  */
